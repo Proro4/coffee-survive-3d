@@ -2982,7 +2982,7 @@ function render(dt, t) {
     const stunned = st === 1 || now < (S.me.lstunUntil || 0);
     if (stunned) roll = Math.sin(t / 120) * 0.08;
     const a = ANIM.get('P' + S.mySlot);
-    const bob = a ? Math.sin(a.ph * 2) * 0.025 * a.mv : 0;
+    const bob = 0; // без похитування камери під час ходьби
     camr.position.set(cx3, eye + bob, cz3);
     animCup(st === 3, t); animHeld(t); animKnife(st === 0 && (myStatus()[13] || 0) > 0 && !R3.held); animPepper(st === 0 && (myStatus()[18] || 0) > 0 && !R3.held);
     const cp = Math.cos(R3.pitch);
