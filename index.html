@@ -107,6 +107,45 @@ body.touch .nethud{top:92px;font-size:11px}
 .compass{position:absolute;left:50%;top:58px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;background:rgba(34,39,58,.88);border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:700;pointer-events:none}
 body.touch .compass{top:auto;bottom:calc(222px + env(safe-area-inset-bottom,0px))}
 .compass svg{width:26px;height:26px;transition:transform .08s linear}
+.busframe{position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 9vmin #2B2A33, inset 0 0 0 calc(9vmin + 10px) #48455A;border-radius:0}
+.busframe::after{content:'';position:absolute;left:62%;top:0;bottom:0;width:3vmin;background:#2B2A33}
+.busframe span{position:absolute;left:50%;bottom:3vmin;transform:translateX(-50%);color:#F4F1EA;font-weight:800;font-size:15px}
+.inv{position:absolute;left:14px;bottom:70px;display:flex;gap:6px;flex-wrap:wrap;pointer-events:none}
+.inv span{padding:6px 10px;background:rgba(34,39,58,.9);border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:800}
+.inv .coin{color:#F2C14E}
+body.touch .inv{bottom:auto;top:calc(130px + env(safe-area-inset-top,0px));left:10px}
+#shopPrompt{top:auto;bottom:120px}
+body.touch #shopPrompt{bottom:calc(240px + env(safe-area-inset-bottom,0px))}
+.gate{top:auto;bottom:160px;flex-wrap:wrap;justify-content:center;max-width:92vw}
+.gate .gbar{display:block;width:100%;height:6px;border-radius:3px;background:var(--panel2);overflow:hidden}.gate .gbar b{display:block;height:100%;width:0;background:#6EE7A0}
+body:not(.touch) #gateBtn{display:none}
+.inv .wanted{background:#7A1F2B;color:#FFD9D9}
+.danger{position:absolute;inset:0;pointer-events:none;opacity:0;box-shadow:inset 0 0 12vmin 3vmin rgba(220,30,40,.85);transition:opacity .15s}
+.hideov{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(10,8,14,0) 45%,rgba(10,8,14,.55) 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:22vh}
+.hideov span{font-weight:800;color:#E9E4D4;font-size:16px}
+#actPrompt{top:auto;bottom:120px}
+body:not(.touch) #actBtn{display:none}
+body.touch #actPrompt{bottom:calc(240px + env(safe-area-inset-bottom,0px))}
+.phonebtn{position:absolute;right:14px;bottom:196px;min-height:40px;padding:8px 14px;font-size:13px}
+.phonebtn b{display:inline-block;min-width:18px;margin-left:6px;padding:1px 6px;border-radius:999px;background:#D9483B;color:#FFF;font-size:11px}
+body.touch .phonebtn{bottom:auto;top:calc(214px + env(safe-area-inset-top,0px));right:10px}
+.phone{position:absolute;right:14px;bottom:246px;width:min(300px,86vw);max-height:46vh;display:flex;flex-direction:column;gap:6px;padding:12px;background:#1B1F2E;border:3px solid #3A4058;border-radius:22px;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+body.touch .phone{bottom:auto;top:calc(262px + env(safe-area-inset-top,0px));right:10px}
+.ph-top{display:flex;align-items:center;justify-content:space-between}.ph-top button{min-height:32px;padding:2px 10px}
+.ph-msgs{overflow:auto;display:flex;flex-direction:column;gap:6px}
+.ph-msgs .msg{display:flex;flex-direction:column;gap:2px;padding:7px 10px;background:#2B3148;border-radius:12px 12px 12px 4px;font-size:13px}
+.ph-msgs .msg b{color:#7CC4F0;font-size:11px}.ph-msgs .empty{color:var(--muted);font-size:13px;margin:0}
+.phone small{color:var(--muted);font-size:11px}
+.shopcard{align-items:stretch}
+.shopitems{display:flex;flex-direction:column;gap:8px}
+.shopitem{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--panel2);border-radius:12px}
+.shopitem .t{flex:1;display:flex;flex-direction:column;gap:2px}
+.shopitem .t b{font-size:16px}.shopitem .t small{color:var(--muted);font-size:13px}
+.paper{width:min(600px,100%);background:#F3EEE2;color:#222;border-radius:6px;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.5);font-family:Georgia,'Times New Roman',serif;display:flex;flex-direction:column;gap:10px;transform:rotate(-1.2deg)}
+.paper .ph{font-weight:900;font-size:28px;letter-spacing:1px;border-bottom:3px double #222;padding-bottom:4px;text-align:center}
+.paper canvas{width:100%;height:auto;border:2px solid #222;filter:grayscale(.35) contrast(1.05)}
+.paper h3{margin:0;font-size:20px;line-height:1.25}.paper p{margin:0;font-size:15px;line-height:1.5}
+.paper button{align-self:flex-end;font-family:Manrope,sans-serif}
 .toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);padding:10px 16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;font-weight:700;font-size:14px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90%;text-align:center}
 .toast.show{opacity:1}
 </style>
@@ -128,7 +167,19 @@ body.touch .compass{top:auto;bottom:calc(222px + env(safe-area-inset-bottom,0px)
   <div class="arrow-note" id="note"></div>
   <div class="compass" id="compass" hidden><svg id="compassArrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l6 15-6-3-6 3z" fill="#F4A07A" stroke="#1D2132" stroke-width="1.5" stroke-linejoin="round"></path></svg><span id="compassTxt"></span></div>
   <div class="netinfo nethud" id="netHud" hidden></div>
-  <div class="spec" id="spec" hidden><span>Спостерігаєш: <b id="specName"></b></span><button type="button" id="specNext">Наступний</button></div>
+  <div class="spec" id="spec" hidden><span>Спостерігаєш: <b id="specName"></b></span><button type="button" id="specNext">Наступний</button><button type="button" id="specBack" hidden>До кави</button></div>
+  <div class="spec" id="cafeBar" hidden><span>Ти на каві</span><button type="button" id="cafeWatch">Подивитися на інших</button></div>
+  <div class="spec" id="shopPrompt" hidden><span id="shopPromptTxt"></span><button type="button" id="shopOpen">Купити</button></div>
+  <div class="inv" id="inv" hidden></div>
+  <div class="danger" id="danger"></div>
+  <div class="hideov" id="hideOv" hidden><span>Ти в схованці. Тебе не видно з вулиці.</span></div>
+  <div class="spec" id="actPrompt" hidden><span id="actTxt"></span><button type="button" id="actBtn">Дія</button></div>
+  <button type="button" class="phonebtn" id="phoneBtn" hidden aria-label="Телефон">Телефон <b id="phoneBadge" hidden>0</b></button>
+  <div class="phone" id="phone" hidden><div class="ph-top"><b>Чат району</b><button type="button" id="phoneClose" aria-label="Закрити телефон">×</button></div><div class="ph-msgs" id="phoneMsgs"></div><small>Хтось у чаті іноді бреше.</small></div>
+  <div class="spec gate" id="gatePrompt" hidden><span id="gateTxt"></span><button type="button" id="gateBtn">Тримати</button><i class="gbar"><b id="gateBar"></b></i></div>
+  <div class="overlay" id="shopMenu" hidden><div class="card shopcard"><h2 id="shopTitle">Кіоск</h2><p class="sub" id="shopCoins"></p><div class="shopitems" id="shopItems"></div><div class="btns"><button type="button" id="shopClose">Закрити</button></div></div></div>
+  <div class="overlay" id="paper" hidden><div class="paper"><div class="ph">ВІСТІ РАЙОНУ</div><canvas id="paperPic" width="560" height="300"></canvas><h3 id="paperHead"></h3><p id="paperText"></p><button type="button" id="paperClose">Скласти газету</button></div></div>
+  <div class="busframe" id="busFrame" hidden><span>Тебе везуть на базу ТЦК</span></div>
   <div class="dpad" id="dpad" role="group" aria-label="Кнопки руху">
     <button type="button" class="dp up" data-d="up" aria-label="Вгору" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(0deg)" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
     <button type="button" class="dp left" data-d="left" aria-label="Вліво" tabindex="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(-90deg)" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg></button>
@@ -155,6 +206,7 @@ body.touch .compass{top:auto;bottom:calc(222px + env(safe-area-inset-bottom,0px)
         <button type="button" id="readyBtn">Я готовий</button>
         <button type="button" id="startBtn" class="primary">Почати матч</button>
         <button type="button" id="copyBtn" hidden>Скопіювати лінк</button>
+        <button type="button" id="sndBtn">Звук: увімк.</button>
         <button type="button" id="netBtn" hidden aria-pressed="false">Показати зв'язок</button>
       </div>
       <details>
@@ -169,7 +221,8 @@ body.touch .compass{top:auto;bottom:calc(222px + env(safe-area-inset-bottom,0px)
           <li>Карта щоматчу трохи інша: дороги, проходи дворами й дерева змінюються. Прохід до кав'ярні є завжди, але частина провулків веде в тупик.</li>
           <li>На базі ТЦК у правій стіні є тріщина «А». Підійди до неї й за 5 секунд повтори 6 стрілок: вийде, опинишся по той бік стіни. Спроба одна на матч, і почати її треба протягом 10 секунд після того, як тебе привезли. Поки хтось на базі ще може спробувати, матч не закінчується.</li>
           <li>Якщо ТЦК женеться за кимось, а ближче проходить інший гравець, він перемикається на нього.</li>
-          <li>Спійманого тримають, поки не під'їде бус, а потім везуть на базу. Якщо спіймають усіх, це поразка.</li>
+          <li>Спійманого тримають, поки не під'їде бус, а потім везуть на базу. Поки бус їде, є одна спроба на матч вирватися: 10 стрілок, і в тебе 2 секунди фори. Якщо спіймають усіх, це поразка.</li>
+          <li>ТЦК помічає тебе, лише якщо бачить: будинки, кіоски й дерева закривають огляд. Під'їзди й туалет на АЗС — схованки (E). На лавки можна сісти. T — телефон із чатом району (там іноді брешуть).</li>
           <li>На карті лежить листочок «БРОНЬ». З ним тебе одразу відпустять, але бронь пропаде й з'явиться деінде.</li>
         </ul>
       </details>
@@ -202,15 +255,22 @@ body.touch .compass{top:auto;bottom:calc(222px + env(safe-area-inset-bottom,0px)
 
 <script>
 'use strict';
-const T = 60, W = 52, H = 50, MW = W * T, MH = H * T;
-const RROWS = [4, 16, 28, 40];
-const HOUSES = [[4, 1, 3, 2], [16, 1, 3, 2], [31, 1, 3, 2], [44, 1, 3, 2]];
-const CAFES = [[6, 45, 3, 2], [24, 45, 4, 2], [42, 45, 3, 2]];
-const BASE = [44, 19, 5, 4];
-const DROP = [46, 17];
-const CRACK = { x: 49 * T, y: 20 * T + 36 };
-const CRACK_IN = { x: 49 * T - 28, y: CRACK.y };
-const ESC_OUT = { x: 49 * T + 40, y: CRACK.y + 8 };
+const T = 60, W = 104, H = 100, MW = W * T, MH = H * T;
+const RROWS = [4, 16, 28, 40, 52, 64, 76, 88];
+const HOUSES = [[10, 1, 3, 2], [36, 1, 3, 2], [62, 1, 3, 2], [88, 1, 3, 2]];
+const CAFES = [[14, 93, 3, 2], [50, 93, 4, 2], [86, 93, 3, 2]];
+const BASE = [94, 19, 5, 4];
+const DROP = [96, 17];
+const CRACK = { x: 99 * T, y: 20 * T + 36 };
+const CRACK_IN = { x: 99 * T - 28, y: CRACK.y };
+const ESC_OUT = { x: 99 * T + 40, y: CRACK.y + 8 };
+// поліція: КПЗ (клітка) біля дільниці, двері клітки зі сходу; ворота бази ТЦК — з півночі
+const CAGE = [2, 71, 3, 3];
+const JAIL_IN = { x: 5 * T - 28, y: 72.5 * T }, JAIL_OUT = { x: 5 * T + 40, y: 72.5 * T };
+const JAIL_SPOTS = [[2.5, 71.5], [3.6, 71.5], [2.5, 73.5], [3.6, 73.5]].map(([a, b]) => [a * T, b * T]);
+const POLICE_DROP = [7, 76], POLICE_HOME = [{ x: 6.5 * T, y: 71.6 * T }, { x: 8.5 * T, y: 71.6 * T }];
+const BASE_GATE = { x: 96.5 * T, y: 19 * T - 32 };
+const COP_V = 1.3 * 180;
 let M = null, treeSet = new Set();
 const PC = ['#7CC4F0', '#C3A6F0', '#F5D37A', '#F4A07A'];
 const PCD = ['#4F93BF', '#9579C9', '#C9A444', '#CC7650'];
@@ -234,7 +294,7 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const tileAt = (x, y) => (x < 0 || y < 0 || x >= W || y >= H) ? 'B' : M.grid[y][x];
 const isTree = (x, y) => treeSet.has(x + ',' + y);
-function solid(x, y) { const t = tileAt(x, y); return t === 'B' || t === 'H' || t === 'C' || t === 'T'; }
+function solid(x, y) { return 'BHCTKQOJL'.includes(tileAt(x, y)); }
 const isRoad = t => 'RVXZY'.includes(t);
 const tx = x => Math.floor(x / T), ty = y => Math.floor(y / T);
 function num(v, d) { v = Number(v); return Number.isFinite(v) ? v : d; }
@@ -261,7 +321,7 @@ function stepTo(e, gx, gy, step, r) {
   return slide(e, dx * k, dy * k, r);
 }
 const NB = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-function bfsNext(sx, sy, gx, gy) {
+function bfsNext(sx, sy, gx, gy, noMall) {
   if (sx === gx && sy === gy) return null;
   const prev = new Int16Array(W * H).fill(-1), s = sy * W + sx, goal = gy * W + gx;
   const q = [s]; prev[s] = s; let h = 0;
@@ -273,7 +333,7 @@ function bfsNext(sx, sy, gx, gy) {
       if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue;
       const k = ny * W + nx;
       if (prev[k] !== -1) continue;
-      if (k !== goal && (solid(nx, ny) || isTree(nx, ny))) continue;
+      if (k !== goal && (solid(nx, ny) || isTree(nx, ny) || (noMall && tileAt(nx, ny) === 'M'))) continue;
       prev[k] = cur; q.push(k);
     }
   }
@@ -284,7 +344,7 @@ function bfsNext(sx, sy, gx, gy) {
 function tileCost(x, y) {
   if (solid(x, y) || isTree(x, y)) return Infinity;
   const t = tileAt(x, y);
-  if ('SPZY'.includes(t)) return 1;
+  if ('SPZYM'.includes(t)) return 1;
   if (t === 'G') return 1.4;
   return 9;
 }
@@ -321,45 +381,60 @@ function rr(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w
 // Карта генерується з зерна матчу однаково в усіх: вертикальні дороги (1 або 2 на смугу кварталів),
 // додатковий прохід через двори (може бути або ні), провулок, який перекриває дерево (дерева може не бути),
 // і кілька тупиків. Дістатися кав'ярні можна завжди: це перевіряється, інакше береться інше зерно.
+// Велике місто (104×100): 8 доріг, 7 смуг кварталів. По центру — ринок, площа з мерією й торговий центр;
+// на півдні — кав'ярні в ряду будинків; ТЦК праворуч угорі, поліція ліворуч, заправка в правому нижньому куті.
+const DIST = {
+  midBand: 3, vroadA: 34, vroadB: 68,
+  market: [1, 33], square: [37, 67], mall: [71, 102],
+  hall: [46, 43, 12, 3],
+  police: { band: 5, from: 0, to: 14, bld: [2, 67, 9, 4], lot: [2, 71, 9, 3] },
+  gas: { band: 6, from: 86, to: W, lot: [86, 79, 18, 8], shop: [97, 80, 5, 3], pumps: [[89, 82], [92, 82], [89, 85], [92, 85]] }
+};
+const SOLID_T = 'BHCTKQOJL';
 function tryGenMap(seed, force) {
   const R = rng((seed ^ 0x2545F491) >>> 0), ri = (a, b) => a + Math.floor(R() * (b - a + 1));
   const g = []; for (let y = 0; y < H; y++) g.push(new Array(W).fill('G'));
   const set = (x, y, v) => { if (x >= 0 && y >= 0 && x < W && y < H) g[y][x] = v; };
   const fill = (x, y, w, h, v) => { for (let j = y; j < y + h; j++) for (let i = x; i < x + w; i++) set(i, j, v); };
-  const trees = new Set(), decor = [], loops = [];
+  const trees = new Set(), decor = [], loops = [], props = [], propSet = new Set();
+  const addPropAny = (k, x, y, extra) => { const key = x + ',' + y; if (propSet.has(key) || trees.has(key)) return false; props.push([k, x, y].concat(extra || [])); propSet.add(key); return true; };
   for (const h of HOUSES) fill(h[0], h[1], h[2], h[3], 'H');
   for (const r of RROWS) { fill(0, r - 1, W, 1, 'S'); fill(0, r, W, 2, 'R'); fill(0, r + 2, W, 1, 'S'); }
   for (const c of CAFES) fill(c[0], c[1], c[2], c[3], 'C');
-  for (let b = 0; b < 3; b++) {
+  const vroad = (c, b, top, bot) => {
+    fill(c, top - 1, 2, bot - top + 3, 'V');
+    fill(c - 1, top, 1, bot - top + 1, 'S'); fill(c + 2, top, 1, bot - top + 1, 'S');
+    for (const rr0 of [RROWS[b], RROWS[b + 1]]) for (let r = rr0; r <= rr0 + 1; r++) { set(c, r, 'X'); set(c + 1, r, 'X'); }
+    const yr = ri(top + 2, bot - 2); set(c, yr, 'Y'); set(c + 1, yr, 'Y');
+    loops.push({ down: c * T + 30, up: (c + 1) * T + 30, y0: RROWS[b] * T + 30, y1: (RROWS[b + 1] + 1) * T + 30 });
+  };
+  for (let b = 0; b < RROWS.length - 1; b++) {
     const top = RROWS[b] + 3, bot = RROWS[b + 1] - 2;
+    if (b === DIST.midBand) continue;
     fill(0, top, W, bot - top + 1, 'B');
-    const resFrom = b === 1 ? 43 : W;
-    const nV = R() < 0.4 ? 2 : 1, vc = [];
-    for (let k = 0; k < 80 && vc.length < nV; k++) { const c = ri(3, Math.min(W - 6, resFrom - 5)); if (vc.every(o => Math.abs(o - c) >= 12)) vc.push(c); }
-    for (const c of vc) {
-      fill(c, top - 1, 2, bot - top + 3, 'V');
-      fill(c - 1, top, 1, bot - top + 1, 'S'); fill(c + 2, top, 1, bot - top + 1, 'S');
-      for (const rr0 of [RROWS[b], RROWS[b + 1]]) for (let r = rr0; r <= rr0 + 1; r++) { set(c, r, 'X'); set(c + 1, r, 'X'); }
-      const yr = ri(top + 2, bot - 2); set(c, yr, 'Y'); set(c + 1, yr, 'Y');
-      loops.push({ down: c * T + 30, up: (c + 1) * T + 30, y0: RROWS[b] * T + 30, y1: (RROWS[b + 1] + 1) * T + 30 });
-    }
-    const used = vc.map(c => [c - 2, c + 3]); used.push([resFrom - 1, W + 5], [-5, 1], [W - 2, W + 5]);
+    // зарезервовані ділянки під ТЦК, поліцію й заправку
+    const res = [];
+    if (b === 1) res.push([92, W + 5]);
+    if (b === DIST.police.band) res.push([-5, DIST.police.to]);
+    if (b === DIST.gas.band) res.push([DIST.gas.from - 1, W + 5]);
+    const okCol = c => res.every(([a, z]) => c + 3 < a || c - 2 > z) && c >= 3 && c <= W - 6;
+    const nV = ri(2, 3), vc = [];
+    for (let k = 0; k < 200 && vc.length < nV; k++) { const c = ri(3, W - 6); if (okCol(c) && vc.every(o => Math.abs(o - c) >= 14)) vc.push(c); }
+    for (const c of vc) vroad(c, b, top, bot);
+    const used = vc.map(c => [c - 2, c + 3]).concat(res); used.push([-5, 1], [W - 2, W + 5]);
     const free = (x0, x1) => used.every(([a, z]) => x1 < a - 1 || x0 > z + 1);
-    const place = w => { for (let k = 0; k < 120; k++) { const x = ri(1, W - 2 - w); if (free(x, x + w - 1)) { used.push([x, x + w - 1]); return x; } } return -1; };
-    if (vc.length === 1 && R() < 0.55) {
+    const place = w => { for (let k = 0; k < 160; k++) { const x = ri(1, W - 2 - w); if (free(x, x + w - 1)) { used.push([x, x + w - 1]); return x; } } return -1; };
+    for (let n = R() < 0.5 ? 1 : 0; n > 0; n--) {
       const x = place(6);
       if (x >= 0) {
         const a = x + ri(0, 1), z = x + ri(4, 5), k = ri(top + 2, bot - 2);
         const [c1, c2] = R() < 0.5 ? [a, z] : [z, a];
-        fill(c1, top, 1, k - top + 1, 'P');
-        fill(Math.min(c1, c2), k - 1, Math.abs(c2 - c1) + 1, 3, 'P');
-        fill(c2, k, 1, bot - k + 1, 'P');
+        fill(c1, top, 1, k - top + 1, 'P'); fill(Math.min(c1, c2), k - 1, Math.abs(c2 - c1) + 1, 3, 'P'); fill(c2, k, 1, bot - k + 1, 'P');
         if (R() < 0.5) decor.push(['bench', Math.min(c1, c2) + 1, k - 1]);
       }
     }
-    if (R() < 0.85) { const x = place(1); if (x >= 0) { fill(x, top, 1, bot - top + 1, 'P'); if (R() < 0.6) trees.add(x + ',' + ri(top + 2, bot - 2)); } }
-    const nd = ri(2, 3);
-    for (let d = 0; d < nd; d++) {
+    for (let n = ri(1, 2); n > 0; n--) { const x = place(1); if (x >= 0) { fill(x, top, 1, bot - top + 1, 'P'); if (R() < 0.6) trees.add(x + ',' + ri(top + 2, bot - 2)); } }
+    for (let d = ri(4, 6); d > 0; d--) {
       if (R() < 0.5) {
         const x = place(3); if (x < 0) continue;
         const len = ri(3, 5);
@@ -375,41 +450,75 @@ function tryGenMap(seed, force) {
       }
     }
   }
-  fill(43, 19, 1, 8, 'B'); fill(44, 19, 5, 4, 'T'); fill(44, 23, 5, 4, 'B'); fill(49, 19, 3, 1, 'B'); fill(49, 20, 3, 7, 'G');
+  // ---- центр: ринок | площа з мерією | торговий центр ----
+  {
+    const b = DIST.midBand, top = RROWS[b] + 3, bot = RROWS[b + 1] - 2;
+    vroad(DIST.vroadA, b, top, bot); vroad(DIST.vroadB, b, top, bot);
+    // ринок: бруківка й ряди ятками з проходами
+    fill(DIST.market[0], top, DIST.market[1] - DIST.market[0], bot - top + 1, 'P');
+    for (const y of [top + 1, top + 4]) for (let x = DIST.market[0] + 2; x < DIST.market[1] - 2; x += 3) addPropAny('stall', x, y, [y === top + 1 ? 1 : -1]);
+    for (let x = DIST.market[0] + 3; x < DIST.market[1] - 2; x += 7) addPropAny('stall', x, bot - 1, [1]);
+    // площа: мерія, фонтан, лавки, дерева в кутах
+    fill(DIST.square[0], top, DIST.square[1] - DIST.square[0], bot - top + 1, 'P');
+    fill(DIST.hall[0], DIST.hall[1], DIST.hall[2], DIST.hall[3], 'Q');
+    const fx = DIST.square[0] + Math.floor((DIST.square[1] - DIST.square[0]) / 2), fy = bot - 2;
+    addPropAny('fountain', fx, fy);
+    for (const [dx, dy] of [[-3, 0], [3, 0], [-7, 0], [7, 0], [-11, 1], [11, 1]]) decor.push(['bench3', fx + dx, fy + dy, 0]);
+    for (const [x, y] of [[DIST.square[0] + 1, top], [DIST.square[1] - 2, top], [DIST.square[0] + 1, bot], [DIST.square[1] - 2, bot]]) trees.add(x + ',' + y);
+    // торговий центр: зовнішні стіни з входами з обох боків; уздовж північної стіни ряд магазинів,
+    // у кожен можна зайти через двері у скляній вітрині; посередині й на південь — галерея
+    const [m0, m1] = DIST.mall;
+    fill(m0, top, m1 - m0 + 1, bot - top + 1, 'K');
+    fill(m0 + 1, top + 1, m1 - m0 - 1, bot - top - 1, 'M');
+    fill(m0 + 1, top + 1, m1 - m0 - 1, 3, 'K');
+    const ents = [m0 + 6, m0 + 16, m0 + 26];
+    for (const ex of ents) { set(ex, top, 'M'); set(ex + 1, top, 'M'); set(ex, bot, 'M'); set(ex + 1, bot, 'M'); fill(ex, top + 1, 2, 3, 'M'); }
+    const names = ['ОДЯГ', 'КНИГИ', 'НАПОЇ', 'АПТЕКА', 'ІГРАШКИ', 'ЗБРОЯ'];
+    const shops = [[m0 + 1, m0 + 4], [m0 + 8, m0 + 10], [m0 + 12, m0 + 15], [m0 + 18, m0 + 20], [m0 + 22, m0 + 25], [m0 + 28, m0 + 30]];
+    shops.forEach(([x0, x1], k) => {
+      fill(x0, top + 1, x1 - x0 + 1, 2, 'M');
+      set(x0 + 1, top + 3, 'M');
+      addPropAny('shop', x0 + 1, top + 1, [1, names[k], x0, x1]);
+    });
+  }
+  // ---- ТЦК ----
+  fill(93, 19, 1, 8, 'B'); fill(BASE[0], BASE[1], BASE[2], BASE[3], 'T'); fill(BASE[0], 23, BASE[2], 4, 'B'); fill(99, 19, 5, 1, 'B'); fill(99, 20, 5, 7, 'G');
+  // ---- поліція ----
+  { const P = DIST.police; fill(1, 67, P.to - 1, 8, 'G'); fill(P.bld[0], P.bld[1], P.bld[2], P.bld[3], 'O'); fill(P.lot[0], P.lot[1], P.lot[2], P.lot[3], 'P'); fill(1, 67, 1, 8, 'P'); fill(P.to - 2, 67, 1, 8, 'P'); fill(CAGE[0], CAGE[1], CAGE[2], CAGE[3], 'L'); }
+  // ---- заправка ----
+  { const Gs = DIST.gas; fill(Gs.lot[0], Gs.lot[1], Gs.lot[2], Gs.lot[3], 'P'); fill(Gs.shop[0], Gs.shop[1], Gs.shop[2], Gs.shop[3], 'J'); for (const [x, y] of Gs.pumps) addPropAny('pump', x, y); }
+  // ---- зебри ----
   for (const r of RROWS) {
-    const cols = [];
-    const n = ri(3, 5);
-    for (let k = 0; k < 100 && cols.length < n; k++) {
+    const cols = [], n = ri(6, 9);
+    for (let k = 0; k < 200 && cols.length < n; k++) {
       const c = ri(2, W - 3);
-      if (g[r][c] !== 'R' || g[r][c - 1] === 'X' || g[r][c + 1] === 'X' || g[r][c - 2] === 'X' || g[r][c + 2] === 'X') continue;
+      if (g[r][c] !== 'R' || 'X'.includes(g[r][c - 1]) || g[r][c + 1] === 'X' || g[r][c - 2] === 'X' || g[r][c + 2] === 'X') continue;
       if (cols.every(o => Math.abs(o - c) >= 6)) cols.push(c);
     }
     for (const c of cols) { set(c, r, 'Z'); set(c, r + 1, 'Z'); }
   }
   const isG = (x, y) => x >= 0 && y >= 0 && x < W && y < H && g[y][x] === 'G';
-  for (let k = 0; k < 12; k++) { const x = ri(0, W - 1), y = ri(0, 2); if (isG(x, y)) trees.add(x + ',' + y); }
+  for (let k = 0; k < 24; k++) { const x = ri(0, W - 1), y = ri(0, 2); if (isG(x, y)) trees.add(x + ',' + y); }
   const nearCafe = (x, y) => CAFES.some(c => x >= c[0] - 1 && x <= c[0] + c[2] && y >= c[1] - 1 && y <= c[1] + c[3]);
-  // кав'ярні стоять у ряду будинків: перед ними тротуар-площа, з боків провулки
-  for (let y = 45; y <= 48; y++) for (let x = 0; x < W; x++) if (g[y][x] === 'G' && !CAFES.some(c => x >= c[0] - 1 && x <= c[0] + c[2])) g[y][x] = 'B';
-  for (let x = 0; x < W; x++) g[43][x] = 'S';
-  for (let k = 0; k < 14; k++) { const x = ri(0, W - 1), y = 49; if (isG(x, y)) trees.add(x + ',' + y); }
-  const props = [], propSet = new Set();
-  const addProp = (k, x, y) => { if (isG(x, y) && !trees.has(x + ',' + y) && !propSet.has(x + ',' + y)) { props.push([k, x, y]); propSet.add(x + ',' + y); } };
-  for (let k = 0; k < 2; k++) { const x = ri(1, W - 2); if (!HOUSES.some(h => x >= h[0] - 1 && x <= h[0] + h[2])) addProp('fountain', x, ri(0, 1)); }
-  // кіоски розкидані по місту: на газонах біля тротуарів і у двориках, повернуті до проходу
+  const cafeTop = CAFES[0][1];
+  for (let y = cafeTop; y <= cafeTop + 3; y++) for (let x = 0; x < W; x++) if (g[y][x] === 'G' && !CAFES.some(c => x >= c[0] - 1 && x <= c[0] + c[2])) g[y][x] = 'B';
+  for (let x = 0; x < W; x++) g[cafeTop - 2][x] = 'S';
+  for (let k = 0; k < 30; k++) { const x = ri(0, W - 1), y = H - 1 - ri(0, 1); if (isG(x, y)) trees.add(x + ',' + y); }
+  const addProp = (k, x, y) => isG(x, y) && addPropAny(k, x, y);
+  for (let k = 0; k < 4; k++) { const x = ri(1, W - 2); if (!HOUSES.some(h => x >= h[0] - 1 && x <= h[0] + h[2])) addProp('fountain', x, ri(0, 1)); }
   const kc = [];
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
-    if (!isG(x, y) || trees.has(x + ',' + y) || nearCafe(x, y) || (x >= 48 && y >= 19 && y <= 27)) continue;
+    if (!isG(x, y) || trees.has(x + ',' + y) || nearCafe(x, y) || (x >= 98 && y >= 19 && y <= 27)) continue;
     const nb = NB.find(([dx, dy]) => { const t2 = g[y + dy] && g[y + dy][x + dx]; return t2 === 'S' || t2 === 'P'; });
     if (nb) kc.push([x, y, nb]);
   }
-  for (let k = 0, made = 0; k < 200 && made < 6 && kc.length; k++) {
+  for (let k = 0, made = 0; k < 400 && made < 12 && kc.length; k++) {
     const [x, y, nb] = kc[Math.floor(R() * kc.length)];
-    if (props.some(p => Math.abs(p[1] - x) + Math.abs(p[2] - y) < 8)) continue;
-    addProp('kiosk', x, y); props[props.length - 1].push(nb[0], nb[1]); made++;
+    if (props.some(p => p[0] === 'kiosk' && Math.abs(p[1] - x) + Math.abs(p[2] - y) < 12)) continue;
+    if (addProp('kiosk', x, y)) { props[props.length - 1].push(nb[0], nb[1]); made++; }
   }
-  const solidAt = (x, y) => 'BHCT'.includes(g[y][x]) || trees.has(x + ',' + y) || propSet.has(x + ',' + y);
-  const seen = new Uint8Array(W * H), q = [[49, 20]]; seen[20 * W + 49] = 1;
+  const solidAt = (x, y) => SOLID_T.includes(g[y][x]) || trees.has(x + ',' + y) || propSet.has(x + ',' + y);
+  const sx = 100, sy = 21, seen = new Uint8Array(W * H), q = [[sx, sy]]; seen[sy * W + sx] = 1;
   while (q.length) { const [x, y] = q.pop(); for (const [dx, dy] of NB) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const k = ny * W + nx; if (seen[k] || solidAt(nx, ny)) continue; seen[k] = 1; q.push([nx, ny]); } }
   const ok = HOUSES.every(h => seen[3 * W + h[0] + 1]) && CAFES.every(c => seen[(c[1] - 1) * W + c[0] + 1]);
   if (!ok && !force) return null;
@@ -636,25 +745,27 @@ function newSim(match) {
   const HL = [];
   for (const r of RROWS) { HL.push({ y: r * T + 30, dir: -1 }); HL.push({ y: (r + 1) * T + 30, dir: 1 }); }
   const LOOPS = M.loops;
-  for (const L of HL) for (let i = 0; i < 4; i++) {
+  for (const L of HL) for (let i = 0; i < 3; i++) {
     const base = 190 + R() * 60;
-    cars.push({ ax: 'h', x: ((i + R() * 0.5) / 4) * MW, y: L.y, dir: L.dir, ldir: L.dir, base, spd: base, st: 'n', until: 0, tgt: -1, stopUntil: 0, tcc: false });
+    cars.push({ ax: 'h', x: ((i + R() * 0.5) / 3) * MW, y: L.y, dir: L.dir, ldir: L.dir, base, spd: base, st: 'n', until: 0, tgt: -1, stopUntil: 0, tcc: false });
   }
   for (const L of LOOPS) {
     const b1 = 170 + R() * 40, b2 = 170 + R() * 40;
     cars.push({ ax: 'v', loop: L, x: L.down, y: L.y0 + (L.y1 - L.y0) * (0.2 + R() * 0.3), dir: 1, base: b1, spd: b1, st: 'n', until: 0, tgt: -1, stopUntil: 0, tcc: false });
-    cars.push({ ax: 'v', loop: L, x: L.up, y: L.y0 + (L.y1 - L.y0) * (0.5 + R() * 0.3), dir: -1, base: b2, spd: b2, st: 'n', until: 0, tgt: -1, stopUntil: 0, tcc: false });
+    if (R() < 0.35) cars.push({ ax: 'v', loop: L, x: L.up, y: L.y0 + (L.y1 - L.y0) * (0.5 + R() * 0.3), dir: -1, base: b2, spd: b2, st: 'n', until: 0, tgt: -1, stopUntil: 0, tcc: false });
   }
   cars.forEach((c, i) => c.i = i);
   const vanCands = cars.filter(c => !(c.ax === 'h' && c.y < 6 * T));
-  for (let k = 0; k < 3 && vanCands.length; k++) { const j = Math.floor(R() * vanCands.length); vanCands.splice(j, 1)[0].tcc = true; }
+  for (let k = 0; k < 4 && vanCands.length; k++) { const j = Math.floor(R() * vanCands.length); vanCands.splice(j, 1)[0].tcc = true; }
+  // ТЦК їздять тільки на бусах, але бус — ще не означає ТЦК
+  for (const c of cars) c.bus = c.tcc || R() < 0.22;
   // peds
   const walkTiles = [];
-  for (let y = 3; y < H; y++) for (let x = 0; x < W; x++) if ('SP'.includes(tileAt(x, y)) && !(y === 3 && x % 7 < 5)) walkTiles.push([x, y]);
+  for (let y = 3; y < H; y++) for (let x = 0; x < W; x++) if ('SPM'.includes(tileAt(x, y)) && !treeSet.has(x + ',' + y) && !(y === 3 && x % 7 < 5)) walkTiles.push([x, y]);
   for (let i = walkTiles.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [walkTiles[i], walkTiles[j]] = [walkTiles[j], walkTiles[i]]; }
-  const peds = walkTiles.slice(0, 40).map(([x, y], i) => ({ i, x: x * T + 30, y: y * T + 30, tx: x, ty: y, px: x, py: y, spd: 45 + R() * 30, st: 'n', until: 0, tgt: -1, next: null, pathT: 0, tcc: false }));
+  const peds = walkTiles.slice(0, 80).map(([x, y], i) => ({ i, x: x * T + 30, y: y * T + 30, tx: x, ty: y, px: x, py: y, spd: 45 + R() * 30, st: 'n', until: 0, tgt: -1, next: null, pathT: 0, tcc: false }));
   const wc = peds.filter(p => p.ty >= 8);
-  for (let k = 0; k < 4 && wc.length; k++) { const j = Math.floor(R() * wc.length); wc.splice(j, 1)[0].tcc = true; }
+  for (let k = 0; k < 6 && wc.length; k++) { const j = Math.floor(R() * wc.length); wc.splice(j, 1)[0].tcc = true; }
   const cr = CAFES[match.cafe];
   const goals = new Set();
   for (let y = cr[1]; y < cr[1] + cr[3]; y++) for (let x = cr[0]; x < cr[0] + cr[2]; x++) for (const [dx, dy] of NB) {
@@ -667,18 +778,99 @@ function newSim(match) {
     const [x, y] = spawnOf(s);
     players.push({ slot: s, label, bot, x, y, st: 0, until: 0, immune: 0, sp: false, fa: false, fatUntil: 0, sprLeft: SPR_D, path: null, pi: 0, replan: 0, stuck: 0, lx: x, ly: y, bron: false, safe: 0, escUsed: false, escAt: 0, hn: 0, cn: 0 });
   }
-  const sim = { t0: Date.now(), cars, peds, players, goals, fx: [], squads: [], queue: [], seq: 0, end: 0, leaf: null };
+  const sim = { t0: Date.now(), cars, peds, players, goals, fx: [], squads: [], queue: [], seq: 0, end: 0, leaf: null, coins: [] };
+  // 6 монеток на весь матч, не з'являються знову
+  for (let k = 0; k < 600 && sim.coins.length < 6; k++) {
+    const x = Math.floor(R() * W), y = 8 + Math.floor(R() * 80), tt = tileAt(x, y);
+    if (!'SPGM'.includes(tt) || isTree(x, y)) continue;
+    if (sim.coins.some(c => Math.abs(c.x / T - x) + Math.abs(c.y / T - y) < 14)) continue;
+    sim.coins.push({ x: x * T + 30, y: y * T + 30 });
+  }
+  for (const p of players) if (p) { p.coins = 0; p.enUntil = 0; p.medUntil = 0; p.outfit = 0; p.buyN = 0; p.knife = false; p.wanted = false; p.jail = false; p.jEscUsed = false; p.jailN = 0; p.rescN = 0; }
+  sim.knife = randomLeafSpot(R, players);
+  sim.cops = POLICE_HOME.map((h, k) => ({ x: h.x, y: h.y, hx: h.x, hy: h.y, st: 'idle', tgt: -1, next: null, pathT: 0, cop: true, k }));
+  sim.pcar = { ax: 'h', x: 9.5 * T, y: 72.5 * T, dir: 1, ldir: 1, base: COP_V, spd: 0, st: 'park', pcar: true, tcc: false, bus: false, i: cars.length, tgt: -1, route: null, ri: 0, routeT: 0, pass: -1, fetchFor: -1, stopUntil: 0 };
+  cars.push(sim.pcar); sim.pq = [];
   sim.leaf = randomLeafSpot(R, players);
   return sim;
 }
 const act = p => p && (p.st === 0 || p.st === 1);
 // Зіткнення віддалених людей хост не рахує сам: їх повідомляє пристрій гравця (див. clientCollide).
 const simHere = p => !!p && (p.bot || p.label === S.myLabel);
-const huntable = (p, now) => act(p) && now >= (p.safe || 0);
+const onMall = p => tileAt(tx(p.x), ty(p.y)) === 'M';
+// двері під'їздів (ті самі, що малюються): у них можна сховатися
+function doorList() {
+  if (M._doors) return M._doors;
+  const rd = rng(7), walk = (x, y) => x >= 0 && y >= 0 && x < W && y < H && 'SPG'.includes(tileAt(x, y)), list = [];
+  for (const [c, r, w, h] of M.buildings) {
+    const sides = [];
+    for (let i2 = c; i2 < c + w; i2++) { if (walk(i2, r + h)) sides.push([i2 + 0.5, r + h - 0.06, Math.PI / 2]); if (walk(i2, r - 1)) sides.push([i2 + 0.5, r + 0.06, -Math.PI / 2]); }
+    for (let j2 = r; j2 < r + h; j2++) { if (walk(c - 1, j2)) sides.push([c + 0.06, j2 + 0.5, Math.PI]); if (walk(c + w, j2)) sides.push([c + w - 0.06, j2 + 0.5, 0]); }
+    if (sides.length) list.push(sides[Math.floor(rd() * sides.length)]);
+  }
+  return (M._doors = list);
+}
+function hideSpots() {
+  if (M._hides) return M._hides;
+  const out = doorList().map(([x, z, a]) => ({ x: (x + Math.cos(a) * 0.35) * T, y: (z + Math.sin(a) * 0.35) * T, name: 'під\'їзд' }));
+  HOUSES.forEach(([c, r, w, h]) => out.push({ x: (c + w / 2) * T, y: (r + h + 0.35) * T, name: 'під\'їзд' }));
+  const Gs = DIST.gas.shop; out.push({ x: (Gs[0] + Gs[2] + 0.78) * T, y: (Gs[1] + 1.5) * T, name: 'туалет АЗС', wc: true });
+  return (M._hides = out);
+}
+function benchSeats() {
+  if (M._benches) return M._benches;
+  return (M._benches = M.decor.filter(d => d[0] === 'bench' || d[0] === 'bench3').flatMap(d => { const bx0 = d[1] + (d[0] === 'bench' ? 1 : 0.5), bz = d[2] + 0.5; return [{ x: (bx0 - 0.22) * T, y: (bz + 0.02) * T, h: Math.PI / 2 }, { x: (bx0 + 0.22) * T, y: (bz + 0.02) * T, h: Math.PI / 2 }]; }));
+}
+// пряма видимість: будинки, кіоски, дерева й паркани закривають огляд
+function sees(a, b) {
+  const dx = b.x - a.x, dy = b.y - a.y, L = Math.hypot(dx, dy), n = Math.ceil(L / 15);
+  for (let i = 1; i < n; i++) { const x = tx(a.x + dx * i / n), y = ty(a.y + dy * i / n); if (solid(x, y) || isTree(x, y)) return false; }
+  return true;
+}
+const STREETS = [['Садова', 'Садовій'], ['Каштанова', 'Каштановій'], ['Шкільна', 'Шкільній'], ['Центральна', 'Центральній'], ['Липова', 'Липовій'], ['Паркова', 'Парковій'], ['Заводська', 'Заводській'], ['Кавова', 'Кавовій']];
+function placeName(x, y) {
+  const cx = x / T, cy = y / T, b = RROWS[DIST.midBand];
+  if (cy > b && cy < RROWS[DIST.midBand + 1] + 2) { if (cx < DIST.vroadA) return 'на ринку'; if (cx < DIST.vroadB) return 'на площі біля мерії'; return 'біля ТЦ «Каштан»'; }
+  if (cx > DIST.gas.lot[0] - 2 && cy > DIST.gas.lot[1] - 2 && cy < DIST.gas.lot[1] + DIST.gas.lot[3] + 2) return 'біля АЗС';
+  if (cx < 15 && cy > 63 && cy < 77) return 'біля поліції';
+  if (cy > CAFES[0][1] - 4) return 'біля кав\'ярень';
+  for (let k = 0; k < HOUSES.length; k++) if (Math.abs(cx - HOUSES[k][0]) < 8 && cy < 8) return 'біля Дому ' + (k + 1);
+  const street = RROWS.findIndex(r => Math.abs(cy - r - 1) < 2.5);
+  if (street >= 0) return 'на вулиці ' + STREETS[street][1];
+  return 'у дворах ' + (cx < W / 2 ? 'західної' : 'східної') + ' частини, квартал ' + (Math.max(1, RROWS.filter(r => r < cy).length));
+}
+// у ТЦ ТЦК не заходить: там гравця не помічають і погоня обривається
+const huntable = (p, now) => act(p) && now >= (p.safe || 0) && !onMall(p) && !p.hid;
+// ---------- економіка: товари, магазини ----------
+const ITEMS = {
+  energy: { name: 'Енергетик', price: 1, desc: '30 с біг удвічі довший, а втома вдвічі коротша' },
+  meds: { name: 'Ліки', price: 1, desc: '30 с бачиш усіх ТЦК, навіть прихованих' },
+  clothes: { name: 'Новий одяг', price: 1, desc: 'ТЦК одразу губить тебе з поля зору' },
+  knife: { name: 'Ножик', price: 1, once: true, desc: 'ТЦК, що тебе спіймає, зникне разом із ножиком, але за тобою поїде поліція. Один раз за матч' },
+  pepper: { name: 'Перцевий балончик', price: 1, once: true, desc: 'Хто з ТЦК тебе схопить, 4 секунди нічого не бачить і не рухається. Один раз за матч' },
+  icecream: { name: 'Морозиво', price: 0, desc: 'Просто смачно' },
+  paper: { name: 'Газета', price: 0, desc: 'Свіжі новини району' }
+};
+const SHOP_ITEMS = { 'АЗС': ['energy'], 'НАПОЇ': ['energy'], 'АПТЕКА': ['meds'], 'ЛІКИ': ['meds'], 'ОДЯГ': ['clothes'], 'ЗБРОЯ': ['knife', 'pepper'], 'МОРОЗИВО': ['icecream'], 'ПРЕСА': ['paper'], 'КНИГИ': ['paper'] };
+const KIOSK_KINDS = ['МОРОЗИВО', 'ПРЕСА', 'НАПОЇ', 'АПТЕКА', 'ОДЯГ', 'ЗБРОЯ'];
+const kioskKind = (x, y) => KIOSK_KINDS[(x * 7 + y * 3) % 6];
+const STALL_KINDS = ['ЗБРОЯ', 'НАПОЇ', 'ЛІКИ', 'ОДЯГ'];
+// де можна купувати: кіоски, перші 4 ятки ринку, магазини ТЦ
+function shopSpots() {
+  if (M._shops) return M._shops;
+  const out = []; let si = 0;
+  for (const p of M.props) {
+    if (p[0] === 'kiosk') out.push({ x: (p[1] + 0.5) * T, y: (p[2] + 0.5) * T, name: kioskKind(p[1], p[2]) });
+    else if (p[0] === 'stall' && si < 4) out.push({ x: (p[1] + 0.5) * T, y: (p[2] + 0.5 + (p[3] || 1) * 0.6) * T, name: STALL_KINDS[si++] });
+    else if (p[0] === 'shop') out.push({ x: (p[1] + 0.5) * T, y: (p[2] + 1.5) * T, name: p[4] });
+  }
+  out.push({ x: (DIST.gas.shop[0] + DIST.gas.shop[2] / 2) * T, y: (DIST.gas.shop[1] - 0.6) * T, name: 'АЗС' });
+  return (M._shops = out);
+}
 function randomLeafSpot(R, players) {
   R = R || Math.random;
   for (let k = 0; k < 400; k++) {
-    const x = Math.floor(R() * W), y = 6 + Math.floor(R() * 37);
+    const x = Math.floor(R() * W), y = 6 + Math.floor(R() * 84);
     const t = tileAt(x, y);
     if (!'SPG'.includes(t) || isTree(x, y)) continue;
     const pt = { x: x * T + 30, y: y * T + 30 };
@@ -745,9 +937,154 @@ function seatOf(slot, cafeIdx) {
   const tx0 = slot < 2 ? X + 22 : X + Wd - 22, left = slot % 2 === 0;
   return [tx0 + (left ? -24 : 24), ty0, left ? 0 : Math.PI];
 }
-function placeInBase(p) { p.cst = 2; [p.x, p.y] = BASE_SPOTS[p.slot]; p.baseAt = Date.now(); if (p.bot) p.escUsed = true; }
+function placeInJail(p) { p.cst = 2; p.jail = true; [p.x, p.y] = JAIL_SPOTS[p.slot]; p.baseAt = Date.now(); p.jEscUsed = !!p.bot; p.jStart = false; }
+function arrest(p, e, now) {
+  const sim = S.sim;
+  p.st = 2; p.cst = 0; p.jail = true; p.wanted = false; p.until = now + CAP_MS; p.heldAt = now; p.sp = false; p.jailN = (p.jailN || 0) + 1; p.jEscUsed = false;
+  sim.fx.push({ x: p.x, y: p.y, t: now, k: 6 });
+  if (e.pcar) { p.cst = 1; e.pass = p.slot; e.st = 'deliver'; e.route = roadPath(tx(e.x), ty(e.y), POLICE_DROP[0], POLICE_DROP[1]); e.ri = 0; return; }
+  e.st = 'escort'; e.pl = p.slot; sim.pq.push(p.slot);
+}
+function followRoute(c, dt, speed) {
+  if (!c.route || c.ri >= c.route.length) return true;
+  const [a, b] = c.route[c.ri], gx = a * T + 30, gy = b * T + 30;
+  const dx = gx - c.x, dy = gy - c.y, L = Math.hypot(dx, dy), step = speed * dt;
+  if (L <= step) { c.x = gx; c.y = gy; c.ri++; } else { c.x += dx / L * step; c.y += dy / L * step; }
+  if (Math.abs(dx) > Math.abs(dy)) { c.ax = 'h'; c.dir = Math.sign(dx) || 1; } else if (L > 0.5) { c.ax = 'v'; c.dir = Math.sign(dy) || 1; }
+  c.spd = speed; return false;
+}
+const wantedTarget = (from) => { let best = null, bd = Infinity; for (const p of S.sim.players) if (act(p) && p.wanted) { const d = dist(from, p); if (d < bd) { bd = d; best = p; } } return best; };
+// поліцейська машина: стоїть біля дільниці, їде за тим, кого розшукують, возить затриманих у КПЗ
+function policeCarTick(c, dt, now) {
+  const sim = S.sim;
+  if (c.st === 'deliver') {
+    const p = sim.players[c.pass]; if (p) { p.x = c.x; p.y = c.y; }
+    if (followRoute(c, dt, COP_V)) { if (p && p.st === 2) placeInJail(p); c.pass = -1; c.st = 'park'; c.x = 9.5 * T; c.y = 72.5 * T; c.spd = 0; }
+    return;
+  }
+  if (c.st === 'fetch') { if (followRoute(c, dt, COP_V)) { c.st = 'wait'; c.spd = 0; } return; }
+  if (c.st === 'wait') { c.spd = 0; const p = sim.players[c.fetchFor]; if (!p || p.st !== 2 || p.cst !== 0) { c.st = 'park'; c.fetchFor = -1; c.x = 9.5 * T; c.y = 72.5 * T; } return; }
+  if (sim.pq.length) {
+    const slot = sim.pq.shift(), p = sim.players[slot];
+    if (p && p.st === 2 && p.cst === 0) { if (c.st === 'park') { c.x = POLICE_DROP[0] * T + 30; c.y = POLICE_DROP[1] * T + 30; } const tg = nearestRoadTile(p.x, p.y); c.fetchFor = slot; c.st = 'fetch'; c.route = tg ? roadPath(tx(c.x), ty(c.y), tg[0], tg[1]) : []; c.ri = 0; return; }
+  }
+  const p = wantedTarget(c);
+  if (!p) {
+    if (c.st === 'pchase') { c.st = 'return'; c.route = roadPath(tx(c.x), ty(c.y), POLICE_DROP[0], POLICE_DROP[1]); c.ri = 0; }
+    if (c.st === 'return' && followRoute(c, dt, COP_V)) { c.st = 'park'; c.x = 9.5 * T; c.y = 72.5 * T; c.spd = 0; }
+    if (c.st === 'park') c.spd = 0;
+    return;
+  }
+  if (c.st === 'park' || c.st === 'return') { if (c.st === 'park') { c.x = POLICE_DROP[0] * T + 30; c.y = POLICE_DROP[1] * T + 30; } c.st = 'pchase'; c.routeT = 0; }
+  c.tgt = p.slot;
+  if (now > c.routeT) { const tg = nearestRoadTile(p.x, p.y); c.route = tg ? roadPath(clamp(tx(c.x), 0, W - 1), clamp(ty(c.y), 0, H - 1), tg[0], tg[1]) : []; c.ri = 0; c.routeT = now + 700; }
+  followRoute(c, dt, COP_V);
+  if (simHere(p) && dist(c, p) < 52) arrest(p, c, now);
+}
+// поліцейські пішки: бігають завжди зі швидкістю 1.3, у ТЦ теж заходять
+function copsTick(dt, now) {
+  const sim = S.sim;
+  for (const e of sim.cops) {
+    if (e.st === 'escort') {
+      const p = sim.players[e.pl];
+      if (!p || p.st !== 2 || p.cst !== 0) { e.st = 'idle'; continue; }
+      const car = sim.pcar;
+      if (car.st === 'wait' && car.fetchFor === e.pl) {
+        escortMove(p, e, car, dt);
+        if (dist(p, car) < 45) { p.cst = 1; car.pass = p.slot; car.st = 'deliver'; car.route = roadPath(tx(car.x), ty(car.y), POLICE_DROP[0], POLICE_DROP[1]); car.ri = 0; car.fetchFor = -1; e.st = 'idle'; }
+      } else { e.x = p.x - 22; e.y = p.y - 4; }
+      if (p.cst === 0 && now - p.heldAt > 90000) { placeInJail(p); sim.pq = sim.pq.filter(s => s !== p.slot); }
+      continue;
+    }
+    const p = wantedTarget(e);
+    if (p) {
+      e.st = 'chase'; e.tgt = p.slot;
+      const ex = tx(e.x), ey = ty(e.y), px = tx(p.x), py = ty(p.y);
+      let gx = p.x, gy = p.y;
+      if (ex !== px || ey !== py) {
+        if (now > e.pathT) { e.next = bfsNext(ex, ey, px, py); e.pathT = now + 250; }
+        if (e.next) { gx = e.next[0] * T + 30; gy = e.next[1] * T + 30; if (Math.hypot(gx - e.x, gy - e.y) < 6) e.pathT = 0; }
+      }
+      stepTo(e, gx, gy, COP_V * dt, 10);
+      if (simHere(p) && !p.hid && dist(e, p) < 26) arrest(p, e, now);
+    } else {
+      e.st = Math.hypot(e.hx - e.x, e.hy - e.y) > 8 ? 'back' : 'idle';
+      if (e.st === 'back') {
+        const ex = tx(e.x), ey = ty(e.y), hx = tx(e.hx), hy = ty(e.hy);
+        let gx = e.hx, gy = e.hy;
+        if (ex !== hx || ey !== hy) { if (now > e.pathT) { e.next = bfsNext(ex, ey, hx, hy); e.pathT = now + 400; } if (e.next) { gx = e.next[0] * T + 30; gy = e.next[1] * T + 30; } }
+        stepTo(e, gx, gy, V * 0.8 * dt, 10);
+      }
+    }
+  }
+}
+// одноразова спроба вирватися, поки тебе тримають і бус ще не приїхав: 10 стрілок; вдалося — 2 секунди фори
+function applyHeldEscape(p, ok, now) {
+  const sim = S.sim;
+  if (!p || p.st !== 2 || p.cst !== 0 || p.jail || p.heldEsc) return;
+  p.heldEsc = true;
+  if (!ok) return;
+  p.st = 0; p.cst = 0; p.safe = now + 2000; p.immune = now + 2000; p.escAt = now;
+  sim.queue = sim.queue.filter(s => s !== p.slot);
+  for (const e of sim.peds) if (e.st === 'escort' && e.pl === p.slot) { e.st = 'chase'; e.tgt = p.slot; e.pauseUntil = now + 2000; }
+  for (const q of sim.squads) if (q.st === 'escort' && q.pl === p.slot) { q.st = 'chase'; q.tgt = p.slot; q.pauseUntil = now + 2000; }
+  for (const c of sim.cars) if (c.tcc && (c.st === 'fetch' || c.st === 'wait') && c.fetchFor === p.slot) { c.st = 'hide'; c.until = now + HIDE_MS; c.fetchFor = -1; toLane(c); }
+  sim.fx.push({ x: p.x, y: p.y, t: now, k: 3 });
+}
+// чутки в чаті району: правда з реальних позицій ТЦК, але кожне третє-четверте повідомлення — брехня
+const RUMOR_T = [['Бачили зелений бус ', ''], ['Двоє в зелених кофтах ', ''], ['Обережно, ТЦК ', '!'], ['Хтось дивний стоїть ', ', схожий на ТЦК'], ['Мені сусід написав: ТЦК ', '']];
+function rumorTick(now) {
+  const sim = S.sim;
+  if (!sim.rumorAt) { sim.rumorAt = now + 8000; sim.rumorN = 0; sim.rumors = []; return; }
+  if (now < sim.rumorAt) return;
+  sim.rumorAt = now + 20000 + Math.random() * 10000; sim.rumorN++;
+  const lie = sim.rumorN % (3 + (sim.rumorN % 2)) === 0;
+  const src = sim.cars.filter(c => c.tcc && c.st !== 'gone').concat(sim.peds.filter(e => e.tcc && e.st !== 'gone'));
+  let x, y, isVan = false;
+  if (!lie && src.length) { const e = src[Math.floor(Math.random() * src.length)]; x = e.x; y = e.y; isVan = !!e.ax; }
+  else { x = Math.random() * MW; y = (8 + Math.random() * 80) * T; isVan = Math.random() < 0.5; }
+  const [a, z] = isVan ? RUMOR_T[0] : RUMOR_T[1 + Math.floor(Math.random() * 4)];
+  sim.rumor = [sim.rumorN, randomNick(), a + placeName(x, y) + z];
+}
+function applyJailEscape(p, ok, now) {
+  if (!p || p.st !== 2 || p.cst !== 2 || !p.jail || p.jEscUsed) return;
+  p.jEscUsed = true;
+  if (!ok) return;
+  p.st = 0; p.cst = 0; p.jail = false; p.x = JAIL_OUT.x; p.y = JAIL_OUT.y; p.escAt = now; p.immune = now + 1500; p.wanted = true;
+  S.sim.fx.push({ x: p.x, y: p.y, t: now, k: 3 });
+}
+// порятунок: біля воріт бази ТЦК чи КПЗ віддаєш бронь або монетку — усіх, хто всередині, відпускають
+function applyRescue(p, at, now) {
+  const sim = S.sim, gate = at === 'jail' ? JAIL_OUT : BASE_GATE;
+  if (!act(p) || dist(p, gate) > 110) return false;
+  const inside = sim.players.filter(q => q && q.st === 2 && q.cst === 2 && (at === 'jail' ? q.jail : !q.jail));
+  if (!inside.length) return false;
+  if (p.bron) { p.bron = false; if (!sim.leaf) sim.leaf = randomLeafSpot(null, sim.players); } else if ((p.coins || 0) > 0) p.coins--; else return false;
+  inside.forEach((q, k) => { q.st = 0; q.cst = 0; q.jail = false; q.x = gate.x + (k - 1.5) * 26; q.y = gate.y + (at === 'jail' ? 0 : -6); q.escAt = now; q.safe = now + 3000; q.immune = now + 1500; });
+  sim.fx.push({ x: gate.x, y: gate.y, t: now, k: 7 });
+  return true;
+}
+function placeInBase(p) { p.jail = false; p.cst = 2; [p.x, p.y] = BASE_SPOTS[p.slot]; p.baseAt = Date.now(); if (p.bot) p.escUsed = true; }
+function vanish(e) {
+  if (e.van) { e.done = true; const v = e.van; if (v.squad === e) v.squad = null; v.st = 'hide'; v.until = Date.now() + HIDE_MS; restoreDir(v); return; }
+  e.st = 'gone'; e.x = -5000; e.y = -5000;
+}
 function capture(p, e, now) {
   const sim = S.sim;
+  if (e.cop || e.pcar) return arrest(p, e, now);
+  if (p.pepper && !p.bron) {
+    // перцевий балончик: не вбиває, просто 4 секунди ТЦК-шник нічого не бачить і стоїть
+    p.pepper = false; p.safe = now + 1500;
+    e.pauseUntil = now + 4000; if (e.ax) { e.stopUntil = now + 4000; }
+    sim.fx.push({ x: p.x, y: p.y, t: now, k: 8 });
+    return;
+  }
+  if (p.knife && !p.bron) {
+    // з ножиком ТЦК-шник зникає разом із ножиком, але гравця починає шукати поліція
+    p.knife = false; p.wanted = true; p.safe = now + 1500;
+    sim.fx.push({ x: p.x, y: p.y, t: now, k: 5 });
+    vanish(e); return;
+  }
   if (p.bron) {
     p.bron = false; p.safe = now + 2500;
     sim.fx.push({ x: p.x, y: p.y, t: now, k: 1 });
@@ -757,7 +1094,7 @@ function capture(p, e, now) {
     if (e.ax) { e.stopUntil = now + 800; restoreDir(e); }
     return;
   }
-  p.st = 2; p.until = now + CAP_MS; p.cst = 0; p.heldAt = now; p.sp = false;
+  p.st = 2; p.until = now + CAP_MS; p.cst = 0; p.heldAt = now; p.sp = false; p.capN = (p.capN || 0) + 1;
   sim.fx.push({ x: p.x, y: p.y, t: now, k: 0 });
   if (e.van) { e.st = 'escort'; e.pl = p.slot; return; }
   if (e.ax) { p.cst = 1; startDeliver(e, p, now); return; }
@@ -774,7 +1111,7 @@ function vanTransport(c, dt, now) {
     return;
   }
   const [a, b] = c.route[c.ri]; const gx = a * T + 30, gy = b * T + 30;
-  const dx = gx - c.x, dy = gy - c.y, L = Math.hypot(dx, dy), step = 230 * dt;
+  const dx = gx - c.x, dy = gy - c.y, L = Math.hypot(dx, dy), step = 340 * dt;
   if (L <= step) { c.x = gx; c.y = gy; c.ri++; } else { c.x += dx / L * step; c.y += dy / L * step; }
   if (Math.abs(dx) > Math.abs(dy)) { c.ax = 'h'; c.dir = Math.sign(dx) || 1; } else if (L > 0.5) { c.ax = 'v'; c.dir = Math.sign(dy) || 1; }
   c.spd = 230;
@@ -799,6 +1136,22 @@ function tccSpeed(e, p, now) {
   return e.spr ? TCC_V * TCC_SPR_M : TCC_V;
 }
 function tccSpent(e, moved, now) { if (e.spr) { e.sprLeft -= moved; if (e.sprLeft <= 0) { e.spr = false; e.fatUntil = now + TCC_FAT_MS; } } }
+function applyBuy(p, item, now) {
+  const it = ITEMS[item]; if (!it || it.soon || !p || !act(p)) return false;
+  if (it.price > (p.coins || 0)) return false;
+  p.coins -= it.price;
+  if (item === 'energy') p.enUntil = now + 30000;
+  if (it.once && (p.bought || {})[item]) { p.coins += it.price; return false; }
+  if (it.once) { p.bought = p.bought || {}; p.bought[item] = true; }
+  if (item === 'knife') p.knife = true;
+  if (item === 'pepper') p.pepper = true;
+  if (item === 'meds') p.medUntil = now + 30000;
+  if (item === 'clothes') {
+    p.outfit = (p.outfit % 7) + 1; p.safe = now + 3000; p.wanted = false;
+    for (const e of S.sim.cars.concat(S.sim.peds, S.sim.squads)) if (e.st === 'chase' && e.tgt === p.slot) { if (e.van) e.st = 'return'; else { e.st = 'hide'; e.until = now + HIDE_MS; if (e.ax) restoreDir(e); } }
+  }
+  return true;
+}
 function tccCheck(e, see, lose, now) {
   const sim = S.sim;
   if (e.spr && e.st !== 'chase') { e.spr = false; e.fatUntil = now + TCC_FAT_MS; }
@@ -806,19 +1159,22 @@ function tccCheck(e, see, lose, now) {
   if (e.st === 'chase') {
     if (e.squad) return;
     const p = sim.players[e.tgt];
-    if (!act(p) || dist(e, p) > lose) { e.st = 'hide'; e.until = now + HIDE_MS; if (e.ax) restoreDir(e); return; }
+    if (!act(p) || dist(e, p) > lose || onMall(p) || (p.hid && e.ax)) { e.st = 'hide'; e.until = now + HIDE_MS; if (e.ax) restoreDir(e); return; }
+    if (p.hid) { if (!e.hidWait) e.hidWait = now; if (now - e.hidWait > 6000) { e.st = 'hide'; e.until = now + HIDE_MS; e.hidWait = 0; } return; }
+    e.hidWait = 0;
+    if (sees(e, p)) e.seenAt = now; else if (now - (e.seenAt || now) > 3000) { e.st = 'hide'; e.until = now + HIDE_MS; if (e.ax) restoreDir(e); return; }
     retarget(e, p, see, now);
     return;
   }
   if (e.st === 'hide' && now > e.until) e.st = 'n';
   let best = null, bd = see;
-  for (const p of sim.players) { if (!huntable(p, now)) continue; const d = dist(e, p); if (d < bd) { bd = d; best = p; } }
-  if (best) { e.st = 'chase'; e.tgt = best.slot; }
+  for (const p of sim.players) { if (!huntable(p, now)) continue; const d = dist(e, p); if (d < bd && sees(e, p)) { bd = d; best = p; } }
+  if (best) { e.st = 'chase'; e.tgt = best.slot; e.seenAt = now; e.hidWait = 0; }
 }
 function aheadBlocked(c, cars, players) {
   const look = 95;
   for (const o of cars) {
-    if (o === c) continue;
+    if (o === c || o.pcar || o.st === 'gone') continue;
     if (c.ax === 'h') { if (o.ax !== 'h' || Math.abs(o.y - c.y) > 5) continue; const d = (o.x - c.x) * c.dir; if (d > 0 && d < look) return true; }
     else { if (o.ax !== 'v' || Math.abs(o.x - c.x) > 5) continue; const d = (o.y - c.y) * c.dir; if (d > 0 && d < look) return true; }
   }
@@ -839,26 +1195,32 @@ function carHits(c, p) {
 function carNear(x, y, r) { for (const c of S.sim.cars) if (Math.hypot(c.x - x, c.y - y) < r && c.spd > 30) return true; return false; }
 function carsTick(dt, now) {
   const sim = S.sim;
+  // за спійманим їде найближчий вільний бус (на великій карті «перший у списку» міг бути на іншому кінці міста)
+  while (sim.queue.length) {
+    const slot = sim.queue[0], p = sim.players[slot];
+    if (!p || p.st !== 2 || p.cst !== 0) { sim.queue.shift(); continue; }
+    let best = null, bd = Infinity;
+    for (const c of sim.cars) if (c.tcc && (c.st === 'n' || c.st === 'hide')) { const d = dist(c, p); if (d < bd) { bd = d; best = c; } }
+    if (!best) break;
+    sim.queue.shift();
+    const tgt = nearestRoadTile(p.x, p.y);
+    best.fetchFor = slot; best.st = 'fetch'; best.route = tgt ? roadPath(clamp(tx(best.x), 0, W - 1), clamp(ty(best.y), 0, H - 1), tgt[0], tgt[1]) : []; best.ri = 0;
+  }
   for (const c of sim.cars) {
-    if (c.tcc && (c.st === 'n' || c.st === 'hide') && sim.queue.length) {
-      const slot = sim.queue.shift(), p = sim.players[slot];
-      if (p && p.st === 2 && p.cst === 0) {
-        const tgt = nearestRoadTile(p.x, p.y);
-        c.fetchFor = slot; c.st = 'fetch'; c.route = tgt ? roadPath(tx(c.x), ty(c.y), tgt[0], tgt[1]) : []; c.ri = 0;
-      }
-    }
+    if (c.pcar) { policeCarTick(c, dt, now); continue; }
+    if (c.st === 'gone') continue;
     if (c.st === 'fetch' || c.st === 'wait' || c.st === 'deliver') { vanTransport(c, dt, now); continue; }
     if (c.tcc) tccCheck(c, VAN_SEE, VAN_LOSE, now);
     if (c.st === 'chase') {
       const p = sim.players[c.tgt];
-      if (c.squad) { c.spd = 0; continue; }
+      if (c.squad || now < (c.pauseUntil || 0)) { c.spd = 0; continue; }
       const sp = tccSpeed(c, p, now);
       let along, perp;
       if (c.ax === 'h') { const d = p.x - c.x; along = d; perp = Math.abs(p.y - c.y); if (Math.abs(d) > 6) c.dir = Math.sign(d); c.x = clamp(c.x + c.dir * Math.min(Math.abs(d), sp * dt), 40, MW - 40); }
       else { const d = p.y - c.y; along = d; perp = Math.abs(p.x - c.x); if (Math.abs(d) > 6) c.dir = Math.sign(d); c.y = clamp(c.y + c.dir * Math.min(Math.abs(d), sp * dt), c.loop.y0, c.loop.y1); }
       tccSpent(c, Math.min(Math.abs(along), sp * dt), now);
       c.spd = Math.abs(along) > 6 ? sp : 0;
-      if (simHere(p) && dist(c, p) < 52) { capture(p, c, now); continue; }
+      if (simHere(p) && now >= (p.safe || 0) && dist(c, p) < 52) { capture(p, c, now); continue; }
       if (Math.abs(along) < 50 && perp < VAN_LOSE) {
         c.squad = { x: c.x, y: c.y, tgt: p.slot, van: c, st: 'chase', next: null, pathT: 0 };
         sim.squads.push(c.squad);
@@ -883,6 +1245,7 @@ function carsTick(dt, now) {
 function pedsTick(dt, now) {
   const sim = S.sim;
   for (const e of sim.peds) {
+    if (e.st === 'gone') continue;
     if (e.st === 'escort') {
       const p = sim.players[e.pl];
       if (!p || p.st !== 2 || p.cst !== 0) { e.st = 'hide'; e.until = now + HIDE_MS; e.tx = null; continue; }
@@ -891,27 +1254,34 @@ function pedsTick(dt, now) {
         escortMove(p, e, van, dt);
         if (dist(p, van) < 45) { p.cst = 1; startDeliver(van, p, now); e.st = 'hide'; e.until = now + HIDE_MS; e.tx = null; }
       } else { e.x = p.x - 22; e.y = p.y - 4; }
-      if (p.cst === 0 && now - p.heldAt > 45000) { placeInBase(p); sim.queue = sim.queue.filter(s => s !== p.slot); }
+      if (p.cst === 0 && now - p.heldAt > 90000) { placeInBase(p); sim.queue = sim.queue.filter(s => s !== p.slot); }
       continue;
     }
     if (e.tcc) tccCheck(e, WK_SEE, WK_LOSE, now);
+    if (e.st === 'chase' && e.sitUntil) { e.sitUntil = 0; if (e.seat) e.seat.busy = false; e.seat = null; }
     if (e.st === 'chase') {
       const p = sim.players[e.tgt];
       const ex = tx(e.x), ey = ty(e.y), px = tx(p.x), py = ty(p.y);
       let gx = p.x, gy = p.y;
       if (ex !== px || ey !== py) {
-        if (now > e.pathT) { e.next = bfsNext(ex, ey, px, py); e.pathT = now + 250; }
+        if (now > e.pathT) { e.next = bfsNext(ex, ey, px, py, true); e.pathT = now + 250; }
         if (e.next) { gx = e.next[0] * T + 30; gy = e.next[1] * T + 30; if (Math.hypot(gx - e.x, gy - e.y) < 6) e.pathT = 0; }
       }
-      tccSpent(e, stepTo(e, gx, gy, tccSpeed(e, p, now) * dt, 10), now);
-      if (simHere(p) && dist(e, p) < 26) capture(p, e, now);
+      if (now >= (e.pauseUntil || 0)) tccSpent(e, stepTo(e, gx, gy, tccSpeed(e, p, now) * dt, 10), now);
+      if (simHere(p) && !p.hid && now >= (p.safe || 0) && now >= (e.pauseUntil || 0) && dist(e, p) < 26) capture(p, e, now);
       e.tx = null;
       continue;
+    }
+    if (e.sitUntil) { if (now < e.sitUntil) continue; e.sitUntil = 0; e.seat.busy = false; e.seat = null; e.tx = null; }
+    if (!e.seatT || now > e.seatT) {
+      e.seatT = now + 4000 + Math.random() * 6000;
+      const seat = benchSeats().find(s => !s.busy && Math.hypot(s.x - e.x, s.y - e.y) < 2.2 * T);
+      if (seat && Math.random() < 0.6) { seat.busy = true; e.seat = seat; e.x = seat.x; e.y = seat.y; e.sitUntil = now + 6000 + Math.random() * 9000; continue; }
     }
     if (e.tx == null || Math.hypot(e.tx * T + 30 - e.x, e.ty * T + 30 - e.y) < 4) {
       const cx = tx(e.x), cy = ty(e.y);
       const ok = (x, y) => x >= 0 && y >= 0 && x < W && y < H && !solid(x, y) && !isTree(x, y);
-      let c = NB.map(([dx, dy]) => [cx + dx, cy + dy]).filter(([x, y]) => ok(x, y) && 'SP'.includes(tileAt(x, y)));
+      let c = NB.map(([dx, dy]) => [cx + dx, cy + dy]).filter(([x, y]) => ok(x, y) && (e.tcc ? 'SP' : 'SPM').includes(tileAt(x, y)));
       if (!c.length) c = NB.map(([dx, dy]) => [cx + dx, cy + dy]).filter(([x, y]) => ok(x, y) && tileAt(x, y) === 'G');
       if (!c.length) c = NB.map(([dx, dy]) => [cx + dx, cy + dy]).filter(([x, y]) => ok(x, y));
       const dx = cx - e.px, dy = cy - e.py;
@@ -933,23 +1303,23 @@ function squadsTick(dt, now) {
     if (q.spr && q.st !== 'chase') q.spr = false;
     if (q.st === 'chase') {
       const p = sim.players[q.tgt];
-      if (!act(p) || dist(q, p) > VAN_LOSE) { q.st = 'return'; continue; }
+      if (!act(p) || dist(q, p) > VAN_LOSE || onMall(p)) { q.st = 'return'; continue; }
       retarget(q, p, WK_SEE, now);
       if (q.tgt !== p.slot) continue;
       const ex = tx(q.x), ey = ty(q.y), px = tx(p.x), py = ty(p.y);
       let gx = p.x, gy = p.y;
       if (ex !== px || ey !== py) {
-        if (now > q.pathT) { q.next = bfsNext(ex, ey, px, py); q.pathT = now + 250; }
+        if (now > q.pathT) { q.next = bfsNext(ex, ey, px, py, true); q.pathT = now + 250; }
         if (q.next) { gx = q.next[0] * T + 30; gy = q.next[1] * T + 30; if (Math.hypot(gx - q.x, gy - q.y) < 6) q.pathT = 0; }
       }
-      tccSpent(q, stepTo(q, gx, gy, tccSpeed(q, p, now) * dt, 10), now);
-      if (simHere(p) && dist(q, p) < 26) capture(p, q, now);
+      if (now >= (q.pauseUntil || 0)) tccSpent(q, stepTo(q, gx, gy, tccSpeed(q, p, now) * dt, 10), now);
+      if (simHere(p) && !p.hid && now >= (p.safe || 0) && now >= (q.pauseUntil || 0) && dist(q, p) < 26) capture(p, q, now);
     } else if (q.st === 'escort') {
       const p = sim.players[q.pl];
       if (!p || p.st !== 2 || p.cst !== 0) { q.done = true; continue; }
       escortMove(p, q, van, dt);
       if (dist(p, van) < 45) { p.cst = 1; startDeliver(van, p, now); q.done = true; }
-      if (now - p.heldAt > 45000) { placeInBase(p); q.done = true; }
+      if (now - p.heldAt > 90000) { placeInBase(p); q.done = true; }
     } else {
       stepTo(q, van.x, van.y, TCC_V * 1.2 * dt, 4);
       if (dist(q, van) < 20 || q.x === undefined) q.done = true;
@@ -997,8 +1367,10 @@ function botTick(p, dt, now) {
 }
 function chaserOf(p, tol) {
   const sim = S.sim; let best = null, bd = Infinity;
-  const consider = (e, r) => { const d = dist(e, p); if (d < r + tol && d < bd) { bd = d; best = e; } };
+  const consider = (e, r) => { if (Date.now() < (e.pauseUntil || 0)) return; const d = dist(e, p); if (d < r + tol && d < bd) { bd = d; best = e; } };
   for (const c of sim.cars) if (c.st === 'chase' && c.tgt === p.slot && !c.squad) consider(c, 52);
+  for (const e of sim.cops) if (e.st === 'chase' && e.tgt === p.slot) consider(e, 26);
+  if (sim.pcar.st === 'pchase' && sim.pcar.tgt === p.slot) consider(sim.pcar, 52);
   for (const e of sim.peds) if (e.st === 'chase' && e.tgt === p.slot) consider(e, 26);
   for (const q of sim.squads) if (q.st === 'chase' && q.tgt === p.slot) consider(q, 26);
   return best;
@@ -1015,10 +1387,16 @@ function hostTick(dt) {
       const g = peer.presence && peer.presence.g;
       if (g && g.esc && g.esc.m === S.match.id) applyEscape(p, !!g.esc.ok, now);
       if (g && g.es === S.match.id) p.escStart = true;
+      if (g && g.m === S.match.id) { p.hid = !!g.hid && act(p) && hideSpots().some(h => Math.hypot(h.x - p.x, h.y - p.y) < 70); p.sit = !!g.sit; }
+      if (g && g.hesc && g.hesc.m === S.match.id && num(g.hesc.c, -1) === (p.capN || 0)) applyHeldEscape(p, !!g.hesc.ok, now);
+      if (g && g.jesc && g.jesc.m === S.match.id && num(g.jesc.n, -1) === p.jailN) applyJailEscape(p, !!g.jesc.ok, now);
+      if (g && g.js && g.js.m === S.match.id && num(g.js.n, -1) === p.jailN) p.jStart = true;
+      if (g && g.resc && g.resc.m === S.match.id && num(g.resc.n, 0) > (p.rescN || 0)) { p.rescN = num(g.resc.n, 0); applyRescue(p, g.resc.at === 'jail' ? 'jail' : 'base', now); }
+      if (g && g.buy && g.buy.m === S.match.id && num(g.buy.n, 0) > (p.buyN || 0)) { p.buyN = num(g.buy.n, 0); applyBuy(p, String(g.buy.it), now); }
       if (g && g.m === S.match.id) {
         const hn = num(g.hn, 0), cn = num(g.cn, 0);
         if (hn > p.hn) { p.hn = hn; if (p.st === 0 && now > p.immune) stun(p, now); }
-        if (cn > p.cn) { p.cn = cn; if (huntable(p, now)) { const e = chaserOf(p, 120); if (e) capture(p, e, now); } }
+        if (cn > p.cn) { p.cn = cn; if (act(p)) { const e = chaserOf(p, 120); if (e && (e.cop || e.pcar || huntable(p, now))) capture(p, e, now); } }
       }
       if (g && g.m === S.match.id && (p.st !== 2 || g.pl) && !(p.escAt && now - p.escAt < 1500)) { p.x = clamp(num(g.x, p.x), 0, MW); p.y = clamp(num(g.y, p.y), 0, MH); p.sp = !!g.sp; p.fa = !!g.fa; }
     }
@@ -1026,26 +1404,32 @@ function hostTick(dt) {
   for (const p of sim.players) {
     if (!p) continue;
     if (p.st === 1 && now >= p.until) { p.st = 0; p.immune = now + IMMUNE_MS; }
-    if (p.st === 2 && p.cst === 2 && !p.escUsed && p.baseAt && now > p.baseAt + ESC_WINDOW + (p.escStart ? 9000 : 1500)) p.escUsed = true;
+    if (p.st === 2 && p.cst === 2 && !p.jail && !p.escUsed && p.baseAt && now > p.baseAt + ESC_WINDOW + (p.escStart ? 9000 : 1500)) p.escUsed = true;
+    if (p.st === 2 && p.cst === 2 && p.jail && !p.jEscUsed && p.baseAt && now > p.baseAt + ESC_WINDOW + (p.jStart ? 10000 : 1500)) p.jEscUsed = true;
   }
+  { const me = sim.players[S.mySlot]; if (me) { me.hid = !!S.me.hid && act(me); me.sit = !!S.me.sitB; } }
   for (const p of sim.players) if (p && p.bot) botTick(p, dt, now);
+  rumorTick(now);
   carsTick(dt, now);
+  copsTick(dt, now);
   squadsTick(dt, now);
   pedsTick(dt, now);
   const R = cafeRect(S.match.cafe);
   for (const p of sim.players) if (act(p) && touchesRect(p, R, 6)) { p.st = 3; p.sp = false; [p.x, p.y] = seatOf(p.slot, S.match.cafe); if (p.bron) { p.bron = false; sim.leaf = randomLeafSpot(null, sim.players); } }
+  for (const p of sim.players) if (act(p)) for (let k = sim.coins.length - 1; k >= 0; k--) if (dist(p, sim.coins[k]) < 34) { sim.coins.splice(k, 1); p.coins = (p.coins || 0) + 1; sim.fx.push({ x: p.x, y: p.y, t: now, k: 4 }); }
+  if (sim.knife) for (const p of sim.players) if (act(p) && !p.knife && dist(p, sim.knife) < 30) { p.knife = true; sim.knife = null; sim.fx.push({ x: p.x, y: p.y, t: now, k: 2 }); break; }
   if (sim.leaf) for (const p of sim.players) if (act(p) && !p.bron && dist(p, sim.leaf) < 30) { p.bron = true; sim.leaf = null; sim.fx.push({ x: p.x, y: p.y, t: now, k: 2 }); break; }
   for (const p of sim.players) if (p && p.bron && (p.st === 2 || p.st === 4)) { p.bron = false; sim.leaf = randomLeafSpot(null, sim.players); }
   sim.fx = sim.fx.filter(f => now - f.t < CAP_MS + 300);
   if (!sim.end) {
     const live = sim.players.filter(p => p && p.st !== 4);
-    if (live.length && live.every(p => p.st === 3 || (p.st === 2 && p.cst === 2 && p.escUsed))) {
+    if (live.length && live.every(p => p.st === 3 || (p.st === 2 && p.cst === 2 && (p.jail ? p.jEscUsed : p.escUsed)))) {
       sim.end = now;
       const fin = live.filter(p => p.st === 3).map(p => p.slot), cap = live.filter(p => p.st === 2).map(p => p.slot);
       S.match = Object.assign({}, S.match, { ph: 'end', res: { fin, cap, time: now - sim.t0 } });
     } else if (!live.length) { sim.end = now; S.match = Object.assign({}, S.match, { ph: 'end', res: { fin: [], cap: [], time: now - sim.t0 } }); }
   }
-  const sig = sim.players.map(p => p ? [p.st, p.cst || 0, p.bron ? 1 : 0, p.escUsed ? 1 : 0].join('') : '-').join('|') + '|' + (sim.leaf ? Math.round(sim.leaf.x) + ',' + Math.round(sim.leaf.y) : '') + '|' + S.match.ph;
+  const sig = sim.players.map(p => p ? [p.st, p.cst || 0, p.bron ? 1 : 0, p.escUsed ? 1 : 0, p.coins || 0, p.enUntil > Date.now() ? 1 : 0, p.medUntil > Date.now() ? 1 : 0, p.outfit || 0, p.knife ? 1 : 0, p.wanted ? 1 : 0, p.jail ? 1 : 0, p.jEscUsed ? 1 : 0, p.heldEsc ? 1 : 0, p.pepper ? 1 : 0].join('') : '-').join('|') + (sim.knife ? 'k' : '') + '|' + sim.coins.length + '|' + (sim.leaf ? Math.round(sim.leaf.x) + ',' + Math.round(sim.leaf.y) : '') + '|' + S.match.ph;
   if (sig !== sim.sig) { const first = sim.sig === undefined; sim.sig = sig; if (!first) sendHostNow(); }
 }
 
@@ -1053,12 +1437,17 @@ function packWorld() {
   const sim = S.sim, now = Date.now();
   return {
     t: now - sim.t0, n: ++sim.seq,
-    c: sim.cars.map(c => [Math.round(c.x), Math.round(c.y), carO(c), c.st === 'n' ? 0 : 1,
-      (!['chase', 'fetch', 'wait', 'deliver'].includes(c.st) && now >= c.stopUntil && c.spd > 40) ? 1 : 0,
-      (c.st === 'chase' && !c.squad) ? 1 : 0, c.spr ? 1 : 0]),
-    p: sim.peds.map(e => [Math.round(e.x), Math.round(e.y), e.st === 'n' ? 0 : (e.st === 'chase' || e.st === 'escort' ? 2 : 1), e.spr ? 1 : 0]),
+    // компактно: прапорці машини одним числом (розгортаються в clientRead)
+    c: sim.cars.map(c => [Math.round(c.x), Math.round(c.y), carO(c), (c.st === 'n' ? 0 : 1) | ((!c.pcar && !['chase', 'fetch', 'wait', 'deliver', 'gone'].includes(c.st) && now >= c.stopUntil && c.spd > 40) ? 2 : 0) | (((c.st === 'chase' && !c.squad) || (c.pcar && c.st === 'pchase')) ? 4 : 0) | (c.spr ? 8 : 0) | (c.bus ? 16 : 0) | (c.pcar ? 32 : 0)]),
+    p: sim.peds.map(e => [e.st === 'gone' ? -5000 : Math.round(e.x), e.st === 'gone' ? -5000 : Math.round(e.y), (e.st === 'n' ? 0 : (e.st === 'chase' || e.st === 'escort' ? 2 : 1)) | (e.spr ? 4 : 0) | (e.sitUntil ? 8 : 0)]),
     b: sim.players.filter(p => p && p.bot).map(p => [p.slot, Math.round(p.x), Math.round(p.y), p.sp ? 1 : 0, p.fa ? 1 : 0]),
-    s: sim.players.map(p => p ? [p.st, Math.max(0, Math.round((p.until || 0) - now)), p.bron ? 1 : 0, p.cst || 0, Math.round(p.x), Math.round(p.y), p.escUsed ? 1 : 0] : null),
+    s: sim.players.map(p => p ? [p.st, Math.max(0, Math.round((p.until || 0) - now)), p.bron ? 1 : 0, p.cst || 0, Math.round(p.x), Math.round(p.y), p.escUsed ? 1 : 0, p.coins || 0, Math.max(0, Math.round((p.enUntil - now) / 100)), Math.max(0, Math.round((p.medUntil - now) / 100)), p.outfit || 0, p.jail ? 1 : 0, p.jEscUsed ? 1 : 0, p.knife ? 1 : 0, p.wanted ? 1 : 0, p.jailN || 0, p.heldEsc ? 1 : 0, p.capN || 0, p.pepper ? 1 : 0, (p.bought || {}).knife ? 1 : 0, (p.bought || {}).pepper ? 1 : 0] : null),
+    kn: sim.knife ? [Math.round(sim.knife.x), Math.round(sim.knife.y)] : null,
+    rm: sim.rumor || null,
+    hb: sim.players.map(p => p ? ((p.hid ? 1 : 0) | (p.sit ? 2 : 0)) : 0),
+    pc: sim.cops.map(e => [Math.round(e.x), Math.round(e.y), e.st === 'chase' || e.st === 'escort' ? 2 : 0]),
+    k: sim.coins.map(c => [Math.round(c.x), Math.round(c.y)]),
+    tc: sim.players.some(p => p && p.medUntil > now) ? [sim.cars.map((c, i) => c.tcc ? i : -1).filter(i => i >= 0), sim.peds.map((e, i) => e.tcc ? i : -1).filter(i => i >= 0)] : null,
     l: sim.leaf ? [Math.round(sim.leaf.x), Math.round(sim.leaf.y)] : null,
     f: sim.fx.map(f => [Math.round(f.x), Math.round(f.y), now - f.t, f.k || 0]),
     q: sim.squads.map(q => [Math.round(q.x), Math.round(q.y), q.spr ? 1 : 0])
@@ -1112,6 +1501,9 @@ const rel = () => { sprintHeld = false; sprintBtn.classList.remove('on'); };
 sprintBtn.addEventListener('pointerup', rel); sprintBtn.addEventListener('pointercancel', rel); sprintBtn.addEventListener('lostpointercapture', rel);
 // рух відносно того, куди дивишся: W/S — вперед/назад, A/D — убік, стрілки ←/→ — поворот
 function inputVec() {
+  if (!$('shopMenu').hidden || !$('paper').hidden || S.me.hid) return [0, 0];
+  if (S.me.sitB && (keys.has('KeyW') || keys.has('KeyS') || keys.has('KeyA') || keys.has('KeyD') || keys.has('ArrowUp') || keys.has('ArrowDown') || dpadVec[0] || dpadVec[1])) { S.me.sitB = null; sendClientNow(); }
+  if (S.me.sitB) return [0, 0];
   let f = 0, s = 0;
   if (keys.has('KeyW') || keys.has('ArrowUp')) f += 1;
   if (keys.has('KeyS') || keys.has('ArrowDown')) f -= 1;
@@ -1123,11 +1515,11 @@ function inputVec() {
   return [f * c - s * n, f * n + s * c];
 }
 function turnKeys(dt) {
-  if (MG.active) return;
+  if (MG.active || R3.inVan) return;
   if (keys.has('ArrowLeft') || keys.has('KeyQ')) R3.yaw -= 2.2 * dt;
   if (keys.has('ArrowRight') || keys.has('KeyE')) R3.yaw += 2.2 * dt;
 }
-function look(dx, dy, k) { if (MG.active) return; R3.yaw += dx * k; R3.pitch = clamp(R3.pitch - dy * k, -0.6, 0.35); }
+function look(dx, dy, k) { if (MG.active || R3.inVan) return; R3.yaw += dx * k; R3.pitch = clamp(R3.pitch - dy * k, -0.6, 0.35); }
 let dragLook = false, touchLook = null;
 cvs.addEventListener('click', () => {
   if (S.mode !== 'play' || document.body.classList.contains('touch') || !cvs.requestPointerLock || document.pointerLockElement === cvs) return;
@@ -1141,6 +1533,8 @@ cvs.addEventListener('pointermove', e => { if (!touchLook || e.pointerId !== tou
 const endTouchLook = e => { if (touchLook && e.pointerId === touchLook.id) touchLook = null; };
 cvs.addEventListener('pointerup', endTouchLook); cvs.addEventListener('pointercancel', endTouchLook);
 document.getElementById('specNext').addEventListener('click', () => { SPEC.idx++; });
+document.getElementById('cafeWatch').addEventListener('click', () => { S.me.wantSpec = true; });
+document.getElementById('specBack').addEventListener('click', () => { S.me.wantSpec = false; R3.inCafe = false; });
 addEventListener('keydown', e => { if (e.code === 'Tab' && S.mode !== 'lobby' && !document.getElementById('spec').hidden) { e.preventDefault(); SPEC.idx++; } });
 const sprintKey = () => keys.has('ShiftLeft') || keys.has('ShiftRight') || sprintHeld;
 
@@ -1152,10 +1546,17 @@ function renderMg(bad) {
   const box = document.getElementById('mgSeq'); box.textContent = '';
   MG.seq.forEach((d, i) => { const el = document.createElement('div'); el.className = 'a' + (i < MG.i ? ' done' : i === MG.i ? (bad ? ' bad' : ' cur') : ''); el.innerHTML = chevSvg(d); box.append(el); });
 }
-function startMinigame() {
+function startMinigame(n, ms, kind) {
+  n = n || 6; ms = ms || 5000; kind = kind || 'base';
   if (document.pointerLockElement) document.exitPointerLock();
-  MG.active = true; MG.i = 0; MG.seq = Array.from({ length: 6 }, () => DIRS[Math.floor(Math.random() * 4)]); MG.until = Date.now() + 5000;
-  S.me.escTried = true; renderMg(false); document.getElementById('mg').hidden = false;
+  MG.active = true; MG.i = 0; MG.kind = kind; MG.ms = ms; MG.seq = Array.from({ length: n }, () => DIRS[Math.floor(Math.random() * 4)]); MG.until = Date.now() + ms;
+  document.querySelector('#mg h2').textContent = kind === 'jail' ? 'Втеча з КПЗ' : kind === 'held' ? 'Вирвись, поки не приїхав бус' : 'Втеча з ТЦК';
+  document.querySelector('#mg .sub').textContent = `Повтори ${n} стрілок по черзі за ${ms / 1000} секунд. Одна помилка, і спроба згорить.`;
+  renderMg(false); document.getElementById('mg').hidden = false;
+  const jn = myStatus()[15] || 0;
+  if (kind === 'held') return;
+  if (kind === 'jail') { S.me.jTried = true; if (S.isHost && S.sim) { const hp = S.sim.players[S.mySlot]; if (hp) hp.jStart = true; } else { S.jStart = { m: S.match.id, n: jn }; sendClientNow(); } return; }
+  S.me.escTried = true;
   if (S.isHost && S.sim) { const hp = S.sim.players[S.mySlot]; if (hp) hp.escStart = true; } else { S.escStart = S.match.id; sendClientNow(); }
 }
 function mgInput(d) {
@@ -1167,13 +1568,20 @@ function finishMinigame(ok) {
   if (!MG.active) return;
   MG.active = false;
   setTimeout(() => { document.getElementById('mg').hidden = true; }, ok ? 300 : 700);
-  const m = S.me;
-  if (ok) { m.escOk = true; m.x = ESC_OUT.x; m.y = ESC_OUT.y; m.placed = false; }
-  else toast('Не вийшло. Лишаєшся на базі ТЦК.');
+  const m = S.me, jail = MG.kind === 'jail', out = jail ? JAIL_OUT : ESC_OUT;
+  if (MG.kind === 'held') {
+    toast(ok ? 'Вирвався! У тебе 2 секунди фори — тікай!' : 'Не вийшло. Чекай на бус…');
+    if (S.isHost && S.sim) applyHeldEscape(S.sim.players[S.mySlot], ok, Date.now());
+    else { S.hescMsg = { m: S.match.id, ok: ok ? 1 : 0, c: myStatus()[17] || 0 }; sendClientNow(); }
+    return;
+  }
+  if (ok) { m.escOk = true; m.x = out.x; m.y = out.y; m.placed = false; if (jail) toast('Ти втік із КПЗ! Але поліція вже біжить за тобою.'); }
+  else toast(jail ? 'Не вийшло. Сидиш у КПЗ.' : 'Не вийшло. Лишаєшся на базі ТЦК.');
+  if (jail) { if (S.isHost && S.sim) applyJailEscape(S.sim.players[S.mySlot], ok, Date.now()); else { S.jescMsg = { m: S.match.id, ok: ok ? 1 : 0, n: myStatus()[15] || 0 }; sendClientNow(); } return; }
   if (S.isHost && S.sim) applyEscape(S.sim.players[S.mySlot], ok, Date.now());
   else { S.escMsg = { m: S.match.id, ok: ok ? 1 : 0 }; sendClientNow(); }
 }
-function mgTick() { if (MG.active) { const left = MG.until - Date.now(); document.getElementById('mgBar').style.width = Math.max(0, left / 50) + '%'; if (left <= 0) finishMinigame(false); } }
+function mgTick() { if (MG.active) { const left = MG.until - Date.now(); document.getElementById('mgBar').style.width = Math.max(0, left / (MG.ms || 5000) * 100) + '%'; if (left <= 0) finishMinigame(false); } }
 document.getElementById('mgBtns').addEventListener('pointerdown', e => { const b = e.target.closest('button'); if (b) { e.preventDefault(); mgInput(b.dataset.d); } });
 
 // ---------- client-side collisions ----------
@@ -1182,6 +1590,7 @@ function clientCollide() {
   if (S.isHost || S.mode !== 'play' || !S.match || S.mySlot < 0) return;
   const m = S.me, now = Date.now(), [st] = myStatus();
   if (st !== 0 || MG.active) return;
+  S.disp.pc = lerpArr(S.disp.pc || [], (S.snap || {}).pc, 1);
   const onCross = 'ZY'.includes(tileAt(tx(m.x), ty(m.y)));
   if (!onCross && now >= (m.lstunUntil || 0) && now >= (m.limmune || 0)) {
     for (const c of S.disp.cars) {
@@ -1199,6 +1608,7 @@ function clientCollide() {
     let near = false;
     for (const c of S.disp.cars) if (c.raw && num(c.raw[5], 0) === 1 && dist(c, m) < 52) { near = true; break; }
     if (!near) for (const e of S.disp.peds) if (e.raw && num(e.raw[2], 0) === 2 && dist(e, m) < 26) { near = true; break; }
+    if (!near && S.disp.pc) for (const e of S.disp.pc) if (e.raw && num(e.raw[2], 0) === 2 && dist(e, m) < 26) { near = true; break; }
     if (!near && S.disp.sq) for (const q of S.disp.sq) if (dist(q, m) < 26) { near = true; break; }
     if (near) { m.capN = (m.capN || 0) + 1; m.lastCapRep = now; sendClientNow(); }
   }
@@ -1206,15 +1616,18 @@ function clientCollide() {
 
 // ---------- local player ----------
 function myStatus() {
-  if (S.isHost && S.sim) { const p = S.sim.players[S.mySlot]; return p ? [p.st, Math.max(0, (p.until || 0) - Date.now()), p.bron ? 1 : 0, p.cst || 0, p.x, p.y, p.escUsed ? 1 : 0] : [4, 0, 0, 0, 0, 0, 1]; }
+  if (S.isHost && S.sim) { const p = S.sim.players[S.mySlot], n = Date.now(); return p ? [p.st, Math.max(0, (p.until || 0) - n), p.bron ? 1 : 0, p.cst || 0, p.x, p.y, p.escUsed ? 1 : 0, p.coins || 0, Math.max(0, p.enUntil - n), Math.max(0, p.medUntil - n), p.outfit || 0, p.jail ? 1 : 0, p.jEscUsed ? 1 : 0, p.knife ? 1 : 0, p.wanted ? 1 : 0, p.jailN || 0, p.heldEsc ? 1 : 0, p.capN || 0, p.pepper ? 1 : 0, (p.bought || {}).knife ? 1 : 0, (p.bought || {}).pepper ? 1 : 0] : [4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]; }
   const s = S.snap && Array.isArray(S.snap.s) ? S.snap.s[S.mySlot] : null;
   if (!Array.isArray(s)) return [0, 0];
   const el = Date.now() - S.snapAt;
-  return [num(s[0], 0), Math.max(0, num(s[1], 0) - el), num(s[2], 0), num(s[3], 2), num(s[4], S.me.x), num(s[5], S.me.y), num(s[6], 1)];
+  return [num(s[0], 0), Math.max(0, num(s[1], 0) - el), num(s[2], 0), num(s[3], 2), num(s[4], S.me.x), num(s[5], S.me.y), num(s[6], 1), num(s[7], 0), Math.max(0, num(s[8], 0) * 100 - el), Math.max(0, num(s[9], 0) * 100 - el), num(s[10], 0), num(s[11], 0), num(s[12], 1), num(s[13], 0), num(s[14], 0), num(s[15], 0), num(s[16], 1), num(s[17], 0), num(s[18], 0), num(s[19], 0), num(s[20], 0)];
 }
-function endSprint() { const m = S.me; if (!m.sprinting && m.sprintLeft >= SPR_D) return; m.sprinting = false; m.sprintLeft = 0; m.fatUntil = Date.now() + FAT_MS; }
+const energyOn = () => (myStatus()[8] || 0) > 0;
+const sprMax = () => energyOn() ? SPR_D * 2 : SPR_D;
+function endSprint() { const m = S.me; if (!m.sprinting && m.sprintLeft >= sprMax()) return; m.sprinting = false; m.sprintLeft = 0; m.fatUntil = Date.now() + (energyOn() ? FAT_MS / 2 : FAT_MS); }
 function updateLocal(dt) {
   const m = S.me, [st, rem, br, cst, sx, sy, eu] = myStatus(), now = Date.now();
+  if (MG.active && MG.kind === 'held' && (st !== 2 || cst !== 0)) finishMinigame(false);
   if (MG.active) return;
   if (br !== (m.lastBron || 0)) {
     if (br) toast('Ти підібрав бронь! Якщо спіймають, одразу відпустять.');
@@ -1224,8 +1637,8 @@ function updateLocal(dt) {
   if (st !== m.lastSt) {
     if (st === 1) { m.sprinting = false; if (!(m.lastHitAt && now - m.lastHitAt < STUN_MS + 2000)) toast('Тебе збила машина! 3 секунди не рухаєшся'); }
     if (st === 0 && m.lastSt === 1) m.limmune = Math.max(m.limmune || 0, now + IMMUNE_MS);
-    if (st === 2) { m.sprinting = false; m.escOk = false; toast('Тебе спіймав ТЦК! Чекай на бус, повезуть на базу…'); }
-    if (st === 0 && m.lastSt === 2) { [m.x, m.y] = [ESC_OUT.x, ESC_OUT.y]; m.placed = false; m.escOk = false; toast('Ти втік із ТЦК! Біжи на каву, поки не помітили.'); }
+    if (st === 2) { m.sprinting = false; m.escOk = false; toast(myStatus()[11] ? 'Тебе затримала поліція! Везуть у КПЗ…' : 'Тебе спіймав ТЦК! Чекай на бус, повезуть на базу…'); }
+    if (st === 0 && m.lastSt === 2) { if (!(sx === 0 && sy === 0)) [m.x, m.y] = [sx, sy]; m.placed = false; m.escOk = false; toast('Ти втік із ТЦК! Біжи на каву, поки не помітили.'); }
     if (st === 3) { [m.x, m.y] = seatOf(S.mySlot, S.match.cafe); m.sprinting = false; toast('Ти на каві! Сідай за столик.'); }
     m.lastSt = st;
   }
@@ -1233,7 +1646,24 @@ function updateLocal(dt) {
   const [ix, iy] = inputVec();
   if (st === 1) return;
   if (st === 0 && now < (m.lstunUntil || 0)) return;
+  const [, , , , , , , , , , , jail, jeu, , , jailN] = myStatus();
+  if (st === 2 && jail) {
+    // КПЗ: ходиш у клітці, до дверей — 10 секунд, потім одна спроба (10 стрілок за 6 секунд)
+    if (cst < 2) { m.x = sx; m.y = sy; m.placed = false; m.jTried = false; return; }
+    if (m.escOk) return;
+    if (!m.placed) { [m.x, m.y] = JAIL_SPOTS[S.mySlot]; m.placed = true; m.placedAt = now; if (!jeu && !m.jTried) note('Ти в КПЗ. Дійди до дверей клітки за 10 секунд: одна спроба втекти, 10 стрілок за 6 секунд.', 5000); }
+    if (!jeu && !m.jTried && m.placedAt && now - m.placedAt > ESC_WINDOW) {
+      m.jTried = true; toast('Час на втечу вийшов. Сидиш у КПЗ.');
+      if (S.isHost && S.sim) applyJailEscape(S.sim.players[S.mySlot], false, now); else { S.jescMsg = { m: S.match.id, ok: 0, n: jailN }; sendClientNow(); }
+    }
+    m.x = clamp(m.x + ix * V * 0.6 * dt, CAGE[0] * T + 26, (CAGE[0] + CAGE[2]) * T - 26);
+    m.y = clamp(m.y + iy * V * 0.6 * dt, CAGE[1] * T + 26, (CAGE[1] + CAGE[3]) * T - 26);
+    if (!jeu && !m.jTried && dist(m, JAIL_IN) < 50) startMinigame(10, 6000, 'jail');
+    return;
+  }
   if (st === 2) {
+    const sAll = myStatus();
+    if (cst === 0 && !sAll[16] && !MG.active && m.hTriedFor !== sAll[17]) { m.hTriedFor = sAll[17]; startMinigame(10, 7000, 'held'); toast('Тебе тримають! Повтори 10 стрілок, поки не приїхав бус.'); }
     if (cst < 2) { m.x = sx; m.y = sy; m.placed = false; return; }
     if (m.escOk) return;
     if (!m.placed) { [m.x, m.y] = BASE_SPOTS[S.mySlot]; m.placed = true; m.placedAt = now; if (!eu && !m.escTried) note('У правій стіні бази тріщина «А». У тебе 10 секунд, щоб до неї дійти: одна спроба втекти.', 5000); }
@@ -1251,7 +1681,7 @@ function updateLocal(dt) {
     return;
   }
   const fat = now < m.fatUntil;
-  if (!fat && m.sprintLeft <= 0) m.sprintLeft = SPR_D;
+  if (!fat && m.sprintLeft <= 0) m.sprintLeft = sprMax();
   const moving = ix || iy;
   if (sprintKey() && moving && !fat && m.sprintLeft > 0 && !m.sprinting) m.sprinting = true;
   if (m.sprinting && !sprintKey()) m.sprinting = false;
@@ -1266,7 +1696,7 @@ const nickEl = $('nick'); nickEl.value = S.nick;
 nickEl.addEventListener('input', () => { S.nick = nickEl.value.trim().slice(0, 24) || randomNick(); saveNick(S.nick); pushLobbyPresence(); });
 $('nickRoll').addEventListener('click', () => { S.nick = randomNick(); nickEl.value = S.nick; saveNick(S.nick); pushLobbyPresence(); });
 $('readyBtn').addEventListener('click', () => { S.ready = !S.ready; pushLobbyPresence(); renderLobby(); });
-$('startBtn').addEventListener('click', startMatch);
+$('startBtn').addEventListener('click', () => { SND.init(); startMatch(); });
 $('toLobby').addEventListener('click', backToLobby);
 S.netShow = (() => { try { return localStorage.getItem('coffee-net') === '1'; } catch (e) { return false; } })();
 function setNetShow(on) {
@@ -1334,12 +1764,12 @@ function enterMatch(match, host) {
   S.mySlot = match.slots.indexOf(S.myLabel);
   setMap(genMap(match.seed));
   S.env = { tod: 'evening', weather: 'clear' };
-  S.stat = renderStatic(match.cafe, S.env);
+  S.stat = null;
   buildWorld(match.cafe); R3.yaw = Math.PI / 2; R3.pitch = -0.04;
-  const mc = $('mini'); const mg = mc.getContext('2d'); mg.clearRect(0, 0, 340, 340); mg.drawImage(S.stat, 0, 0, 340, 340);
-  S.statMini = document.createElement('canvas'); S.statMini.width = 340; S.statMini.height = 340; S.statMini.getContext('2d').drawImage(S.stat, 0, 0, 340, 340);
+  S.statMini = renderMini(match.cafe); S.me.wantSpec = false;
   const [x, y] = spawnOf(S.mySlot);
-  Object.assign(S.me, { x, y, sprinting: false, sprintLeft: SPR_D, fatUntil: 0, placed: false, lastSt: 0, escTried: false, escOk: false, lastBron: 0, hitN: 0, capN: 0, lstunUntil: 0, limmune: 0, lastHitAt: 0, lastCapRep: 0, placedAt: 0, doneAt: 0 });
+  Object.assign(S.me, { x, y, sprinting: false, sprintLeft: SPR_D, fatUntil: 0, placed: false, lastSt: 0, escTried: false, escOk: false, lastBron: 0, hitN: 0, capN: 0, lstunUntil: 0, limmune: 0, lastHitAt: 0, lastCapRep: 0, placedAt: 0, doneAt: 0, buyN: 0 });
+  S.buyReq = null; S.me.hid = false; S.me.sitB = null; PHONE.msgs = []; PHONE.unread = 0; PHONE.last = -1; S.hescMsg = null; S.me.hTriedFor = -1; S.jescMsg = null; S.jStart = null; S.rescReq = null; S.me.rescN = 0; closeShop(); closePaper(); R3.held = null;
   SPEC.idx = 0; document.getElementById('spec').hidden = true;
   S.escMsg = null; S.escStart = null; MG.active = false; $('mg').hidden = true;
   S.snap = null; S.lastQ = -1; S.disp = { cars: [], peds: [], pl: [{}, {}, {}, {}] };
@@ -1357,7 +1787,7 @@ function backToLobby() {
   if (S.isHost && S.room) S.room.presence({ m: null, w: null, g: null }).catch(() => {});
   else if (S.room) S.room.presence({ g: null }).catch(() => {});
   flushNet();
-  document.body.classList.remove('playing');
+  document.body.classList.remove('playing'); $('phoneBtn').hidden = true; $('phone').hidden = true; $('danger').style.opacity = 0; $('hideOv').hidden = true; $('actPrompt').hidden = true;
   S.mode = 'lobby'; S.match = null; S.sim = null; S.isHost = false; S.ready = false;
   $('lobby').hidden = false; $('endScreen').hidden = true; $('hud').hidden = true; $('sprintHud').hidden = true; $('mini').hidden = true;
   pushLobbyPresence(); renderLobby(); renderNet();
@@ -1512,6 +1942,13 @@ function buildG() {
   const g = { m: S.match.id, x: Math.round(S.me.x), y: Math.round(S.me.y), sp: S.me.sprinting ? 1 : 0, fa: now < S.me.fatUntil ? 1 : 0, pl: S.me.placed ? 1 : 0 };
   if (S.escMsg) g.esc = S.escMsg;
   if (S.escStart) g.es = S.escStart;
+  if (S.buyReq) g.buy = S.buyReq;
+  if (S.jescMsg) g.jesc = S.jescMsg;
+  if (S.jStart) g.js = S.jStart;
+  if (S.hescMsg) g.hesc = S.hescMsg;
+  if (S.me.hid) g.hid = 1;
+  if (S.me.sitB) g.sit = 1;
+  if (S.rescReq) g.resc = S.rescReq;
   if (!S.isHost) { g.hn = S.me.hitN || 0; g.cn = S.me.capN || 0; }
   return g;
 }
@@ -1544,8 +1981,13 @@ function clientRead() {
   }
   const m = hp.presence.m;
   if (m.ph === 'end' && S.mode === 'play') { S.mode = 'end'; showEnd(m.res); }
-  const w = hp.presence.w;
-  if (w && num(w.n, -1) !== S.lastQ) { S.snap = w; S.snapAt = Date.now(); S.lastQ = num(w.n, -1); }
+  let w = hp.presence.w;
+  if (w && num(w.n, -1) !== S.lastQ) {
+    const ex = Object.assign({}, w);
+    if (Array.isArray(w.c)) ex.c = w.c.map(a => Array.isArray(a) && a.length === 4 ? [a[0], a[1], a[2], a[3] & 1, (a[3] >> 1) & 1, (a[3] >> 2) & 1, (a[3] >> 3) & 1, (a[3] >> 4) & 1, (a[3] >> 5) & 1] : a);
+    if (Array.isArray(w.p)) ex.p = w.p.map(a => Array.isArray(a) && a.length === 3 ? [a[0], a[1], a[2] & 3, (a[2] >> 2) & 1, (a[2] >> 3) & 1] : a);
+    w = ex;
+    S.snap = w; S.snapAt = Date.now(); S.lastQ = num(w.n, -1); }
 }
 
 // ---------- 3D (three.js) ----------
@@ -1565,7 +2007,7 @@ function initWeather() {}
 function lerpArr(dispArr, src, k) {
   if (!Array.isArray(src)) return dispArr;
   const out = [];
-  for (let i = 0; i < src.length && i < 64; i++) {
+  for (let i = 0; i < src.length && i < 300; i++) {
     const a = src[i]; if (!Array.isArray(a)) continue;
     const x = num(a[0], 0), y = num(a[1], 0);
     const d = dispArr[i];
@@ -1579,8 +2021,8 @@ function worldView(dt) {
   const players = [];
   if (S.isHost && S.sim) {
     const sim = S.sim;
-    const cars = sim.cars.map((c, i) => ({ x: c.x, y: c.y, o: carO(c), rev: c.st !== 'n', spr: !!c.spr, i }));
-    const peds = sim.peds.map((e, i) => ({ x: e.x, y: e.y, rev: e.st !== 'n', chase: e.st === 'chase' || e.st === 'escort', spr: !!e.spr, i }));
+    const cars = sim.cars.filter(c => c.st !== 'gone').map((c, i) => ({ x: c.x, y: c.y, o: carO(c), rev: !c.pcar && c.st !== 'n', spr: !!c.spr, bus: !!c.bus, pol: !!c.pcar, i: c.i }));
+    const peds = sim.peds.map((e, i) => ({ sit: !!e.sitUntil, gone: e.st === 'gone', x: e.x, y: e.y, rev: e.st !== 'n', chase: e.st === 'chase' || e.st === 'escort', spr: !!e.spr, i }));
     for (const p of sim.players) {
       if (!p) continue;
       const mine = p.slot === S.mySlot;
@@ -1588,16 +2030,17 @@ function worldView(dt) {
       if (!mine && !p.bot) { const d = S.disp.pl[p.slot]; d.x = d.x == null ? x : d.x + (x - d.x) * Math.min(1, dt * 12); d.y = d.y == null ? y : d.y + (y - d.y) * Math.min(1, dt * 12); x = d.x; y = d.y; }
       if (p.st === 2 && p.cst === 1) continue;
       if (mine && p.st === 2 && p.cst < 2) { x = p.x; y = p.y; }
-      players.push({ slot: p.slot, x, y, st: p.st, br: p.bron, sp: mine ? S.me.sprinting : p.sp, fa: mine ? now < S.me.fatUntil : p.fa, nick: nickOf(p.slot) });
+      players.push({ slot: p.slot, x, y, st: p.st, br: p.bron, of: p.outfit || 0, sp: mine ? S.me.sprinting : p.sp, fa: mine ? now < S.me.fatUntil : p.fa, nick: nickOf(p.slot) });
     }
-    return { cars, peds, players, leaf: sim.leaf, sq: sim.squads.map(q => ({ x: q.x, y: q.y, spr: !!q.spr })), fx: sim.fx.map(f => ({ x: f.x, y: f.y, age: now - f.t, k: f.k || 0 })) };
+    const nowH = Date.now();
+    return { cops: sim.cops.map(e => ({ x: e.x, y: e.y, chase: e.st === 'chase', i: e.k })), knife: sim.knife, coins: sim.coins, tc: sim.players.some(p => p && p.medUntil > nowH) ? [sim.cars.map((c, i) => c.tcc ? i : -1).filter(i => i >= 0), sim.peds.map((e, i) => e.tcc ? i : -1).filter(i => i >= 0)] : null, cars, peds, players, leaf: sim.leaf, sq: sim.squads.map(q => ({ x: q.x, y: q.y, spr: !!q.spr })), fx: sim.fx.map(f => ({ x: f.x, y: f.y, age: now - f.t, k: f.k || 0 })) };
   }
   const w = S.snap || {};
   const k = Math.min(1, dt * 12);
   S.disp.cars = lerpArr(S.disp.cars, w.c, k);
   S.disp.peds = lerpArr(S.disp.peds, w.p, k);
-  const cars = S.disp.cars.map((c, i) => ({ x: c.x, y: c.y, o: clamp(Math.floor(num(c.raw[2], 0)), 0, 3), rev: num(c.raw[3], 0) > 0, spr: num(c.raw[6], 0) > 0, i }));
-  const peds = S.disp.peds.map((e, i) => ({ x: e.x, y: e.y, rev: num(e.raw[2], 0) > 0, chase: num(e.raw[2], 0) === 2, spr: num(e.raw[3], 0) > 0, i }));
+  const cars = S.disp.cars.map((c, i) => ({ x: c.x, y: c.y, o: clamp(Math.floor(num(c.raw[2], 0)), 0, 3), rev: num(c.raw[3], 0) > 0, spr: num(c.raw[6], 0) > 0, bus: num(c.raw[7], 0) > 0, pol: num(c.raw[8], 0) > 0, i })).filter(c => c.x > -1000).map(c => (c.pol ? Object.assign(c, { rev: false }) : c));
+  const peds = S.disp.peds.map((e, i) => ({ sit: num(e.raw[4], 0) > 0, x: e.x, y: e.y, rev: num(e.raw[2], 0) > 0, chase: num(e.raw[2], 0) === 2, spr: num(e.raw[3], 0) > 0, i }));
   const stat = Array.isArray(w.s) ? w.s : [];
   const bots = {}; if (Array.isArray(w.b)) for (const b of w.b) if (Array.isArray(b)) bots[num(b[0], -1)] = b;
   const peers = S.room ? S.room.peers() : [];
@@ -1612,13 +2055,18 @@ function worldView(dt) {
     else if (st === 2 && cst < 2) { x = num(stat[s][4], 0); y = num(stat[s][5], 0); }
     else { const p = peers.find(q => q.peer === label); const g = p && p.presence && p.presence.g; if (!g) continue; x = num(g.x, 0); y = num(g.y, 0); sp = !!g.sp; fa = !!g.fa; }
     if (s !== S.mySlot) { const d = S.disp.pl[s]; if (d.x == null || Math.hypot(d.x - x, d.y - y) > 200) { d.x = x; d.y = y; } else { d.x += (x - d.x) * k; d.y += (y - d.y) * k; } x = d.x; y = d.y; }
-    players.push({ slot: s, x, y, st, br, sp, fa, nick: nickOf(s) });
+    players.push({ slot: s, x, y, st, br, sp, fa, of: Array.isArray(stat[s]) ? num(stat[s][10], 0) : 0, nick: nickOf(s) });
   }
   const el = now - S.snapAt;
   const fx = Array.isArray(w.f) ? w.f.filter(Array.isArray).map(f => ({ x: num(f[0], 0), y: num(f[1], 0), age: num(f[2], 0) + el, k: num(f[3], 0) })) : [];
   const leaf = Array.isArray(w.l) ? { x: num(w.l[0], 0), y: num(w.l[1], 0) } : null;
   S.disp.sq = lerpArr(S.disp.sq || [], w.q, k);
-  return { cars, peds, players, leaf, sq: S.disp.sq.map(q => ({ x: q.x, y: q.y, spr: num(q.raw[2], 0) > 0 })), fx };
+  const coins = Array.isArray(w.k) ? w.k.filter(Array.isArray).map(c => ({ x: num(c[0], 0), y: num(c[1], 0) })) : [];
+  const tc = Array.isArray(w.tc) && Array.isArray(w.tc[0]) && Array.isArray(w.tc[1]) ? [w.tc[0].map(n => num(n, -1)), w.tc[1].map(n => num(n, -1))] : null;
+  S.disp.pcv = lerpArr(S.disp.pcv || [], w.pc, k);
+  const cops = S.disp.pcv.map((e, i) => ({ x: e.x, y: e.y, chase: num(e.raw[2], 0) === 2, i }));
+  const knife = Array.isArray(w.kn) ? { x: num(w.kn[0], 0), y: num(w.kn[1], 0) } : null;
+  return { cops, knife, coins, tc, cars, peds, players, leaf, sq: S.disp.sq.map(q => ({ x: q.x, y: q.y, spr: num(q.raw[2], 0) > 0 })), fx };
 }
 function nickOf(s) {
   if (!S.match) return '';
@@ -1637,6 +2085,19 @@ function animOf(key, x, y) {
   if (d > 0.15 && d < 80) { a.h = Math.atan2(dy, dx); a.ph += d * 0.16; a.mv = Math.min(1, a.mv + 0.2); }
   else { a.mv = Math.max(0, a.mv - 0.1); }
   a.x = x; a.y = y; return a;
+}
+
+// ---------- мінікарта з сітки ----------
+const TILE_COL = { G: '#6F9B5A', S: '#C9BDAA', P: '#B4A895', M: '#E3DDD2', R: '#3B3F4C', V: '#3B3F4C', X: '#3B3F4C', Y: '#3B3F4C', Z: '#3B3F4C', B: '#8E8478', H: '#8E8478', C: '#8A5A3C', T: '#7A1F2B', K: '#5E86A8', Q: '#E9DCC0', O: '#3E5FA8', J: '#D9483B' };
+function renderMini(cafeIdx) {
+  const c = document.createElement('canvas'); c.width = 340; c.height = 340; const g = c.getContext('2d');
+  const kx = 340 / W, ky = 340 / H;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { g.fillStyle = TILE_COL[tileAt(x, y)] || '#6F9B5A'; g.fillRect(x * kx, y * ky, kx + 0.5, ky + 0.5); }
+  HOUSES.forEach(([x, y, w, h], i) => { g.fillStyle = PC[i]; g.fillRect(x * kx, y * ky, w * kx, h * ky); });
+  const [cx, cy, cw, ch] = CAFES[cafeIdx]; g.strokeStyle = '#F4A07A'; g.lineWidth = 3; g.strokeRect(cx * kx - 3, cy * ky - 3, cw * kx + 6, ch * ky + 6);
+  g.font = '700 10px Manrope, sans-serif'; g.textBaseline = 'middle';
+  RROWS.forEach((r, k) => { const y0 = (r + 1) * ky, txt = STREETS[k][0]; g.lineWidth = 3; g.strokeStyle = 'rgba(22,26,40,.9)'; g.strokeText(txt, 6, y0); g.fillStyle = '#FDE68A'; g.fillText(txt, 6, y0); });
+  return c;
 }
 
 // ---------- 3D: текстури ----------
@@ -1743,19 +2204,199 @@ function boxGeo(boxes, roof) {
   return g;
 }
 const lambert = (color, extra) => new THREE.MeshLambertMaterial(Object.assign({ color }, extra || {}));
-function stripeTex(a, b) { return canvasTex(64, 16, (g) => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? b : a; g.fillRect(i * 8, 0, 8, 16); } }, true); }
+const STRIPES = new Map();
+function stripeTex(a, b, rep) { const key = a + b + rep; if (STRIPES.has(key)) return STRIPES.get(key); const tx = canvasTex(64, 16, (g) => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? b : a; g.fillRect(i * 8, 0, 8, 16); } }, true); if (rep) tx.repeat.set(rep, 1); STRIPES.set(key, tx); return tx; }
+// земля: сітка клітинок з кольорами вершин (легше за величезну текстуру), розмітка, зебри й бордюри
+function groundMesh() {
+  const pos = [], col = [], c3 = new THREE.Color();
+  const quad = (x0, z0, x1, z1, y, hex, jit) => {
+    c3.set(hex); if (jit) c3.multiplyScalar(jit);
+    pos.push(x0, y, z0, x0, y, z1, x1, y, z1, x0, y, z0, x1, y, z1, x1, y, z0);
+    for (let k = 0; k < 6; k++) col.push(c3.r, c3.g, c3.b);
+  };
+  const hj = (x, y) => 0.95 + (((x * 73856093) ^ (y * 19349663)) >>> 0) % 100 / 1000;
+  const TC = { G: '#6F9B5A', S: '#C9BDAA', P: '#B4A895', M: '#E3DDD2', R: '#3B3F4C', V: '#3B3F4C', X: '#3B3F4C', Y: '#3B3F4C', Z: '#3B3F4C' };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const tt = tileAt(x, y); quad(x, y, x + 1, y + 1, 0, TC[tt] || '#77706A', tt === 'R' || tt === 'V' || tt === 'X' ? 1 : hj(x, y)); }
+  for (const r of RROWS) for (let x = 0; x < W; x++) if (tileAt(x, r) === 'R' && tileAt(x, r + 1) === 'R') quad(x + 0.25, r + 0.97, x + 0.75, r + 1.03, 0.004, '#F0E6D2');
+  for (const L of M.loops) { const c = (L.down - 30) / T; for (let y = 0; y < H; y++) if (tileAt(c, y) === 'V') quad(c + 0.97, y + 0.25, c + 1.03, y + 0.75, 0.004, '#F0E6D2'); }
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const tt = tileAt(x, y);
+    if (tt === 'Z') for (let k = 0; k < 4; k++) quad(x + 0.13, y + 0.08 + k * 0.24, x + 0.87, y + 0.2 + k * 0.24, 0.004, '#F0EBE2');
+    if (tt === 'Y') for (let k = 0; k < 4; k++) quad(x + 0.08 + k * 0.24, y + 0.13, x + 0.2 + k * 0.24, y + 0.87, 0.004, '#F0EBE2');
+    if ('SPM'.includes(tt)) for (const [dx, dy] of NB) {
+      if (!isRoad(tileAt(x + dx, y + dy))) continue;
+      if (dy > 0) quad(x, y + 0.94, x + 1, y + 1, 0.006, '#E2DBCF'); if (dy < 0) quad(x, y, x + 1, y + 0.06, 0.006, '#E2DBCF');
+      if (dx > 0) quad(x + 0.94, y, x + 1, y + 1, 0.006, '#E2DBCF'); if (dx < 0) quad(x, y, x + 0.06, y + 1, 0.006, '#E2DBCF');
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  geo.computeVertexNormals();
+  return new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true }));
+}
+// райони: ринок, площа з мерією, торговий центр, поліція, заправка
+function buildDistricts(W3) {
+  const dm = new THREE.Object3D();
+  const inst = (geo, mat, list, f) => { if (!list.length) return; const m = new THREE.InstancedMesh(geo, mat, list.length); list.forEach((it, k) => { f(dm, it); dm.updateMatrix(); m.setMatrixAt(k, dm.matrix); if (it.col) m.setColorAt(k, new THREE.Color(it.col)); }); W3.add(m); };
+  // ятки ринку: стіл, стійки, дах-тент, товар
+  const stalls = M.props.filter(p => p[0] === 'stall').map((p, k) => ({ x: p[1] + 0.5, z: p[2] + 0.5, f: p[3] || 1, col: ['#E4572E', '#3E7BC4', '#F2C14E', '#3E9B5C', '#C2508A', '#E07B39'][k % 6] }));
+  inst(new THREE.BoxGeometry(0.9, 0.45, 0.55), lambert(0x8C6B4F), stalls, (d, s) => { d.position.set(s.x, 0.225, s.z); d.scale.set(1, 1, 1); d.rotation.set(0, 0, 0); });
+  inst(new THREE.BoxGeometry(1.05, 0.06, 0.8), lambert(0xFFFFFF), stalls, (d, s) => { d.position.set(s.x, 1.1, s.z); d.rotation.set(s.f * 0.15, 0, 0); });
+  const posts = []; stalls.forEach(s => { for (const [ox, oz] of [[-0.45, -0.32], [0.45, -0.32], [-0.45, 0.32], [0.45, 0.32]]) posts.push({ x: s.x + ox, z: s.z + oz }); });
+  inst(new THREE.CylinderGeometry(0.025, 0.025, 1.1, 4), lambert(0x5A4636), posts, (d, p) => { d.position.set(p.x, 0.55, p.z); d.rotation.set(0, 0, 0); });
+  const goods = []; stalls.forEach((s, k) => { for (let i = 0; i < 3; i++) goods.push({ x: s.x - 0.28 + i * 0.28, z: s.z, col: ['#F2C14E', '#D9483B', '#7AC74F', '#F4F1EA', '#8A4FBF'][(k + i) % 5] }); });
+  inst(new THREE.BoxGeometry(0.2, 0.12, 0.2), lambert(0xFFFFFF), goods, (d, p) => { d.position.set(p.x, 0.51, p.z); d.rotation.set(0, 0, 0); });
+  stalls.slice(0, 4).forEach((s, k) => { const sg = labelSprite(STALL_KINDS[k], { bg: '#1D2132', fg: '#FDE68A', scale: 0.0048 }); sg.position.set(s.x, 1.45, s.z); W3.add(sg); });
+  stalls.forEach((s, k) => { if (k % 2 === 0 || k < 4) R3.vendors.push({ x: s.x, z: s.z - s.f * 0.5, h: s.f > 0 ? Math.PI / 2 : -Math.PI / 2 }); });
+  const ms = labelSprite('РИНОК', { bg: '#E4572E', fg: '#FFF4E6' }); ms.position.set((DIST.market[0] + DIST.market[1]) / 2, 2.4, RROWS[DIST.midBand] + 3.2); W3.add(ms);
+  // лавки (у двориках і на площі)
+  const benches = M.decor.filter(d => d[0] === 'bench' || d[0] === 'bench3').map(d => ({ x: d[1] + (d[0] === 'bench' ? 1 : 0.5), z: d[2] + 0.5, r: d[3] ? Math.PI / 2 : 0 }));
+  inst(new THREE.BoxGeometry(0.9, 0.06, 0.3), lambert(0x8C5A3C), benches, (d, b) => { d.position.set(b.x, 0.3, b.z); d.rotation.set(0, b.r, 0); });
+  inst(new THREE.BoxGeometry(0.9, 0.28, 0.05), lambert(0x8C5A3C), benches, (d, b) => { d.position.set(b.x - Math.sin(b.r) * 0.14, 0.48, b.z - Math.cos(b.r) * 0.14); d.rotation.set(0, b.r, 0); });
+  inst(new THREE.BoxGeometry(0.06, 0.3, 0.28), lambert(0x3B3F4C), benches.flatMap(b => [{ ...b, o: -0.4 }, { ...b, o: 0.4 }]), (d, b) => { d.position.set(b.x + Math.cos(b.r) * b.o, 0.15, b.z - Math.sin(b.r) * b.o); d.rotation.set(0, b.r, 0); });
+  // мерія: колонада стоїть у межах будівлі, тож крізь колони не пройдеш
+  { const [x, y, w, h] = DIST.hall, cx = x + w / 2, front = y + h;
+    const body = new THREE.Mesh(new THREE.BoxGeometry(w - 0.2, 2.6, h - 1.0), lambert(0xE9DCC0)); body.position.set(cx, 1.3, y + (h - 1.0) / 2 + 0.1); W3.add(body);
+    const roofH = new THREE.Mesh(new THREE.BoxGeometry(w, 0.18, h), lambert(0x8C7B6A)); roofH.position.set(cx, 2.69, y + h / 2); W3.add(roofH);
+    const ped = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, w * 0.5, 3, 1), lambert(0xE9DCC0)); ped.rotation.set(0, 0, Math.PI / 2); ped.scale.set(1, 1, 0.35); ped.position.set(cx, 3.0, front - 0.35); W3.add(ped);
+    const cols = []; for (let i = 0; i < 8; i++) cols.push({ x: cx - 3.5 + i, z: front - 0.45 });
+    inst(new THREE.CylinderGeometry(0.12, 0.14, 2.45, 8), lambert(0xF4EEDF), cols, (d, c) => { d.position.set(c.x, 1.3, c.z); d.rotation.set(0, 0, 0); });
+    const portico = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.15, 0.8), lambert(0xE9DCC0)); portico.position.set(cx, 2.55, front - 0.45); W3.add(portico);
+    const steps = new THREE.Mesh(new THREE.BoxGeometry(8.6, 0.08, 0.95), lambert(0xCFC6B4)); steps.position.set(cx, 0.04, front - 0.48); W3.add(steps);
+    const steps2 = new THREE.Mesh(new THREE.BoxGeometry(8.2, 0.08, 0.7), lambert(0xD9D2C6)); steps2.position.set(cx, 0.12, front - 0.6); W3.add(steps2);
+    const clock = labelSprite('12:00', { bg: '#F4EEDF', fg: '#2B2A33', scale: 0.006 }); clock.position.set(cx, 3.35, front - 0.2); W3.add(clock);
+    const flagPole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.4, 4), lambert(0xCCCCCC)); flagPole.position.set(cx, 3.5, y + h / 2); W3.add(flagPole);
+    const fl1 = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.2), new THREE.MeshBasicMaterial({ color: 0x2E5AAC, side: THREE.DoubleSide })); fl1.position.set(cx + 0.31, 4.0, y + h / 2); W3.add(fl1);
+    const fl2 = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.2), new THREE.MeshBasicMaterial({ color: 0xF2C14E, side: THREE.DoubleSide })); fl2.position.set(cx + 0.31, 3.8, y + h / 2); W3.add(fl2);
+    const s = labelSprite('МЕРІЯ', { bg: '#2B2A33', fg: '#F4EEDF' }); s.position.set(cx, 4.4, y + h / 2); W3.add(s);
+  }
+  // торговий центр: скляні стіни, дах, підлога, магазини всередині
+  { const [m0, m1] = DIST.mall, top = RROWS[DIST.midBand] + 3, bot = RROWS[DIST.midBand + 1] - 2, HH = 2.8;
+    const walls = [];
+    for (let y = top; y <= bot; y++) for (let x = m0; x <= m1; x++) if (tileAt(x, y) === 'K' && (y === top || y === bot || x === m0 || x === m1)) walls.push([x, y, x + 1, y + 1, 0, HH]);
+    W3.add(new THREE.Mesh(boxGeo(walls), lambert(0xD3CBBE)));
+    const band = []; for (const wv of walls) band.push([wv[0] - 0.02, wv[1] - 0.02, wv[2] + 0.02, wv[3] + 0.02, 1.9, 2.5]);
+    W3.add(new THREE.Mesh(boxGeo(band), lambert(0x5E86A8, { emissive: 0x0A1A28 })));
+    W3.add(new THREE.Mesh(boxGeo(walls, true), lambert(0x4E5468)));
+    const roof = new THREE.Mesh(new THREE.PlaneGeometry(m1 - m0 - 1, bot - top - 1), lambert(0xEDE6DA, { side: THREE.DoubleSide })); roof.rotation.x = -Math.PI / 2; roof.position.set((m0 + 1 + m1) / 2, HH, (top + 1 + bot) / 2); W3.add(roof);
+    const lamps = []; for (let x = m0 + 3; x < m1 - 1; x += 4) for (const y of [top + 2.5, bot - 1.5]) lamps.push({ x, z: y });
+    inst(new THREE.BoxGeometry(0.8, 0.04, 0.3), new THREE.MeshBasicMaterial({ color: 0xFFF4DD }), lamps, (d, l) => { d.position.set(l.x, HH - 0.03, l.z); d.rotation.set(0, 0, 0); });
+    const s = labelSprite('ТЦ «КАШТАН»', { bg: '#1D2132', fg: '#BEE3F8' }); s.position.set((m0 + m1) / 2, HH + 0.7, top + 0.5); W3.add(s);
+    // вітрини й перегородки магазинів нижчі за зовнішні стіни
+    const inner = []; for (let y = top + 1; y <= top + 3; y++) for (let x = m0 + 1; x < m1; x++) if (tileAt(x, y) === 'K') inner.push([x + (y === top + 3 ? 0 : 0.42), y + (y === top + 3 ? 0.42 : 0), x + (y === top + 3 ? 1 : 0.58), y + (y === top + 3 ? 0.58 : 1), 0, 2.1]);
+    W3.add(new THREE.Mesh(boxGeo(inner), new THREE.MeshLambertMaterial({ color: 0xBFE0F0, transparent: true, opacity: 0.45, emissive: 0x102030 })));
+    const s2 = s.clone(); s2.position.z = bot + 0.5; W3.add(s2);
+    const SHOPC = { 'ОДЯГ': 0xC2508A, 'НАПОЇ': 0x3E7BC4, 'АПТЕКА': 0x3E9B5C, 'ЗБРОЯ': 0x5A5A5A, 'КНИГИ': 0x8A5A3C, 'ІГРАШКИ': 0xE8B23A };
+    for (const p of M.props.filter(q => q[0] === 'shop')) {
+      const [, x, y, , name, x0, x1] = p, w = x1 - x0 + 1, cx = x0 + w / 2, col = SHOPC[name] || 0x888888;
+      // низький прилавок, щоб продавця було видно; за ним полиці з товаром
+      const counter = new THREE.Mesh(new THREE.BoxGeometry(Math.min(2.2, w - 0.6), 0.42, 0.42), lambert(0xF4F1EA)); counter.position.set(cx, 0.21, y + 0.62); W3.add(counter);
+      const ctop = new THREE.Mesh(new THREE.BoxGeometry(Math.min(2.3, w - 0.5), 0.05, 0.48), lambert(col)); ctop.position.set(cx, 0.44, y + 0.62); W3.add(ctop);
+      for (const sy of [0.55, 0.95, 1.35]) { const sh = new THREE.Mesh(new THREE.BoxGeometry(w - 0.3, 0.05, 0.25), lambert(0xD9D2C6)); sh.position.set(cx, sy, y + 0.13); W3.add(sh); }
+      for (let k = 0; k < Math.floor(w * 2.4); k++) { const it = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.18, 0.14), lambert([col, 0xF2C14E, 0xFFFFFF, 0xD9483B][k % 4])); it.position.set(x0 + 0.3 + (k % Math.ceil(w * 0.8 / 0.35 || 1)) * 0.38, [0.67, 1.07, 1.47][k % 3], y + 0.13); if (it.position.x < x1 + 0.8) W3.add(it); }
+      const backW = new THREE.Mesh(new THREE.PlaneGeometry(w, 2.1), lambert(col)); backW.position.set(cx, 1.05, y + 0.012); W3.add(backW);
+      const floorS = new THREE.Mesh(new THREE.PlaneGeometry(w, 2), lambert(0xF0E8DA)); floorS.rotation.x = -Math.PI / 2; floorS.position.set(cx, 0.007, y + 1); W3.add(floorS);
+      const sg = labelSprite(name, { bg: '#' + col.toString(16).padStart(6, '0'), fg: '#FFFFFF', scale: 0.005 }); sg.position.set(cx, 2.35, y + 3.05); W3.add(sg);
+      R3.vendors.push({ x: cx, z: y + 0.32, h: Math.PI / 2 });
+    }
+    // південна стіна галереї: «вітрини» інших магазинів
+    { const decoN = ['КАВА', 'ВЗУТТЯ', 'ТЕЛЕФОНИ', 'КВІТИ', 'СУВЕНІРИ', 'ОПТИКА'], decoC = [0x8A5A3C, 0x3E7BC4, 0x2B2A33, 0xC2508A, 0xE8B23A, 0x3E9B5C];
+      let k = 0;
+      for (let x = m0 + 2; x < m1 - 2; x += 5) {
+        if ([m0 + 6, m0 + 16, m0 + 26].some(e => x + 3 >= e && x <= e + 1)) continue;
+        const panel = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.6), lambert(decoC[k % 6])); panel.position.set(x + 1.5, 0.9, bot - 0.02); panel.rotation.y = Math.PI; W3.add(panel);
+        const glass = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.0), lambert(0xBFE0F0, { emissive: 0x203040 })); glass.position.set(x + 1.5, 0.75, bot - 0.03); glass.rotation.y = Math.PI; W3.add(glass);
+        const sg = labelSprite(decoN[k % 6], { bg: '#1D2132', fg: '#FFFFFF', scale: 0.0045 }); sg.position.set(x + 1.5, 1.95, bot - 0.1); W3.add(sg);
+        k++;
+      }
+    }
+  }
+  // поліцейська дільниця
+  { const [x, y, w, h] = DIST.police.bld, cx = x + w / 2;
+    const body = new THREE.Mesh(new THREE.BoxGeometry(w - 0.1, 2.2, h - 0.1), lambert(0xE8ECF2)); body.position.set(cx, 1.1, y + h / 2); W3.add(body);
+    const band = new THREE.Mesh(new THREE.BoxGeometry(w, 0.35, h), lambert(0x2E5AAC)); band.position.set(cx, 1.6, y + h / 2); W3.add(band);
+    const door = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.06), lambert(0x2E3A5A)); door.position.set(cx, 0.45, y + h); W3.add(door);
+    const light = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.15, 0.2), new THREE.MeshBasicMaterial({ color: 0x4F8BFF })); light.position.set(cx, 2.3, y + h / 2); W3.add(light);
+    const s = labelSprite('ПОЛІЦІЯ', { bg: '#2E5AAC', fg: '#FFFFFF' }); s.position.set(cx, 2.9, y + h / 2); W3.add(s);
+  }
+  // КПЗ: решітка навколо клітки біля дільниці
+  { const [cx0, cy0, cw, ch] = CAGE, bars = [];
+    for (let k = 0; k <= cw * 5; k++) { bars.push({ x: cx0 + k / 5, z: cy0 }); bars.push({ x: cx0 + k / 5, z: cy0 + ch }); }
+    for (let k = 1; k < ch * 5; k++) { bars.push({ x: cx0, z: cy0 + k / 5 }); bars.push({ x: cx0 + cw, z: cy0 + k / 5 }); }
+    inst(new THREE.CylinderGeometry(0.02, 0.02, 1.5, 4), lambert(0x3B3F4C), bars, (d, b) => { d.position.set(b.x, 0.75, b.z); d.rotation.set(0, 0, 0); });
+    const top = new THREE.Mesh(new THREE.BoxGeometry(cw + 0.1, 0.06, ch + 0.1), lambert(0x3B3F4C)); top.position.set(cx0 + cw / 2, 1.5, cy0 + ch / 2); W3.add(top);
+    const floorC = new THREE.Mesh(new THREE.PlaneGeometry(cw, ch), lambert(0x8D8F95)); floorC.rotation.x = -Math.PI / 2; floorC.position.set(cx0 + cw / 2, 0.006, cy0 + ch / 2); W3.add(floorC);
+    const s = labelSprite('КПЗ', { bg: '#2E5AAC', fg: '#FFFFFF' }); s.position.set(cx0 + cw / 2, 1.9, cy0 + ch / 2); W3.add(s);
+  }
+  // заправка: навіс над колонками, магазинчик, стела
+  { const Gs = DIST.gas, [sx, sy, sw, sh] = Gs.shop;
+    const shop = new THREE.Mesh(new THREE.BoxGeometry(sw - 0.1, 1.5, sh - 0.1), lambert(0xF4F1EA)); shop.position.set(sx + sw / 2, 0.75, sy + sh / 2); W3.add(shop);
+    // прибудова-туалет зі сходу: двері, табличка WC
+    const wc = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.3, 1.0), lambert(0xD9D2C6)); wc.position.set(sx + sw + 0.2, 0.65, sy + 1.5); W3.add(wc);
+    const wcRoof = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.08, 1.1), lambert(0xD9483B)); wcRoof.position.set(sx + sw + 0.2, 1.34, sy + 1.5); W3.add(wcRoof);
+    const wcDoor = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.85, 0.45), lambert(0x3E7BC4)); wcDoor.position.set(sx + sw + 0.46, 0.43, sy + 1.5); W3.add(wcDoor);
+    const wcs = labelSprite('WC', { bg: '#3E7BC4', fg: '#FFFFFF', scale: 0.005 }); wcs.position.set(sx + sw + 0.5, 1.2, sy + 1.5); W3.add(wcs);
+    const sband = new THREE.Mesh(new THREE.BoxGeometry(sw, 0.3, sh), lambert(0xD9483B)); sband.position.set(sx + sw / 2, 1.45, sy + sh / 2); W3.add(sband);
+    const win = new THREE.Mesh(new THREE.PlaneGeometry(sw - 1, 0.6), new THREE.MeshBasicMaterial({ color: 0xFFD58A })); win.position.set(sx + sw / 2, 0.8, sy - 0.04); win.rotation.y = Math.PI; W3.add(win);
+    const xs = Gs.pumps.map(p => p[0]), ys = Gs.pumps.map(p => p[1]);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2 + 0.5, cz = (Math.min(...ys) + Math.max(...ys)) / 2 + 0.5;
+    const canopy = new THREE.Mesh(new THREE.BoxGeometry(Math.max(...xs) - Math.min(...xs) + 2.4, 0.25, Math.max(...ys) - Math.min(...ys) + 2.2), lambert(0xF4F1EA, { emissive: 0x222222 })); canopy.position.set(cx, 2.1, cz); W3.add(canopy);
+    const cband = new THREE.Mesh(new THREE.BoxGeometry(Math.max(...xs) - Math.min(...xs) + 2.45, 0.12, Math.max(...ys) - Math.min(...ys) + 2.25), lambert(0xD9483B)); cband.position.set(cx, 2.0, cz); W3.add(cband);
+    for (const [ox, oz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const pl = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.0, 0.14), lambert(0xBFC4CC)); pl.position.set(cx + ox * 1.3, 1.0, cz + oz * 1.2); W3.add(pl); }
+    for (const [x, y] of Gs.pumps) { const pm = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.8, 0.25), lambert(0xD9483B)); pm.position.set(x + 0.5, 0.4, y + 0.5); W3.add(pm); const scr = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.15, 0.27), new THREE.MeshBasicMaterial({ color: 0xBEE3F8 })); scr.position.set(x + 0.5, 0.62, y + 0.5); W3.add(scr); }
+    const s = labelSprite('АЗС', { bg: '#D9483B', fg: '#FFFFFF' }); s.position.set(sx + sw / 2, 2.4, sy + sh / 2); W3.add(s);
+    // стела з цінами: середні ціни великих мереж АЗС України на 1 жовтня 2026 (грн/л)
+    const board = canvasTex(128, 192, (g) => {
+      g.fillStyle = '#1D2132'; g.fillRect(0, 0, 128, 192); g.fillStyle = '#D9483B'; g.fillRect(0, 0, 128, 30);
+      g.fillStyle = '#FFF'; g.font = '800 20px Manrope, sans-serif'; g.textAlign = 'center'; g.fillText('ЦІНИ', 64, 22);
+      g.textAlign = 'left'; g.font = '700 15px Manrope, sans-serif';
+      [['А-95', '90,06'], ['А-95+', '94,68'], ['ДП', '99,20'], ['ГАЗ', '44,38']].forEach(([n, p], k) => { g.fillStyle = '#BEE3F8'; g.fillText(n, 10, 60 + k * 34); g.fillStyle = '#FDE68A'; g.textAlign = 'right'; g.fillText(p, 118, 60 + k * 34); g.textAlign = 'left'; });
+      g.fillStyle = '#A3A9C0'; g.font = '600 10px Manrope, sans-serif'; g.fillText('грн/л · 01.10.2026', 10, 184);
+    });
+    const stela = new THREE.Mesh(new THREE.BoxGeometry(0.9, 1.35, 0.12), lambert(0xFFFFFF, { map: board })); stela.position.set(Gs.lot[0] + 0.8, 1.2, Gs.lot[1] + 0.5); W3.add(stela);
+    const leg = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.6, 0.1), lambert(0x3B3F4C)); leg.position.set(Gs.lot[0] + 0.8, 0.3, Gs.lot[1] + 0.5); W3.add(leg);
+  }
+}
+// об'єднуємо всі статичні меші з однаковим матеріалом в один — на порядок менше викликів малювання
+function mergeStatic(group) {
+  group.updateMatrixWorld(true);
+  const buckets = new Map(), drop = [];
+  const meshes = [];
+  group.traverse(o => { if (!o.isMesh || o.isInstancedMesh) return; for (let p = o.parent; p; p = p.parent) if (p === R3.interior || (R3.hideRooms && (p === R3.hideRooms.hall || p === R3.hideRooms.wc))) return; meshes.push(o); });
+  for (const o of meshes) {
+    const m = o.material, key = [m.type, m.color && m.color.getHex(), m.emissive && m.emissive.getHex(), m.map ? m.map.uuid : '', m.emissiveMap ? m.emissiveMap.uuid : '', m.side, m.transparent, m.opacity, !!m.vertexColors].join('|');
+    if (m.vertexColors) continue;
+    if (!buckets.has(key)) buckets.set(key, { mat: m, list: [] });
+    buckets.get(key).list.push(o); drop.push(o);
+  }
+  for (const { mat, list } of buckets.values()) {
+    if (list.length < 2) { drop.splice(drop.indexOf(list[0]), 1); continue; }
+    const pos = [], nor = [], uv = [];
+    for (const o of list) {
+      let g = o.geometry.index ? o.geometry.toNonIndexed() : o.geometry.clone();
+      g.applyMatrix4(o.matrixWorld);
+      const P = g.attributes.position.array, N = g.attributes.normal ? g.attributes.normal.array : null, UV = g.attributes.uv ? g.attributes.uv.array : null;
+      for (let i = 0; i < P.length; i++) pos.push(P[i]);
+      for (let i = 0; i < P.length; i++) nor.push(N ? N[i] : (i % 3 === 1 ? 1 : 0));
+      for (let i = 0; i < P.length / 3; i++) { uv.push(UV ? UV[i * 2] : 0, UV ? UV[i * 2 + 1] : 0); }
+      g.dispose();
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    group.add(new THREE.Mesh(geo, mat));
+  }
+  for (const o of drop) { o.parent.remove(o); o.geometry.dispose(); }
+}
 function buildWorld(cafeIdx) {
   if (!R3.ok) return;
   if (R3.world) { R3.scene.remove(R3.world); disposeGroup(R3.world); }
   const W3 = new THREE.Group(); R3.world = W3; R3.scene.add(W3); R3.vendors = [];
   const rnd = rng((M.seed ^ 0xA5A5A5) >>> 0);
   // земля: плоска текстура з 2D-карти (дороги, зебри, бруківка, газони)
-  const groundSrc = renderStatic(cafeIdx, { tod: 'evening', weather: 'clear' });
-  const gs = document.body.classList.contains('touch') ? 1536 : 2048;
-  const gt = canvasTex(gs, gs, (g) => g.drawImage(groundSrc, 0, 0, gs, gs));
-  gt.anisotropy = Math.min(8, R3.renderer.capabilities.getMaxAnisotropy());
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(W, H), lambert(0xFFFFFF, { map: gt }));
-  ground.rotation.x = -Math.PI / 2; ground.position.set(W / 2, 0, H / 2); W3.add(ground);
+  W3.add(groundMesh()); buildDistricts(W3);
   const edge = new THREE.Mesh(new THREE.PlaneGeometry(W + 80, H + 80), lambert(0x5E7E50)); edge.rotation.x = -Math.PI / 2; edge.position.set(W / 2, -0.02, H / 2); W3.add(edge);
   // багатоповерхівки: три відтінки стін, світлі вікна підсвічені (emissive)
   const WALLS = ['#C9A38A', '#A9B4C9', '#D6C79F'];
@@ -1835,7 +2476,7 @@ function buildWorld(cafeIdx) {
     // фасад дивиться на північ, звідки приходять гравці
     for (const wx of [cx - w / 2 + 0.55, cx + w / 2 - 0.55]) { const win = new THREE.Mesh(new THREE.PlaneGeometry(0.75, 0.55), new THREE.MeshBasicMaterial({ color: open ? 0xFFD58A : 0x4C5A78 })); win.position.set(wx, 0.8, r - 0.011); win.rotation.y = Math.PI; W3.add(win); }
     const door = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.75), lambert(open ? 0x3B2A20 : 0x2B3042)); door.position.set(cx, 0.375, r - 0.012); door.rotation.y = Math.PI; W3.add(door);
-    const at = stripeTex(open ? '#E4572E' : '#6B7090', open ? '#FFF4E6' : '#9AA0B8'); at.repeat.set(w * 2, 1);
+    const at = stripeTex(open ? '#E4572E' : '#6B7090', open ? '#FFF4E6' : '#9AA0B8', w * 2);
     const awn = new THREE.Mesh(new THREE.PlaneGeometry(w, 0.7), lambert(0xFFFFFF, { map: at, side: THREE.DoubleSide }));
     awn.position.set(cx, 1.2, r - 0.3); awn.rotation.x = Math.PI / 2 - 0.6; W3.add(awn);
     const s = labelSprite(CAFE_NAMES[i] + (open ? '' : ' · зачинено'), { bg: open ? '#1D2132' : '#3E4359', fg: open ? '#FFF4E6' : '#A3A9C0' }); s.position.set(cx, 2.2, r + h / 2); W3.add(s);
@@ -1848,6 +2489,17 @@ function buildWorld(cafeIdx) {
     }
   });
   R3.interior = new THREE.Group(); R3.interior.visible = false; W3.add(R3.interior); buildInterior(R3.interior, cafeIdx);
+  R3.hideRooms = buildHideRooms(W3);
+  // таблички з назвами вулиць: стовпчик з синьою табличкою на тротуарі
+  RROWS.forEach((r, k) => {
+    for (let x = 6; x < W - 2; x += 22) {
+      for (const sy of [r - 1, r + 2]) {
+        let xx = x; while (xx < W - 1 && tileAt(xx, sy) !== 'S') xx++; if (tileAt(xx, sy) !== 'S') continue;
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.7, 5), lambert(0x3E4250)); pole.position.set(xx + 0.5, 0.85, sy + (sy < r ? 0.85 : 0.15)); W3.add(pole);
+        const s = labelSprite('вул. ' + STREETS[k][0], { bg: '#2E5AAC', fg: '#FFFFFF', scale: 0.0042 }); s.position.set(xx + 0.5, 1.8, sy + (sy < r ? 0.85 : 0.15)); W3.add(s);
+      }
+    }
+  });
   // дерева (конуси), ліхтарі, кіоски, фонтани — інстансами, щоб не навантажувати пристрій
   const dm = new THREE.Object3D();
   const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.07, 0.09, 0.6, 5), lambert(0x6B4B3A), M.trees.length);
@@ -1869,14 +2521,7 @@ function buildWorld(cafeIdx) {
   });
   // двері, козирки й смітники багатоповерхівок (інстансами)
   {
-    const rd = rng(7), walk = (x, y) => x >= 0 && y >= 0 && x < W && y < H && 'SPG'.includes(tileAt(x, y));
-    const list = [];
-    for (const [c, r, w, h] of M.buildings) {
-      const sides = [];
-      for (let i2 = c; i2 < c + w; i2++) { if (walk(i2, r + h)) sides.push([i2 + 0.5, r + h - 0.06, Math.PI / 2]); if (walk(i2, r - 1)) sides.push([i2 + 0.5, r + 0.06, -Math.PI / 2]); }
-      for (let j2 = r; j2 < r + h; j2++) { if (walk(c - 1, j2)) sides.push([c + 0.06, j2 + 0.5, Math.PI]); if (walk(c + w, j2)) sides.push([c + w - 0.06, j2 + 0.5, 0]); }
-      if (sides.length) list.push(sides[Math.floor(rd() * sides.length)]);
-    }
+    const list = doorList();
     const mkI = (geo, mat) => new THREE.InstancedMesh(geo, mat, list.length);
     const frames = mkI(new THREE.BoxGeometry(0.04, 0.86, 0.56), lambert(0xE6DED0));
     const doors = mkI(new THREE.BoxGeometry(0.05, 0.76, 0.44), lambert(0x6B4B3A));
@@ -1896,11 +2541,11 @@ function buildWorld(cafeIdx) {
       const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.5, 0.3, 12), lambert(0xA7ADB8)); basin.position.set(x + 0.5, 0.15, y + 0.5); W3.add(basin);
       const water = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.02, 12), lambert(0x6FB7E0, { emissive: 0x10304A })); water.position.set(x + 0.5, 0.29, y + 0.5); W3.add(water);
       const col = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, 0.7, 6), lambert(0xA7ADB8)); col.position.set(x + 0.5, 0.5, y + 0.5); W3.add(col);
-    } else {
+    } else if (k === 'kiosk') {
       // кіоск: корпус, віконце з продавцем, прилавок, смугаста маркіза, вивіска
       const pr = M.props.find(q => q[1] === x && q[2] === y), fdx = pr && pr.length > 3 ? pr[3] : 0, fdy = pr && pr.length > 3 ? pr[4] : (y < H / 2 ? 1 : -1);
       const face = 1, g = new THREE.Group(); g.position.set(x + 0.5, 0, y + 0.5); g.rotation.y = Math.atan2(fdx, fdy);
-      const col = x % 2 ? 0x3A7CA5 : 0xE4572E, kind = ['КАВА', 'ПРЕСА', 'МОРОЗИВО'][x % 3];
+      const kind = kioskKind(x, y), col = { 'МОРОЗИВО': 0xE8A0B0, 'ПРЕСА': 0x3A7CA5, 'НАПОЇ': 0x3E7BC4, 'АПТЕКА': 0x3E9B5C, 'ОДЯГ': 0xC2508A, 'ЗБРОЯ': 0x5A5A5A }[kind] || 0xE4572E;
       const km = lambert(0xF1E4C8), part = (w, h, d, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), km); m.position.set(x, y, z); g.add(m); };
       part(0.86, 0.95, 0.06, 0, 0.475, -0.32); part(0.06, 0.95, 0.7, -0.4, 0.475, 0); part(0.06, 0.95, 0.7, 0.4, 0.475, 0);
       part(0.86, 0.42, 0.06, 0, 0.21, 0.32); part(0.86, 0.18, 0.06, 0, 0.86, 0.32);
@@ -1909,13 +2554,51 @@ function buildWorld(cafeIdx) {
       for (let k = 0; k < 3; k++) { const item = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.14, 0.1), lambert([0xE4572E, 0xF2C14E, 0x3E7BC4][k])); item.position.set(-0.22 + k * 0.22, 0.54, 0.44); g.add(item); }
       const shelf = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.04, 0.16), lambert(0xB98A5A)); shelf.position.set(0, 0.45, 0.43); g.add(shelf);
       const roofK = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.08, 0.84), lambert(col)); roofK.position.y = 0.99; g.add(roofK);
-      const st = stripeTex(x % 2 ? '#3A7CA5' : '#E4572E', '#FFF4E6'); st.repeat.set(3, 1);
+      const st = stripeTex(x % 2 ? '#3A7CA5' : '#E4572E', '#FFF4E6', 3);
       const awn = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.32), lambert(0xFFFFFF, { map: st, side: THREE.DoubleSide })); awn.position.set(0, 0.88, 0.47); awn.rotation.x = -0.9; g.add(awn);
       const sign = labelSprite(kind, { bg: '#1D2132', fg: '#FFF4E6', scale: 0.005 }); sign.position.set(0, 1.25, 0); g.add(sign);
       W3.add(g);
       R3.vendors.push({ x: x + 0.5 - fdx * 0.02, z: y + 0.5 - fdy * 0.02, h: Math.atan2(fdy, fdx) });
     }
   }
+  mergeStatic(W3);
+}
+
+// ---------- 3D: кімнатки-схованки (за межами карти, видно лише зсередини) ----------
+const HR = { hall: { x: W + 30, z: 20 }, wc: { x: W + 30, z: 30 } };
+function buildHideRooms(W3) {
+  const mk = (ox, oz, w, d, h, wallC, floorC) => {
+    const g = new THREE.Group(); g.visible = false; W3.add(g);
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(w, d), lambert(floorC)); fl.rotation.x = -Math.PI / 2; fl.position.set(ox, 0.003, oz); g.add(fl);
+    const ce = new THREE.Mesh(new THREE.PlaneGeometry(w, d), lambert(0xE8E2D6)); ce.rotation.x = Math.PI / 2; ce.position.set(ox, h, oz); g.add(ce);
+    const wm = lambert(wallC);
+    for (const [px, pz, len, rot] of [[ox, oz - d / 2, w, 0], [ox, oz + d / 2, w, Math.PI], [ox - w / 2, oz, d, Math.PI / 2], [ox + w / 2, oz, d, -Math.PI / 2]]) { const m = new THREE.Mesh(new THREE.PlaneGeometry(len, h), wm); m.position.set(px, h / 2, pz); m.rotation.y = rot; g.add(m); }
+    const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 6), new THREE.MeshBasicMaterial({ color: 0xFFE9B0 })); lamp.position.set(ox, h - 0.1, oz); g.add(lamp);
+    return g;
+  };
+  // тамбур під'їзду: поштові скриньки, сходи вгору, батарея, вхідні двері
+  const hall = mk(HR.hall.x, HR.hall.z, 1.8, 2.2, 1.9, 0x7E9C8C, 0x9C8C78);
+  { const { x, z } = HR.hall;
+    const door = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 1.1), lambert(0x6B4B3A)); door.position.set(x, 0.55, z + 1.09); door.rotation.y = Math.PI; hall.add(door);
+    const mail = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.45, 0.12), lambert(0x5A6070)); mail.position.set(x - 0.88, 1.0, z - 0.2); mail.rotation.y = Math.PI / 2; hall.add(mail);
+    for (let i = 0; i < 6; i++) { const sl = new THREE.Mesh(new THREE.PlaneGeometry(0.18, 0.1), lambert(0x3B3F4C)); sl.position.set(x - 0.81, 0.88 + Math.floor(i / 3) * 0.2, z - 0.42 + (i % 3) * 0.22); sl.rotation.y = Math.PI / 2; hall.add(sl); }
+    for (let i = 0; i < 5; i++) { const st = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.12, 0.25), lambert(0xB8AE9C)); st.position.set(x + 0.4, 0.06 + i * 0.12, z - 0.9 + i * 0.25); st.scale.y = 1 + i; st.position.y = (0.12 * (i + 1)) / 2; hall.add(st); }
+    const rad = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.4, 0.6), lambert(0xE8E2D6)); rad.position.set(x + 0.86, 0.35, z + 0.5); hall.add(rad);
+    const tag = labelSprite('під\'їзд №' + (1 + Math.floor(Math.random() * 6)), { bg: '#2B2A33', fg: '#FDE68A', scale: 0.004 }); tag.position.set(x, 1.5, z + 1.0); hall.add(tag);
+  }
+  // туалет АЗС: кахель, унітаз, раковина, дзеркало
+  const wc = mk(HR.wc.x, HR.wc.z, 1.4, 1.6, 1.9, 0xDCE6EA, 0xB7C3C9);
+  { const { x, z } = HR.wc;
+    const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.12, 0.3, 10), lambert(0xFFFFFF)); bowl.position.set(x, 0.15, z - 0.55); wc.add(bowl);
+    const tank = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.32, 0.12), lambert(0xFFFFFF)); tank.position.set(x, 0.45, z - 0.75); wc.add(tank);
+    const seat = new THREE.Mesh(new THREE.TorusGeometry(0.13, 0.03, 4, 12), lambert(0xF4F1EA)); seat.rotation.x = Math.PI / 2; seat.position.set(x, 0.31, z - 0.55); wc.add(seat);
+    const sink = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.1, 0.3), lambert(0xFFFFFF)); sink.position.set(x - 0.52, 0.75, z + 0.1); wc.add(sink);
+    const mirror = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 0.45), new THREE.MeshBasicMaterial({ color: 0xA9CBEA })); mirror.position.set(x - 0.69, 1.25, z + 0.1); mirror.rotation.y = Math.PI / 2; wc.add(mirror);
+    const door = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 1.1), lambert(0x3E7BC4)); door.position.set(x, 0.55, z + 0.79); door.rotation.y = Math.PI; wc.add(door);
+    const tag = labelSprite('WC · АЗС', { bg: '#3E7BC4', fg: '#FFFFFF', scale: 0.004 }); tag.position.set(x, 1.45, z + 0.7); wc.add(tag);
+    for (let i = 0; i < 6; i++) { const tile = new THREE.Mesh(new THREE.PlaneGeometry(1.38, 0.02), lambert(0xBFCCD2)); tile.position.set(x, 0.3 + i * 0.25, z - 0.79); wc.add(tile); }
+  }
+  return { hall, wc };
 }
 
 // ---------- 3D: всередині кав'ярні ----------
@@ -1973,7 +2656,7 @@ function buildInterior(W3, cafeIdx) {
 }
 
 // ---------- 3D: динамічні об'єкти (інстанси) ----------
-const MAXP = 96, MAXC = 64;
+const MAXP = 260, MAXC = 120;
 const JACKETS = ['#D9483B', '#3E7BC4', '#E8B23A', '#7A5BB0', '#E07B39', '#5AA0D8', '#C2508A', '#8C7B6A'];
 const HATS = ['#2E5AAC', '#C93A3A', '#F2C14E', '#3C3C3C', '#3E9B5C', '#FF8FA3', '#8A4FBF', '#E8E1D0'];
 const SKINS = ['#F6D2AE', '#E9B98E', '#C98E62', '#F2C9A0'];
@@ -1983,34 +2666,100 @@ function initDynamic() {
   const mk = (geo, n, mat) => { const m = new THREE.InstancedMesh(geo, mat, n); m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(n * 3).fill(1), 3); m.instanceColor.setUsage(THREE.DynamicDrawUsage); m.count = 0; m.frustumCulled = false; R3.scene.add(m); return m; };
   const white = lambert(0xFFFFFF);
   D.body = mk(new THREE.CylinderGeometry(0.17, 0.22, 0.34, 8), MAXP, white.clone());
-  D.head = mk(new THREE.SphereGeometry(0.23, 10, 8), MAXP, white.clone());
-  D.hat = mk(new THREE.SphereGeometry(0.235, 10, 5, 0, Math.PI * 2, 0, Math.PI / 2), MAXP, white.clone());
-  D.eye = mk(new THREE.SphereGeometry(0.07, 7, 5), MAXP * 2, new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
-  D.pupil = mk(new THREE.SphereGeometry(0.026, 5, 4), MAXP * 2, new THREE.MeshBasicMaterial({ color: 0x111111 }));
+  D.head = mk(new THREE.SphereGeometry(0.23, 9, 6), MAXP, white.clone());
+  D.hat = mk(new THREE.SphereGeometry(0.235, 9, 3, 0, Math.PI * 2, 0, Math.PI / 2), MAXP, white.clone());
+  D.eye = mk(new THREE.SphereGeometry(0.07, 6, 4), MAXP * 2, new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+  D.pupil = mk(new THREE.SphereGeometry(0.026, 4, 3), MAXP * 2, new THREE.MeshBasicMaterial({ color: 0x111111 }));
   D.foot = mk(new THREE.BoxGeometry(0.16, 0.07, 0.11), MAXP * 2, lambert(0x2B2A33));
   D.arm = mk(new THREE.CylinderGeometry(0.055, 0.05, 0.2, 6), MAXP * 2, white.clone());
-  D.hand = mk(new THREE.SphereGeometry(0.058, 6, 4), MAXP * 2, white.clone());
-  D.pom = mk(new THREE.SphereGeometry(0.06, 6, 4), MAXP, white.clone());
+  D.hand = mk(new THREE.SphereGeometry(0.058, 5, 3), MAXP * 2, white.clone());
+  D.pom = mk(new THREE.SphereGeometry(0.06, 5, 3), MAXP, white.clone());
   D.mouth = mk(new THREE.BoxGeometry(0.02, 0.022, 0.12), MAXP, new THREE.MeshBasicMaterial({ color: 0x3A1E1E }));
   D.zip = mk(new THREE.BoxGeometry(0.012, 0.26, 0.022), MAXP, lambert(0x2B2A33));
   D.brow = mk(new THREE.BoxGeometry(0.015, 0.018, 0.08), MAXP * 2, new THREE.MeshBasicMaterial({ color: 0x2B1E18 }));
-  D.car = mk(new THREE.BoxGeometry(1.05, 0.34, 0.56), MAXC, white.clone());
-  D.cab = mk(new THREE.BoxGeometry(0.56, 0.26, 0.5), MAXC, lambert(0x2B3346));
+  D.car = mk(new THREE.BoxGeometry(1.02, 0.26, 0.54), MAXC, white.clone());
+  D.cab = mk(new THREE.BoxGeometry(0.56, 0.24, 0.5), MAXC, white.clone());
+  D.glass = mk(new THREE.BoxGeometry(0.58, 0.15, 0.52), MAXC, lambert(0x2B3346));
+  D.bus = mk(new THREE.BoxGeometry(1.32, 0.52, 0.6), MAXC, white.clone());
+  D.busWin = mk(new THREE.BoxGeometry(1.34, 0.17, 0.62), MAXC, lambert(0x2B3346));
+  D.wheel = mk(new THREE.CylinderGeometry(0.12, 0.12, 0.08, 8).rotateX(Math.PI / 2), MAXC * 4, lambert(0x1E1E24));
   D.light = mk(new THREE.BoxGeometry(0.04, 0.07, 0.12), MAXC * 2, new THREE.MeshBasicMaterial({ color: 0xFFF1C2 }));
   const col = new THREE.Color(1, 1, 1);
-  for (const k of ['cab', 'light', 'eye', 'pupil', 'foot', 'mouth', 'zip', 'brow']) D[k].instanceColor = null;
+  for (const k of ['glass', 'busWin', 'wheel', 'light', 'eye', 'pupil', 'foot', 'mouth', 'zip', 'brow']) D[k].instanceColor = null;
+  D.coin = mk(new THREE.CylinderGeometry(0.17, 0.17, 0.045, 14).rotateX(Math.PI / 2), 8, new THREE.MeshLambertMaterial({ color: 0xF2C14E, emissive: 0x6A4A00 }));
+  D.coin.instanceColor = null;
+  D.medPool = []; for (let i = 0; i < 12; i++) { const s = labelSprite('ТЦК', { bg: '#D9483B', fg: '#FFFFFF', depthTest: false }); s.visible = false; s.renderOrder = 10; R3.scene.add(s); D.medPool.push(s); }
   D.tmp = new THREE.Object3D(); D.col = new THREE.Color();
   D.pool = []; for (let i = 0; i < 28; i++) { const s = labelSprite(' '); s.visible = false; R3.scene.add(s); D.pool.push(s); }
   D.leaf = labelSprite('БРОНЬ', { bg: '#FFF8E6', fg: '#3A7CA5' }); D.leaf.visible = false; R3.scene.add(D.leaf);
 }
-function beginDyn() { const D = R3.dyn; D.np = 0; D.nc = 0; D.ns = 0; }
+// чашка кави в руці від першої особи: час від часу підносиш її до рота
+// морозиво й енергетик у руці від першої особи
+function animPepper(on) {
+  if (!R3.pepG) {
+    const g = new THREE.Group();
+    const can = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.1, 10), lambert(0xD9483B)); g.add(can);
+    const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.018, 0.025, 8), lambert(0x2B2A33)); cap.position.y = 0.062; g.add(cap);
+    g.position.set(-0.2, -0.21, -0.42); g.rotation.set(-0.25, 0, 0.3);
+    R3.pepG = g; R3.camera.add(g); R3.scene.add(R3.camera);
+  }
+  R3.pepG.visible = on;
+}
+function animKnife(on) {
+  if (!R3.knifeG) {
+    const g = new THREE.Group();
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.11, 0.03), lambert(0xD9DDE3)); blade.position.y = 0.07; g.add(blade);
+    const grip = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.06, 0.03), lambert(0x3B2A20)); g.add(grip);
+    g.position.set(0.2, -0.2, -0.42); g.rotation.set(-0.3, 0, -0.35);
+    R3.knifeG = g; R3.camera.add(g); R3.scene.add(R3.camera);
+  }
+  R3.knifeG.visible = on;
+}
+function animHeld(t) {
+  const H = R3.held, now = Date.now();
+  if (!R3.heldG) {
+    const mk2 = () => { const g = new THREE.Group(); g.visible = false; R3.camera.add(g); return g; };
+    const ice = mk2();
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.14, 10), lambert(0xD9A45E)); cone.rotation.x = Math.PI; ice.add(cone);
+    const scoop = new THREE.Mesh(new THREE.SphereGeometry(0.052, 10, 8), lambert(0xF6D0DC)); scoop.position.y = 0.085; ice.add(scoop);
+    const scoop2 = new THREE.Mesh(new THREE.SphereGeometry(0.04, 10, 8), lambert(0xFFF4E6)); scoop2.position.set(0.01, 0.13, 0); ice.add(scoop2);
+    const can = mk2();
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.12, 12), lambert(0x2FA35E)); can.add(body);
+    const band = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.036, 0.04, 12), lambert(0xF2C14E)); can.add(band);
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(0.033, 0.033, 0.01, 12), lambert(0xBFC4CC)); top.position.y = 0.065; can.add(top);
+    R3.heldG = { icecream: ice, energy: can };
+    R3.scene.add(R3.camera);
+  }
+  for (const k in R3.heldG) R3.heldG[k].visible = false;
+  if (!H || now > H.until) { R3.held = null; return; }
+  const g = R3.heldG[H.kind]; if (!g) return; g.visible = true;
+  const e = (now - H.t0) / 1000;
+  if (H.kind === 'icecream') { const lick = Math.max(0, Math.sin(e * 2.2)) ; g.position.set(0.16 - lick * 0.1, -0.17 + lick * 0.1, -0.38 + lick * 0.12); g.rotation.set(-0.3 + lick * 0.5, 0, 0.15); g.children[1].scale.setScalar(Math.max(0.2, 1 - e / 9)); g.children[2].scale.setScalar(Math.max(0, 1 - e / 5)); }
+  else { const up = Math.min(1, e / 0.5) * (e > 2.2 ? Math.max(0, 1 - (e - 2.2) / 0.5) : 1); g.position.set(0.16 - up * 0.13, -0.2 + up * 0.15, -0.4 + up * 0.18); g.rotation.set(up * 1.2, 0, up * 0.2); }
+}
+function animCup(on, t) {
+  if (!R3.cup) {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.04, 0.09, 12), lambert(0xFFFFFF)); g.add(body);
+    const coffee = new THREE.Mesh(new THREE.CircleGeometry(0.045, 12), lambert(0x5A3A28)); coffee.rotation.x = -Math.PI / 2; coffee.position.y = 0.041; g.add(coffee);
+    const handle = new THREE.Mesh(new THREE.TorusGeometry(0.025, 0.008, 4, 8, Math.PI), lambert(0xFFFFFF)); handle.position.x = 0.05; handle.rotation.z = -Math.PI / 2; g.add(handle);
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), lambert(new THREE.Color(PC[Math.max(0, S.mySlot)]))); hand.position.set(0.07, -0.02, 0); g.add(hand);
+    R3.cup = g; R3.camera.add(g); R3.scene.add(R3.camera);
+  }
+  R3.cup.visible = on;
+  if (!on) return;
+  const cyc = (t / 1000) % 7, sip = cyc > 4.5 ? Math.sin((cyc - 4.5) / 2.5 * Math.PI) : 0;
+  R3.cup.position.set(0.2 - sip * 0.17, -0.2 + sip * 0.14, -0.42 + sip * 0.16);
+  R3.cup.rotation.set(sip * 0.9, 0, sip * 0.25);
+}
+function beginDyn() { const D = R3.dyn; D.np = 0; D.nc = 0; D.nb = 0; D.nw = 0; D.ns = 0; }
 function endDyn() {
   const D = R3.dyn;
   for (const k of ['body', 'head', 'hat', 'pom', 'mouth', 'zip']) { D[k].count = D.np; D[k].instanceMatrix.needsUpdate = true; if (D[k].instanceColor) D[k].instanceColor.needsUpdate = true; }
   for (const k of ['eye', 'pupil', 'foot', 'arm', 'hand', 'brow']) { D[k].count = D.np * 2; D[k].instanceMatrix.needsUpdate = true; if (D[k].instanceColor) D[k].instanceColor.needsUpdate = true; }
-  D.car.count = D.nc; D.cab.count = D.nc; D.light.count = D.nc * 2;
-  for (const k of ['car', 'cab', 'light']) D[k].instanceMatrix.needsUpdate = true;
-  if (D.car.instanceColor) D.car.instanceColor.needsUpdate = true;
+  D.car.count = D.cab.count = D.glass.count = D.nc; D.bus.count = D.busWin.count = D.nb; D.wheel.count = D.nw; D.light.count = (D.nc + D.nb) * 2;
+  for (const k of ['car', 'cab', 'glass', 'bus', 'busWin', 'wheel', 'light']) D[k].instanceMatrix.needsUpdate = true;
+  for (const k of ['car', 'cab', 'bus']) if (D[k].instanceColor) D[k].instanceColor.needsUpdate = true;
   for (let i = D.ns; i < D.pool.length; i++) D.pool[i].visible = false;
 }
 function sprite(text, x, y, z, opts) {
@@ -2048,14 +2797,27 @@ function person(x, z, h, ph, mv, o) {
     D.arm.setColorAt(j, D.col.set(o.body)); D.hand.setColorAt(j, D.col.set(o.mitt || o.hat));
   }
 }
+const BUSC = ['#F2C14E', '#F4F1EA', '#E8E1D0', '#D9D2C6'];
 function car(c) {
-  const D = R3.dyn; if (D.nc >= MAXC) return;
-  const i = D.nc++, t = D.tmp, h = [0, Math.PI, Math.PI / 2, -Math.PI / 2][c.o] || 0, ch = Math.cos(h), sh = Math.sin(h), x = c.x * U, z = c.y * U;
+  const D = R3.dyn; if (D.nc + D.nb >= MAXC) return;
+  const t = D.tmp, h = [0, Math.PI, Math.PI / 2, -Math.PI / 2][c.o] || 0, ch = Math.cos(h), sh = Math.sin(h), x = c.x * U, z = c.y * U;
   const put = (mesh, idx, ox, oy, oz) => { t.position.set(x + ox * ch - oz * sh, oy, z + ox * sh + oz * ch); t.rotation.set(0, -h, 0); t.scale.set(1, 1, 1); t.updateMatrix(); mesh.setMatrixAt(idx, t.matrix); };
-  put(D.car, i, 0, 0.24, 0); put(D.cab, i, -0.08, 0.53, 0);
-  put(D.light, i * 2, 0.53, 0.26, -0.18); put(D.light, i * 2 + 1, 0.53, 0.26, 0.18);
-  D.car.setColorAt(i, D.col.set(c.rev ? '#2FA35E' : CARC[c.i % 5]));
-  if (c.rev) sprite('ТЦК', x, 1.15, z, { bg: '#2FA35E', fg: '#FFFFFF' });
+  const li = (D.nc + D.nb) * 2;
+  if (c.bus) {
+    const i = D.nb++;
+    put(D.bus, i, 0, 0.42, 0); put(D.busWin, i, 0.02, 0.58, 0);
+    D.bus.setColorAt(i, D.col.set(c.rev ? '#2FA35E' : BUSC[c.i % 4]));
+    for (const [wx, wz] of [[-0.42, -0.29], [-0.42, 0.29], [0.42, -0.29], [0.42, 0.29]]) put(D.wheel, D.nw++, wx, 0.12, wz);
+    put(D.light, li, 0.67, 0.3, -0.2); put(D.light, li + 1, 0.67, 0.3, 0.2);
+  } else {
+    const i = D.nc++, col = c.rev ? '#2FA35E' : c.pol ? '#EEF2F8' : CARC[c.i % 5];
+    if (c.pol) { const on = Math.floor(Date.now() / 250) % 2; sprite(on ? '■ ■' : '■ ■', x, 0.95, z, { bg: on ? '#2E5AAC' : '#D9483B', fg: on ? '#2E5AAC' : '#D9483B', scale: 0.004 }); }
+    put(D.car, i, 0, 0.27, 0); put(D.cab, i, -0.06, 0.52, 0); put(D.glass, i, -0.06, 0.53, 0);
+    D.car.setColorAt(i, D.col.set(col)); D.cab.setColorAt(i, D.col.set(col));
+    for (const [wx, wz] of [[-0.32, -0.26], [-0.32, 0.26], [0.32, -0.26], [0.32, 0.26]]) put(D.wheel, D.nw++, wx, 0.12, wz);
+    put(D.light, li, 0.52, 0.3, -0.18); put(D.light, li + 1, 0.52, 0.3, 0.18);
+  }
+  if (c.rev) sprite('ТЦК', x, c.bus ? 1.3 : 1.15, z, { bg: '#2FA35E', fg: '#FFFFFF' });
 }
 
 // ---------- 3D: кадр ----------
@@ -2100,13 +2862,17 @@ function camFocus(view) {
   const [st, , , cst, , , eu] = myStatus(), now = Date.now(), m = S.me;
   const done = st === 3 || st === 4 || (st === 2 && cst === 2 && (eu || m.escTried) && !MG.active && !m.escOk);
   const specEl = document.getElementById('spec');
-  if (!done) { m.doneAt = 0; specEl.hidden = true; return { x: m.x, y: m.y }; }
+  if (!done) { m.doneAt = 0; specEl.hidden = true; document.getElementById('cafeBar').hidden = true; return { x: m.x, y: m.y }; }
   if (!m.doneAt) m.doneAt = now;
+  const cafeEl = document.getElementById('cafeBar');
+  if (st === 3 && !m.wantSpec) { specEl.hidden = true; cafeEl.hidden = false; return { x: m.x, y: m.y }; }
+  cafeEl.hidden = true;
+  if (st === 3) m.doneAt = Math.min(m.doneAt, now - 3000);
   const live = view.players.filter(p => p.slot !== S.mySlot && (p.st === 0 || p.st === 1));
   const cands = live.length ? live : view.players.filter(p => p.slot !== S.mySlot && p.st === 2);
   if (now - m.doneAt < 3000 || !cands.length) { specEl.hidden = true; return { x: m.x, y: m.y }; }
   const p = cands[((SPEC.idx % cands.length) + cands.length) % cands.length];
-  specEl.hidden = false; document.getElementById('specName').textContent = (p.slot + 1) + ' · ' + p.nick;
+  specEl.hidden = false; document.getElementById('specName').textContent = (p.slot + 1) + ' · ' + p.nick; document.getElementById('specBack').hidden = st !== 3;
   return { x: p.x, y: p.y, spec: true, slot: p.slot };
 }
 function updateCompass(view, focus) {
@@ -2130,14 +2896,15 @@ function render(dt, t) {
     R3.renderer.render(R3.scene, camr);
     return;
   }
-  const view = worldView(dt), now = Date.now();
+  const view = worldView(dt), now = Date.now(); S.lastView = view;
   const focus = camFocus(view);
   const [st, , , cst] = myStatus();
   beginDyn();
   // інші люди
   for (const e of view.peds) {
+    if (e.gone || e.x < -1000) continue;
     const a = animOf('E' + e.i, e.x, e.y);
-    person(e.x * U, e.y * U, a.h, a.ph, a.mv, e.rev ? { body: TCC_GREEN, hat: TCC_DARK, skin: SKINS[e.i % 4] } : { body: JACKETS[e.i % 8], hat: HATS[(e.i * 3) % 8], skin: SKINS[e.i % 4] });
+    const sitP = e.sit; person(e.x * U, e.y * U, sitP ? Math.PI / 2 : a.h, a.ph, sitP ? 0 : a.mv, e.rev ? { body: TCC_GREEN, hat: TCC_DARK, skin: SKINS[e.i % 4], sit: sitP } : { body: JACKETS[e.i % 8], hat: HATS[(e.i * 3) % 8], skin: SKINS[e.i % 4], sit: sitP });
     if (e.chase) sprite('!', e.x * U, 1.15, e.y * U, { fg: '#BFF3D2' });
   }
   for (const v of (R3.vendors || [])) person(v.x, v.z, v.h, 0, 0, { body: '#E07B39', hat: '#3E7BC4', skin: SKINS[1] });
@@ -2148,6 +2915,8 @@ function render(dt, t) {
   person(IN.x + IN.w / 2, IN.z + 0.62, Math.PI / 2, t / 400, 0.15, { body: '#F4F1EA', hat: '#5A3A28', skin: SKINS[0], mitt: SKINS[0], y: 0.28, wave: Math.sin(t / 1500) > 0.6 });
   [[2, 0], [2, 1], [3, 0], [3, 1]].forEach(([ti, k]) => { const [tx0, tz0] = IN_TABLES[ti], sd = k ? 1 : -1; person(IN.x + tx0 + sd * 0.55, IN.z + tz0, sd < 0 ? 0 : Math.PI, t / 900 + ti + k, 0, { body: JACKETS[(ti * 2 + k + 3) % 8], hat: HATS[(ti + k * 3) % 8], skin: SKINS[(ti + k) % 4], sit: true }); });
   }
+  for (const e of view.cops) { const a = animOf('C' + e.i, e.x, e.y); person(e.x * U, e.y * U, a.h, a.ph, a.mv, { body: '#2E3A5A', hat: '#1E2A44', skin: SKINS[(e.i + 1) % 4], pom: '#F2C14E', mitt: '#1E2A44' }); if (e.chase) sprite('ПОЛІЦІЯ', e.x * U, 1.2, e.y * U, { bg: '#2E5AAC', fg: '#FFFFFF', scale: 0.004 }); }
+  if (view.knife) sprite('НОЖИК', view.knife.x * U, 0.55 + Math.sin(t / 300) * 0.06, view.knife.y * U, { bg: '#5A5A5A', fg: '#FFFFFF', scale: 0.0045 });
   view.sq.forEach((q, qi) => [[-14, -8], [14, -8], [0, 12]].forEach(([dx, dy], k) => {
     const x = q.x + dx, y = q.y + dy, a = animOf('Q' + qi + '_' + k, x, y);
     person(x * U, y * U, a.h, a.ph, a.mv, { body: TCC_GREEN, hat: TCC_DARK, skin: SKINS[k % 4] });
@@ -2163,13 +2932,23 @@ function render(dt, t) {
   for (const p of view.players) {
     const mine = p.slot === S.mySlot, a = animOf('P' + p.slot, p.x, p.y);
     if (mine && !focus.spec && p.st !== 3) continue;
-    let h = a.h, sit = false, px3 = p.x * U, pz3 = p.y * U;
+    const hb = S.isHost && S.sim ? (S.sim.players[p.slot] ? ((S.sim.players[p.slot].hid ? 1 : 0) | (S.sim.players[p.slot].sit ? 2 : 0)) : 0) : num(((S.snap || {}).hb || [])[p.slot], 0);
+    if (hb & 1 && !mine) continue;
+    let h = (hb & 2) ? Math.PI / 2 : a.h, sit = !!(hb & 2) && p.st === 0, px3 = p.x * U, pz3 = p.y * U;
     if (p.st === 3) { if (!inCafe) continue; const seat = interiorSeat(p.slot); px3 = seat[0]; pz3 = seat[1]; h = seat[2]; sit = true; }
     if (mine && p.st === 3 && !focus.spec) continue;
-    person(px3, pz3, h, a.ph, p.st === 1 || sit ? 0 : a.mv, { body: PC[p.slot], hat: PCD[p.slot], skin: SKINS[p.slot % 4], sit, pom: PC[p.slot] });
+    person(px3, pz3, h, a.ph, p.st === 1 || sit ? 0 : a.mv, { body: p.of ? JACKETS[p.of % 8] : PC[p.slot], hat: PCD[p.slot], skin: SKINS[p.slot % 4], sit, pom: PC[p.slot] });
     sprite((p.slot + 1) + ' · ' + p.nick + (p.st === 1 ? ' ✶' : '') + (p.br ? ' · бронь' : ''), px3, 1.2, pz3, { fg: PC[p.slot] });
   }
   for (const c of view.cars) car(c);
+  { const D = R3.dyn; D.coin.count = Math.min(8, view.coins.length);
+    view.coins.slice(0, 8).forEach((c, k) => { D.tmp.position.set(c.x * U, 0.45 + Math.sin(t / 350 + k) * 0.06, c.y * U); D.tmp.rotation.set(0, t / 500 + k, 0); D.tmp.scale.set(1, 1, 1); D.tmp.updateMatrix(); D.coin.setMatrixAt(k, D.tmp.matrix); });
+    D.coin.instanceMatrix.needsUpdate = true;
+    const med = (myStatus()[9] || 0) > 0 && view.tc; let mi = 0;
+    if (med) { for (const ci of view.tc[0]) { const c = view.cars[ci]; if (c && mi < D.medPool.length) { D.medPool[mi].position.set(c.x * U, 1.6, c.y * U); D.medPool[mi++].visible = true; } } for (const pi of view.tc[1]) { const e = view.peds[pi]; if (e && mi < D.medPool.length) { D.medPool[mi].position.set(e.x * U, 1.4, e.y * U); D.medPool[mi++].visible = true; } } }
+    for (; mi < D.medPool.length; mi++) D.medPool[mi].visible = false; }
+  for (const f of view.fx) if (f.k === 8 && f.age < 1500) sprite('ПШШШ! 4 секунди фори', f.x * U, 1.3 + f.age / 1800, f.y * U, { fg: '#FF8F6B' });
+  for (const f of view.fx) if (f.k === 4 && f.age < 1200) sprite('+1 монетка', f.x * U, 1.3 + f.age / 1500, f.y * U, { fg: '#F2C14E' });
   if (view.leaf) { R3.dyn.leaf.visible = true; R3.dyn.leaf.position.set(view.leaf.x * U, 0.55 + Math.sin(t / 300) * 0.08, view.leaf.y * U); } else R3.dyn.leaf.visible = false;
   endDyn();
   // камера: від першої особи; після кави чи в спостерігачі — ззаду над гравцем
@@ -2177,19 +2956,35 @@ function render(dt, t) {
   const fov = sprinting ? 80 : 72; R3.fov += (fov - R3.fov) * Math.min(1, dt * 6);
   if (Math.abs(camr.fov - R3.fov) > 0.05) { camr.fov = R3.fov; camr.updateProjectionMatrix(); }
   if (focus.spec) {
+    animCup(false, t); $('busFrame').hidden = true;
     const a = ANIM.get('P' + focus.slot) || { h: 0 };
     const tx3 = focus.x * U, tz3 = focus.y * U, bx3 = tx3 - Math.cos(a.h) * 2.4, bz3 = tz3 - Math.sin(a.h) * 2.4;
     camr.position.lerp(new THREE.Vector3(bx3, 1.8, bz3), Math.min(1, dt * 4));
     camr.lookAt(tx3, 0.6, tz3);
   } else {
     let eye = EYE, roll = 0, cx3 = S.me.x * U, cz3 = S.me.y * U;
+    if (st === 0 && S.me.sitB) eye = 0.5;
+    const hideKind = st === 0 && S.me.hid ? (S.me.hidKind || 'hall') : null;
+    if (R3.hideRooms) { R3.hideRooms.hall.visible = hideKind === 'hall'; R3.hideRooms.wc.visible = hideKind === 'wc'; }
+    if (hideKind) { const r = HR[hideKind]; cx3 = r.x; cz3 = r.z + (hideKind === 'wc' ? 0.45 : 0.55); eye = 0.6; if (!R3.inHide) { R3.inHide = true; R3.yaw = -Math.PI / 2; R3.pitch = -0.05; } } else R3.inHide = false;
     if (st === 3) { const seat = interiorSeat(S.mySlot); cx3 = seat[0]; cz3 = seat[1]; eye = 0.78; if (!R3.inCafe) { R3.inCafe = true; R3.yaw = Math.atan2(IN.z + 1.0 - cz3, IN.x + IN.w / 2 - cx3); R3.pitch = -0.1; } } else R3.inCafe = false;
-    if (st === 2 && cst === 1) eye = 0.9;
+    const inVan = st === 2 && cst === 1;
+    if (inVan) {
+      // вид з пасажирського сидіння буса: праворуч спереду, дивишся у вікно
+      const va = animOf('ME_VAN', S.me.x, S.me.y), fx = Math.cos(va.h), fz = Math.sin(va.h);
+      cx3 += fx * 0.2 - fz * 0.14; cz3 += fz * 0.2 + fx * 0.14; eye = 0.62;
+      // дивишся тільки у праве вікно: камера прив'язана до напрямку буса, мишею не крутиться
+      const want = va.h + Math.PI / 2;
+      if (!R3.inVan) { R3.inVan = true; R3.yaw = want; }
+      let d = want - R3.yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); R3.yaw += d * Math.min(1, dt * 5); R3.pitch = -0.02;
+    } else R3.inVan = false;
+    $('busFrame').hidden = !inVan;
     const stunned = st === 1 || now < (S.me.lstunUntil || 0);
     if (stunned) roll = Math.sin(t / 120) * 0.08;
     const a = ANIM.get('P' + S.mySlot);
     const bob = a ? Math.sin(a.ph * 2) * 0.025 * a.mv : 0;
     camr.position.set(cx3, eye + bob, cz3);
+    animCup(st === 3, t); animHeld(t); animKnife(st === 0 && (myStatus()[13] || 0) > 0 && !R3.held); animPepper(st === 0 && (myStatus()[18] || 0) > 0 && !R3.held);
     const cp = Math.cos(R3.pitch);
     camr.up.set(0, 1, 0);
     camr.lookAt(camr.position.x + Math.cos(R3.yaw) * cp, camr.position.y + Math.sin(R3.pitch), camr.position.z + Math.sin(R3.yaw) * cp);
@@ -2210,7 +3005,7 @@ function frame(t) {
   if (S.mode !== 'lobby' && S.match) {
     clientRead();
     if (S.mode === 'play' || S.mode === 'end') {
-      if (S.mode === 'play') { mgTick(); turnKeys(dt); updateLocal(dt); }
+      if (S.mode === 'play') { mgTick(); turnKeys(dt); updateLocal(dt); shopTick(); actTick(); invTick(dt); gateTick(dt); phoneTick(); dangerTick(dt, t); }
       if (S.isHost && S.sim) {
         hostTick(dt);
         if (S.match.ph === 'end' && S.mode === 'play') { S.mode = 'end'; showEnd(S.match.res); sendHostNow(); }
@@ -2223,6 +3018,259 @@ function frame(t) {
   if (!S.isHost && S.mode === 'play') clientCollide();
   requestAnimationFrame(frame);
 }
+// ---------- магазини: підказка, меню, покупка ----------
+let shopNear = null, shopOpenSpot = null;
+function shopTick() {
+  const el = $('shopPrompt');
+  const [st] = myStatus();
+  if (S.mode !== 'play' || st !== 0 || MG.active || !$('shopMenu').hidden || !$('paper').hidden) { el.hidden = true; shopNear = null; return; }
+  let best = null, bd = 1.7 * T;
+  for (const s of shopSpots()) { const d = Math.hypot(s.x - S.me.x, s.y - S.me.y); if (d < bd) { bd = d; best = s; } }
+  shopNear = best;
+  if (!best) { el.hidden = true; return; }
+  el.hidden = false;
+  $('shopPromptTxt').textContent = (document.body.classList.contains('touch') ? '' : 'E · ') + best.name;
+}
+function closeShop() { $('shopMenu').hidden = true; shopOpenSpot = null; }
+function openShop(spot) {
+  if (!spot) return;
+  if (document.pointerLockElement) document.exitPointerLock();
+  shopOpenSpot = spot; renderShop(); $('shopMenu').hidden = false;
+}
+function renderShop() {
+  const spot = shopOpenSpot; if (!spot) return;
+  const coins = myStatus()[7] || 0; spot.coins = coins;
+  $('shopTitle').textContent = spot.name;
+  $('shopCoins').textContent = `Монетки: ${coins}. Одна покупка коштує одну монетку, морозиво й газета безкоштовні.`;
+  const box = $('shopItems'); box.textContent = '';
+  for (const id of SHOP_ITEMS[spot.name] || []) {
+    const it = ITEMS[id], row = document.createElement('div'); row.className = 'shopitem';
+    const txt = document.createElement('div'); txt.className = 't';
+    const b = document.createElement('b'); b.textContent = it.name + (it.price ? ` · ${it.price} монетка` : ' · безкоштовно');
+    const sm = document.createElement('small'); sm.textContent = it.desc; txt.append(b, sm);
+    const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'primary';
+    const st0 = myStatus(), done = it.once && ((id === 'knife' && st0[19]) || (id === 'pepper' && st0[20]));
+    btn.textContent = done ? 'Уже купував' : it.soon ? 'Незабаром' : it.price ? 'Купити' : 'Взяти';
+    btn.disabled = !!done || !!it.soon || coins < it.price;
+    btn.addEventListener('click', () => buy(id));
+    row.append(txt, btn); box.append(row);
+  }
+  if (!(SHOP_ITEMS[spot.name] || []).length) { const p = document.createElement('p'); p.className = 'sub'; p.textContent = 'Тут нічого корисного для втечі, лише іграшки.'; box.append(p); }
+}
+function buy(id) {
+  const it = ITEMS[id], now = Date.now();
+  if (!it || it.soon) return;
+  closeShop();
+  if (id === 'icecream') { R3.held = { kind: 'icecream', t0: now, until: now + 9000 }; toast('Морозиво! Смакота.'); return; }
+  if (id === 'paper') { openPaper(); return; }
+  if ((myStatus()[7] || 0) < it.price) { toast('Не вистачає монеток.'); return; }
+  if (S.isHost && S.sim) applyBuy(S.sim.players[S.mySlot], id, now);
+  else { S.me.buyN = (S.me.buyN || 0) + 1; S.buyReq = { m: S.match.id, n: S.me.buyN, it: id }; sendClientNow(); }
+  if (id === 'energy') { R3.held = { kind: 'energy', t0: now, until: now + 2800 }; S.me.sprintLeft = SPR_D * 2; S.me.fatUntil = 0; toast('Енергетик: 30 секунд бігаєш удвічі довше.'); }
+  if (id === 'meds') toast('Ліки: 30 секунд бачиш усіх ТЦК.');
+  if (id === 'clothes') toast('Перевдягнувся. ТЦК тебе не впізнає.');
+  if (id === 'knife') toast('Ножик у руці.');
+  if (id === 'pepper') toast('Перцевий балончик у кишені: спрацює, коли тебе схоплять.');
+}
+$('shopOpen').addEventListener('click', () => openShop(shopNear));
+$('shopClose').addEventListener('click', closeShop);
+addEventListener('keydown', e => {
+  if (e.target && e.target.tagName === 'INPUT') return;
+  if (e.code === 'KeyE' && S.mode === 'play' && !MG.active) { if (!$('paper').hidden) closePaper(); else if (!$('shopMenu').hidden) closeShop(); else if (shopNear) openShop(shopNear); else doAct(); }
+  if (e.code === 'KeyT' && S.mode === 'play') togglePhone();
+  if (e.code === 'Escape') { closeShop(); closePaper(); }
+});
+// ---------- газета з жартом і «фото» ----------
+const JOKES = [
+  ['Друзі пішли на каву, а повернувся лише чек за капучино', 'Четверо мешканців району вийшли з дому «на п\'ять хвилин по каву». Свідки кажуть, що до кав\'ярні дійшов тільки чек, а самі друзі поїхали зеленим бусом на екскурсію до бази.'],
+  ['ТЦК провів дегустацію біля кав\'ярні', 'Усіх, хто замовив подвійний еспресо, запросили на подвійну співбесіду. Баріста зізнався, що такої черги не бачив з чорної п\'ятниці.'],
+  ['Компанія запізнилася на каву на два роки', 'Друзі обіцяли бути «за п\'ять хвилин». Бус, кажуть, їхав через базу, а там пробки.'],
+  ['Мерія радить ходити на каву через ТЦ', '«Там тільки знижки, а не повістки», — пояснили в мерії. ТЦК поки не коментує, бо в ТЦ не заходить.'],
+  ['Баріста: «Капучино охололо, бо клієнтів уже везли»', 'Кав\'ярня пропонує нову послугу: каву з собою прямо у вікно буса.']
+];
+function drawPaperPic(cv) {
+  const g = cv.getContext('2d'), w = cv.width, h = cv.height;
+  const sky = g.createLinearGradient(0, 0, 0, h); sky.addColorStop(0, '#7A5C8C'); sky.addColorStop(1, '#F09A6E'); g.fillStyle = sky; g.fillRect(0, 0, w, h);
+  g.fillStyle = '#A06A48'; g.fillRect(60, 60, 440, 170);
+  for (let i = 0; i < 22; i++) { g.fillStyle = i % 2 ? '#FFF4E6' : '#E4572E'; g.fillRect(50 + i * 21, 50, 21, 30); }
+  g.fillStyle = '#FFD58A'; g.fillRect(90, 100, 110, 70); g.fillRect(360, 100, 110, 70);
+  g.fillStyle = '#1D2132'; g.fillRect(220, 40, 120, 26); g.fillStyle = '#FFF4E6'; g.font = '800 16px Manrope, sans-serif'; g.textAlign = 'center'; g.fillText('КАВ\'ЯРНЯ', 280, 59);
+  g.fillStyle = '#B4A895'; g.fillRect(0, 230, w, 70);
+  const guy = (x, jacket, hat, sad, green) => {
+    g.fillStyle = '#2B2A33'; g.fillRect(x - 18, 278, 14, 10); g.fillRect(x + 4, 278, 14, 10);
+    g.fillStyle = jacket; g.beginPath(); g.ellipse(x, 255, 26, 26, 0, 0, 7); g.fill();
+    g.fillStyle = '#F6D2AE'; g.beginPath(); g.arc(x, 210, 34, 0, 7); g.fill();
+    g.fillStyle = hat; g.beginPath(); g.arc(x, 204, 35, Math.PI, 0); g.fill(); g.beginPath(); g.arc(x, 168, 7, 0, 7); g.fill();
+    g.fillStyle = '#FFF'; g.beginPath(); g.ellipse(x - 11, 212, 10, 12, 0, 0, 7); g.ellipse(x + 11, 212, 10, 12, 0, 0, 7); g.fill();
+    g.fillStyle = '#111'; g.beginPath(); g.arc(x - 9, 214, 3.5, 0, 7); g.arc(x + 9, 214, 3.5, 0, 7); g.fill();
+    g.strokeStyle = '#3A1E1E'; g.lineWidth = 3; g.beginPath();
+    if (sad) { g.moveTo(x - 10, 233); g.quadraticCurveTo(x, 225, x + 10, 233); g.moveTo(x - 20, 199); g.lineTo(x - 4, 204); g.moveTo(x + 20, 199); g.lineTo(x + 4, 204); }
+    else { g.moveTo(x - 9, 229); g.lineTo(x + 9, 229); }
+    g.stroke();
+  };
+  guy(110, '#D9483B', '#2E5AAC', true); guy(200, '#E8B23A', '#3C3C3C', true); guy(290, '#7A5BB0', '#F2C14E', true);
+  guy(390, TCC_GREEN, TCC_DARK, false); guy(470, TCC_GREEN, TCC_DARK, false);
+}
+function openPaper() {
+  if (document.pointerLockElement) document.exitPointerLock();
+  const [hd, tx2] = JOKES[Math.floor(Math.random() * JOKES.length)];
+  $('paperHead').textContent = hd; $('paperText').textContent = tx2; drawPaperPic($('paperPic'));
+  $('paper').hidden = false;
+}
+function closePaper() { $('paper').hidden = true; }
+$('paperClose').addEventListener('click', closePaper);
+// ---------- інвентар у HUD ----------
+let invT = 0, lastCoins = 0; const invTstate = {};
+function invTick(dt) {
+  invT += dt; if (invT < 0.2) return; invT = 0;
+  const el = $('inv'); if (S.mode !== 'play') { el.hidden = true; return; }
+  const s = myStatus(), coins = s[7] || 0, en = Math.ceil((s[8] || 0) / 1000), med = Math.ceil((s[9] || 0) / 1000);
+  if (coins > lastCoins) toast('Монетка! Можна щось купити в кіоску чи в ТЦ.');
+  lastCoins = coins;
+  el.textContent = '';
+  const add = (txt, cls) => { const sp = document.createElement('span'); sp.textContent = txt; if (cls) sp.className = cls; el.append(sp); };
+  add('Монетки: ' + coins, 'coin'); if (en) add('Енергетик ' + en + ' с'); if (med) add('Ліки ' + med + ' с');
+  if (s[13]) add('Ножик'); if (s[18]) add('Балончик'); if (s[14]) add('РОЗШУК: тікай від поліції', 'wanted');
+  if (s[13] && !invTstate.knife) toast('Ножик у руці. Хто з ТЦК тебе спіймає, той зникне, але приїде поліція.');
+  if (invTstate.knife && !s[13] && s[14]) toast('ТЦК-шник зник разом із ножиком. Тепер за тобою поліція!');
+  invTstate.knife = s[13];
+  if (invTstate.pep && !s[18] && s[0] === 0) toast('Пшшш! ТЦК-шник 4 секунди нічого не бачить — тікай!');
+  invTstate.pep = s[18];
+  if (onMall(S.me)) add('ТЦ: тут ТЦК не ходить');
+  el.hidden = false;
+  if (!$('shopMenu').hidden && shopOpenSpot && shopOpenSpot.coins !== coins) renderShop();
+}
+// ---------- сховатися в під'їзді / сісти на лавку ----------
+let actNear = null;
+function actTick() {
+  const el = $('actPrompt'), s = myStatus(), m = S.me;
+  if (s[0] !== 0) { if (m.hid || m.sitB) { m.hid = false; m.sitB = null; } $('hideOv').hidden = true; }
+  $('hideOv').hidden = !m.hid;
+  if (S.mode !== 'play' || s[0] !== 0 || MG.active || shopNear) { el.hidden = true; actNear = null; return; }
+  if (m.hid) { actNear = { kind: 'unhide' }; } else if (m.sitB) { actNear = { kind: 'stand' }; }
+  else {
+    actNear = null; let bd = Infinity;
+    for (const h of hideSpots()) { const d = Math.hypot(h.x - m.x, h.y - m.y); if (d < 55 && d < bd) { bd = d; actNear = { kind: 'hide', spot: h }; } }
+    for (const b of benchSeats()) { const d = Math.hypot(b.x - m.x, b.y - m.y); if (d < 45 && d < bd) { bd = d; actNear = { kind: 'sit', seat: b }; } }
+  }
+  if (!actNear) { el.hidden = true; return; }
+  const txt = { hide: 'сховатися: ' + (actNear.spot && actNear.spot.name), unhide: 'вийти зі схованки', sit: 'сісти на лавку', stand: 'встати' }[actNear.kind];
+  $('actTxt').textContent = (document.body.classList.contains('touch') ? '' : 'E · ') + txt; el.hidden = false;
+}
+function doAct() {
+  const m = S.me; if (!actNear) return;
+  if (actNear.kind === 'hide') { m.hid = true; m.hidKind = actNear.spot.wc ? 'wc' : 'hall'; m.x = actNear.spot.x; m.y = actNear.spot.y; m.sprinting = false; toast('Ти сховався. Тебе не помічають, але хто вже біг за тобою, може чекати біля входу.'); }
+  else if (actNear.kind === 'unhide') m.hid = false;
+  else if (actNear.kind === 'sit') { m.sitB = actNear.seat; m.x = actNear.seat.x; m.y = actNear.seat.y; R3.yaw = actNear.seat.h; R3.pitch = -0.05; }
+  else if (actNear.kind === 'stand') m.sitB = null;
+  sendClientNow();
+}
+$('actBtn').addEventListener('click', doAct);
+// ---------- телефон: чат району з чутками ----------
+const PHONE = { open: false, msgs: [], unread: 0, last: -1 };
+function togglePhone() { PHONE.open = !PHONE.open; if (PHONE.open) PHONE.unread = 0; renderPhone(); }
+function phoneTick() {
+  $('phoneBtn').hidden = S.mode !== 'play';
+  const rm = S.isHost && S.sim ? S.sim.rumor : (S.snap && Array.isArray(S.snap.rm) ? S.snap.rm : null);
+  if (rm && num(rm[0], -1) !== PHONE.last) {
+    PHONE.last = num(rm[0], -1); PHONE.msgs.push([String(rm[1]).slice(0, 30), String(rm[2]).slice(0, 120)]); if (PHONE.msgs.length > 8) PHONE.msgs.shift();
+    if (!PHONE.open) PHONE.unread++; SND.ping(); renderPhone();
+  }
+}
+function renderPhone() {
+  $('phone').hidden = !PHONE.open || S.mode !== 'play';
+  const b = $('phoneBadge'); b.textContent = PHONE.unread; b.hidden = !PHONE.unread;
+  $('phoneBtn').hidden = S.mode !== 'play';
+  const list = $('phoneMsgs'); list.textContent = '';
+  if (!PHONE.msgs.length) { const p = document.createElement('p'); p.className = 'empty'; p.textContent = 'Поки тихо. Сусіди напишуть, якщо щось побачать.'; list.append(p); }
+  for (const [n, txt] of PHONE.msgs) { const d = document.createElement('div'); d.className = 'msg'; const a = document.createElement('b'); a.textContent = n; const s = document.createElement('span'); s.textContent = txt; d.append(a, s); list.append(d); }
+  list.scrollTop = list.scrollHeight;
+}
+$('phoneBtn').addEventListener('click', togglePhone);
+$('phoneClose').addEventListener('click', togglePhone);
+// ---------- звуки (синтез у браузері, без завантажень) ----------
+const SND = {
+  ctx: null, on: true, nodes: {},
+  init() {
+    try { this.on = localStorage.getItem('coffee-sound') !== '0'; } catch (e) {}
+    if (this.ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+    const c = this.ctx = new AC(), master = this.master = c.createGain(); master.gain.value = this.on ? 0.8 : 0; master.connect(c.destination);
+    const noise = c.createBuffer(1, c.sampleRate * 2, c.sampleRate), d = noise.getChannelData(0); let last = 0;
+    for (let i = 0; i < d.length; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
+    const loop = (gain, freq) => { const s = c.createBufferSource(); s.buffer = noise; s.loop = true; const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = freq; const g = c.createGain(); g.gain.value = gain; s.connect(f); f.connect(g); g.connect(master); s.start(); return g; };
+    this.nodes.city = loop(0.05, 500); this.nodes.car = loop(0, 260);
+    const so = c.createOscillator(), sg = c.createGain(); so.type = 'triangle'; so.frequency.value = 700; sg.gain.value = 0; so.connect(sg); sg.connect(master); so.start(); this.nodes.siren = { o: so, g: sg };
+    this.noise = noise;
+  },
+  setOn(v) { this.on = v; try { localStorage.setItem('coffee-sound', v ? '1' : '0'); } catch (e) {} if (this.master) this.master.gain.value = v ? 0.8 : 0; $('sndBtn').textContent = v ? 'Звук: увімк.' : 'Звук: вимк.'; },
+  beep(f, dur, type, vol, when) { if (!this.ctx || !this.on) return; const c = this.ctx, o = c.createOscillator(), g = c.createGain(), t0 = c.currentTime + (when || 0); o.type = type || 'sine'; o.frequency.setValueAtTime(f, t0); g.gain.setValueAtTime(vol || 0.15, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + dur); o.connect(g); g.connect(this.master); o.start(t0); o.stop(t0 + dur + 0.02); return o; },
+  whistle() { if (!this.ctx) return; const o = this.beep(2300, 0.18, 'sine', 0.18); if (o) o.frequency.linearRampToValueAtTime(2900, this.ctx.currentTime + 0.15); this.beep(2600, 0.3, 'sine', 0.18, 0.22); },
+  ping() { this.beep(880, 0.12, 'sine', 0.1); this.beep(1320, 0.15, 'sine', 0.08, 0.1); },
+  step(fast) { if (!this.ctx || !this.on) return; const c = this.ctx, s = c.createBufferSource(); s.buffer = this.noise; const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = fast ? 900 : 650; const g = c.createGain(), t0 = c.currentTime; g.gain.setValueAtTime(0.25, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.08); s.connect(f); f.connect(g); g.connect(this.master); s.start(t0, Math.random()); s.stop(t0 + 0.1); },
+  cafe(t) { if (!this.ctx || !this.on) return; const notes = [523, 659, 784, 659, 587, 698, 880, 698]; const k = Math.floor(t / 400) % notes.length; if (k !== this.cafeK) { this.cafeK = k; this.beep(notes[k], 0.35, 'triangle', 0.05); if (k === 0 && Math.random() < 0.3) { const s = this.ctx.createBufferSource(); s.buffer = this.noise; const f = this.ctx.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2500; const g = this.ctx.createGain(); g.gain.value = 0.06; s.connect(f); f.connect(g); g.connect(this.master); s.start(); s.stop(this.ctx.currentTime + 1.6); } } }
+};
+$('sndBtn').addEventListener('click', () => { SND.init(); SND.setOn(!SND.on); });
+try { SND.on = localStorage.getItem('coffee-sound') !== '0'; } catch (e) {}
+$('sndBtn').textContent = SND.on ? 'Звук: увімк.' : 'Звук: вимк.';
+// небезпека: червона рамка, свисток, сирена, кроки, шум машин
+let stepAcc = 0, wasChased = false;
+function dangerTick(dt, t) {
+  const view = S.lastView, s = myStatus();
+  if (S.mode !== 'play' || !view) { $('danger').style.opacity = 0; if (SND.nodes.siren) SND.nodes.siren.g.gain.value = 0; return; }
+  const me = S.me; let near = Infinity;
+  if (s[0] === 0) {
+    for (const e of view.peds) if (e.chase && e.x > -1000) near = Math.min(near, dist(e, me));
+    for (const c of view.cars) if (c.rev && !c.pol) near = Math.min(near, dist(c, me));
+    for (const q of view.sq) near = Math.min(near, dist(q, me));
+    for (const e of view.cops) if (e.chase) near = Math.min(near, dist(e, me));
+  }
+  const chased = near < 6 * T || (s[14] && s[0] === 0);
+  const level = s[0] !== 0 ? 0 : Math.max(s[14] ? 0.35 : 0, near < 6 * T ? 1 - near / (6 * T) : 0);
+  $('danger').style.opacity = (level * (0.75 + 0.25 * Math.sin(t / 150))).toFixed(2);
+  if (chased && !wasChased) SND.whistle();
+  wasChased = chased;
+  if (SND.ctx) {
+    let pc = Infinity; for (const c of view.cars) if (c.pol) pc = Math.min(pc, dist(c, me));
+    const sirenOn = s[14] && s[0] === 0;
+    SND.nodes.siren.g.gain.value = sirenOn ? Math.max(0.02, 0.12 * (1 - Math.min(1, pc / (12 * T)))) : 0;
+    SND.nodes.siren.o.frequency.value = 650 + 250 * (Math.sin(t / 300) > 0 ? 1 : 0);
+    let cn = Infinity; for (const c of view.cars) cn = Math.min(cn, dist(c, me));
+    SND.nodes.car.gain.value = 0.25 * Math.max(0, 1 - cn / (4 * T));
+    const a = ANIM.get('P' + S.mySlot);
+    if (s[0] === 0 && a && a.mv > 0.3) { stepAcc += dt * (me.sprinting ? 4.2 : 2.8); if (stepAcc > 1) { stepAcc = 0; SND.step(me.sprinting); } }
+    if (s[0] === 3 && !me.wantSpec) SND.cafe(t);
+  }
+}
+// ---------- порятунок друзів біля воріт ----------
+let gateHold = 0;
+function gateTick(dt) {
+  const el = $('gatePrompt'), s = myStatus();
+  if (S.mode !== 'play' || s[0] !== 0 || MG.active) { el.hidden = true; gateHold = 0; return; }
+  const view = S.lastView; if (!view) { el.hidden = true; return; }
+  let at = null;
+  if (dist(S.me, BASE_GATE) < 90) at = 'base'; else if (dist(S.me, JAIL_OUT) < 90) at = 'jail';
+  const statArr = S.isHost && S.sim ? S.sim.players.map(p => p ? [p.st, 0, 0, p.cst, 0, 0, 0, 0, 0, 0, 0, p.jail ? 1 : 0] : null) : (S.snap && S.snap.s) || [];
+  const inside = at && statArr.some((q, k) => k !== S.mySlot && Array.isArray(q) && num(q[0], 0) === 2 && num(q[3], 0) === 2 && (num(q[11], 0) === 1) === (at === 'jail'));
+  if (!at || !inside) { el.hidden = true; gateHold = 0; return; }
+  const can = (s[2] || 0) > 0 || (s[7] || 0) > 0;
+  el.hidden = false;
+  const holding = keys.has('KeyE') || S.gateBtn;
+  if (!can) { $('gateTxt').textContent = 'Щоб відчинити ворота, потрібна бронь або монетка'; gateHold = 0; $('gateBar').style.width = '0%'; return; }
+  $('gateTxt').textContent = (document.body.classList.contains('touch') ? 'Тримай кнопку' : 'Тримай E') + ' — відчинити ворота (' + ((s[2] || 0) > 0 ? 'бронь' : 'монетка') + ')';
+  const nowG = performance.now(); if (holding) { if (!S.holdT0) S.holdT0 = nowG; } else S.holdT0 = 0;
+  gateHold = S.holdT0 ? (nowG - S.holdT0) / 1000 : 0;
+  $('gateBar').style.width = Math.min(100, gateHold / 3 * 100) + '%';
+  if (gateHold >= 3) {
+    S.holdT0 = 0;
+    gateHold = 0;
+    if (S.isHost && S.sim) applyRescue(S.sim.players[S.mySlot], at, Date.now());
+    else { S.me.rescN = (S.me.rescN || 0) + 1; S.rescReq = { m: S.match.id, n: S.me.rescN, at }; sendClientNow(); }
+    toast(at === 'jail' ? 'Клітку відчинено! Друзі на волі.' : 'Ворота бази відчинено! Друзі на волі.');
+  }
+}
+$('gateBtn').addEventListener('pointerdown', e => { e.preventDefault(); S.gateBtn = true; });
+for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) $('gateBtn').addEventListener(ev, () => { S.gateBtn = false; });
 init3d(); buildWorld(1);
 requestAnimationFrame(frame);
 </script>
