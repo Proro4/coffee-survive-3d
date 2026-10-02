@@ -389,12 +389,25 @@ function tryGenMap(seed, force) {
   const isG = (x, y) => x >= 0 && y >= 0 && x < W && y < H && g[y][x] === 'G';
   for (let k = 0; k < 12; k++) { const x = ri(0, W - 1), y = ri(0, 2); if (isG(x, y)) trees.add(x + ',' + y); }
   const nearCafe = (x, y) => CAFES.some(c => x >= c[0] - 1 && x <= c[0] + c[2] && y >= c[1] - 1 && y <= c[1] + c[3]);
-  for (let k = 0; k < 40; k++) { const x = ri(0, W - 1), y = ri(44, H - 1); if (isG(x, y) && !nearCafe(x, y)) trees.add(x + ',' + y); }
+  // кав'ярні стоять у ряду будинків: перед ними тротуар-площа, з боків провулки
+  for (let y = 45; y <= 48; y++) for (let x = 0; x < W; x++) if (g[y][x] === 'G' && !CAFES.some(c => x >= c[0] - 1 && x <= c[0] + c[2])) g[y][x] = 'B';
+  for (let x = 0; x < W; x++) g[43][x] = 'S';
+  for (let k = 0; k < 14; k++) { const x = ri(0, W - 1), y = 49; if (isG(x, y)) trees.add(x + ',' + y); }
   const props = [], propSet = new Set();
   const addProp = (k, x, y) => { if (isG(x, y) && !trees.has(x + ',' + y) && !propSet.has(x + ',' + y)) { props.push([k, x, y]); propSet.add(x + ',' + y); } };
-  for (let k = 0; k < 2; k++) { const x = ri(2, W - 3), y = ri(47, 48); if (!nearCafe(x, y)) addProp('fountain', x, y); }
-  for (let k = 0; k < 3; k++) { const x = ri(1, W - 2), y = ri(43, 44); if (!nearCafe(x, y)) addProp('kiosk', x, y); }
-  for (let k = 0; k < 2; k++) { const x = ri(1, W - 2); if (!HOUSES.some(h => x >= h[0] - 1 && x <= h[0] + h[2])) addProp('kiosk', x, 0); }
+  for (let k = 0; k < 2; k++) { const x = ri(1, W - 2); if (!HOUSES.some(h => x >= h[0] - 1 && x <= h[0] + h[2])) addProp('fountain', x, ri(0, 1)); }
+  // кіоски розкидані по місту: на газонах біля тротуарів і у двориках, повернуті до проходу
+  const kc = [];
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    if (!isG(x, y) || trees.has(x + ',' + y) || nearCafe(x, y) || (x >= 48 && y >= 19 && y <= 27)) continue;
+    const nb = NB.find(([dx, dy]) => { const t2 = g[y + dy] && g[y + dy][x + dx]; return t2 === 'S' || t2 === 'P'; });
+    if (nb) kc.push([x, y, nb]);
+  }
+  for (let k = 0, made = 0; k < 200 && made < 6 && kc.length; k++) {
+    const [x, y, nb] = kc[Math.floor(R() * kc.length)];
+    if (props.some(p => Math.abs(p[1] - x) + Math.abs(p[2] - y) < 8)) continue;
+    addProp('kiosk', x, y); props[props.length - 1].push(nb[0], nb[1]); made++;
+  }
   const solidAt = (x, y) => 'BHCT'.includes(g[y][x]) || trees.has(x + ',' + y) || propSet.has(x + ',' + y);
   const seen = new Uint8Array(W * H), q = [[49, 20]]; seen[20 * W + 49] = 1;
   while (q.length) { const [x, y] = q.pop(); for (const [dx, dy] of NB) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H) continue; const k = ny * W + nx; if (seen[k] || solidAt(nx, ny)) continue; seen[k] = 1; q.push([nx, ny]); } }
@@ -1825,7 +1838,7 @@ function buildWorld(cafeIdx) {
       if (open) { const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.07, 8), lambert(0xFFFFFF)); cup.position.set(tx0 + 0.06, 0.48, tz - 0.03); W3.add(cup); }
     }
   });
-  buildInterior(W3, cafeIdx);
+  R3.interior = new THREE.Group(); R3.interior.visible = false; W3.add(R3.interior); buildInterior(R3.interior, cafeIdx);
   // дерева (конуси), ліхтарі, кіоски, фонтани — інстансами, щоб не навантажувати пристрій
   const dm = new THREE.Object3D();
   const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.07, 0.09, 0.6, 5), lambert(0x6B4B3A), M.trees.length);
@@ -1876,7 +1889,8 @@ function buildWorld(cafeIdx) {
       const col = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, 0.7, 6), lambert(0xA7ADB8)); col.position.set(x + 0.5, 0.5, y + 0.5); W3.add(col);
     } else {
       // кіоск: корпус, віконце з продавцем, прилавок, смугаста маркіза, вивіска
-      const face = y < H / 2 ? 1 : -1, g = new THREE.Group(); g.position.set(x + 0.5, 0, y + 0.5); if (face < 0) g.rotation.y = Math.PI;
+      const pr = M.props.find(q => q[1] === x && q[2] === y), fdx = pr && pr.length > 3 ? pr[3] : 0, fdy = pr && pr.length > 3 ? pr[4] : (y < H / 2 ? 1 : -1);
+      const face = 1, g = new THREE.Group(); g.position.set(x + 0.5, 0, y + 0.5); g.rotation.y = Math.atan2(fdx, fdy);
       const col = x % 2 ? 0x3A7CA5 : 0xE4572E, kind = ['КАВА', 'ПРЕСА', 'МОРОЗИВО'][x % 3];
       const km = lambert(0xF1E4C8), part = (w, h, d, x, y, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), km); m.position.set(x, y, z); g.add(m); };
       part(0.86, 0.95, 0.06, 0, 0.475, -0.32); part(0.06, 0.95, 0.7, -0.4, 0.475, 0); part(0.06, 0.95, 0.7, 0.4, 0.475, 0);
@@ -1890,7 +1904,7 @@ function buildWorld(cafeIdx) {
       const awn = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.32), lambert(0xFFFFFF, { map: st, side: THREE.DoubleSide })); awn.position.set(0, 0.88, 0.47); awn.rotation.x = -0.9; g.add(awn);
       const sign = labelSprite(kind, { bg: '#1D2132', fg: '#FFF4E6', scale: 0.005 }); sign.position.set(0, 1.25, 0); g.add(sign);
       W3.add(g);
-      R3.vendors.push({ x: x + 0.5, z: y + 0.5 - face * 0.02, h: face > 0 ? Math.PI / 2 : -Math.PI / 2 });
+      R3.vendors.push({ x: x + 0.5 - fdx * 0.02, z: y + 0.5 - fdy * 0.02, h: Math.atan2(fdy, fdx) });
     }
   }
 }
@@ -1998,7 +2012,7 @@ function sprite(text, x, y, z, opts) {
 function person(x, z, h, ph, mv, o) {
   const D = R3.dyn; if (D.np >= MAXP) return;
   const i = D.np++, t = D.tmp, ch = Math.cos(h), sh = Math.sin(h);
-  const sit = o.sit ? -0.12 : 0, lift = o.y || 0, bob = Math.abs(Math.cos(ph)) * mv * 0.03 + sit + lift;
+  const sit = o.sit ? 0.25 : 0, lift = o.y || 0, bob = Math.abs(Math.cos(ph)) * mv * 0.03 + sit + lift;
   const put = (mesh, idx, ox, oy, oz, sx, sy, sz, rz) => {
     t.position.set(x + ox * ch - oz * sh, oy + (o.y || 0), z + ox * sh + oz * ch);
     t.rotation.set(0, -h, rz || 0, 'YZX'); t.scale.set(sx, sy, sz); t.updateMatrix(); mesh.setMatrixAt(idx, t.matrix);
@@ -2118,9 +2132,13 @@ function render(dt, t) {
     if (e.chase) sprite('!', e.x * U, 1.15, e.y * U, { fg: '#BFF3D2' });
   }
   for (const v of (R3.vendors || [])) person(v.x, v.z, v.h, 0, 0, { body: '#E07B39', hat: '#3E7BC4', skin: SKINS[1] });
+  // кімнату кав'ярні видно й малюємо лише тоді, коли ти всередині
+  const inCafe = st === 3 && !focus.spec; if (R3.interior) R3.interior.visible = inCafe;
   // у кав'ярні: баріста за прилавком і четверо городян за двома столиками
+  if (inCafe) {
   person(IN.x + IN.w / 2, IN.z + 0.62, Math.PI / 2, t / 400, 0.15, { body: '#F4F1EA', hat: '#5A3A28', skin: SKINS[0], mitt: SKINS[0], y: 0.28, wave: Math.sin(t / 1500) > 0.6 });
   [[2, 0], [2, 1], [3, 0], [3, 1]].forEach(([ti, k]) => { const [tx0, tz0] = IN_TABLES[ti], sd = k ? 1 : -1; person(IN.x + tx0 + sd * 0.55, IN.z + tz0, sd < 0 ? 0 : Math.PI, t / 900 + ti + k, 0, { body: JACKETS[(ti * 2 + k + 3) % 8], hat: HATS[(ti + k * 3) % 8], skin: SKINS[(ti + k) % 4], sit: true }); });
+  }
   view.sq.forEach((q, qi) => [[-14, -8], [14, -8], [0, 12]].forEach(([dx, dy], k) => {
     const x = q.x + dx, y = q.y + dy, a = animOf('Q' + qi + '_' + k, x, y);
     person(x * U, y * U, a.h, a.ph, a.mv, { body: TCC_GREEN, hat: TCC_DARK, skin: SKINS[k % 4] });
@@ -2137,7 +2155,7 @@ function render(dt, t) {
     const mine = p.slot === S.mySlot, a = animOf('P' + p.slot, p.x, p.y);
     if (mine && !focus.spec && p.st !== 3) continue;
     let h = a.h, sit = false, px3 = p.x * U, pz3 = p.y * U;
-    if (p.st === 3) { const seat = interiorSeat(p.slot); px3 = seat[0]; pz3 = seat[1]; h = seat[2]; sit = true; }
+    if (p.st === 3) { if (!inCafe) continue; const seat = interiorSeat(p.slot); px3 = seat[0]; pz3 = seat[1]; h = seat[2]; sit = true; }
     if (mine && p.st === 3 && !focus.spec) continue;
     person(px3, pz3, h, a.ph, p.st === 1 || sit ? 0 : a.mv, { body: PC[p.slot], hat: PCD[p.slot], skin: SKINS[p.slot % 4], sit, pom: PC[p.slot] });
     sprite((p.slot + 1) + ' · ' + p.nick + (p.st === 1 ? ' ✶' : '') + (p.br ? ' · бронь' : ''), px3, 1.2, pz3, { fg: PC[p.slot] });
