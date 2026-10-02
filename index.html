@@ -43,6 +43,7 @@ body{height:100%;margin:0;background:var(--bg);color:var(--ink);font-family:Manr
 .card h2{margin:0;font-size:24px;font-weight:800}
 .sub{margin:0;color:var(--muted);font-size:15px;line-height:1.45}
 label.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
+select{font:inherit;font-size:15px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
 input[type=text]{font:inherit;font-size:16px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
 .nickrow{display:flex;gap:8px}.nickrow input{flex:1;min-width:0}.nickrow button{flex:none}
 .row{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600}
@@ -71,6 +72,9 @@ details ul{margin:8px 0 0;padding-left:18px}
 #sprintBtn.on{background:#7CC4F0;color:#1D2132}
 #sprintBtn.tired{border-color:#6B7090;color:#9AA0B8;background:rgba(62,67,89,.5)}
 body.touch.playing .dpad{display:grid}
+body.touch.joy.playing .dpad{display:none}
+.joybase{position:absolute;width:130px;height:130px;margin:-65px 0 0 -65px;border-radius:50%;border:2px solid rgba(233,228,212,.4);background:rgba(233,228,212,.08);pointer-events:none}
+.joyknob{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:rgba(233,228,212,.55)}
 body.touch.playing #sprintBtn{display:block}
 body.touch .sprint{left:auto;right:calc(10px + env(safe-area-inset-right,0px));bottom:auto;top:calc(52px + env(safe-area-inset-top,0px));padding:6px 10px;gap:6px}
 body.touch .sprint .key{display:none}
@@ -171,6 +175,7 @@ body.touch .phone{bottom:auto;top:calc(262px + env(safe-area-inset-top,0px));rig
   <div class="spec" id="cafeBar" hidden><span>Ти на каві</span><button type="button" id="cafeWatch">Подивитися на інших</button></div>
   <div class="spec" id="shopPrompt" hidden><span id="shopPromptTxt"></span><button type="button" id="shopOpen">Купити</button></div>
   <div class="inv" id="inv" hidden></div>
+  <div class="joybase" id="joyBase" hidden><div class="joyknob" id="joyKnob"></div></div>
   <div class="danger" id="danger"></div>
   <div class="hideov" id="hideOv" hidden><span>Ти в схованці. Тебе не видно з вулиці.</span></div>
   <div class="spec" id="actPrompt" hidden><span id="actTxt"></span><button type="button" id="actBtn">Дія</button></div>
@@ -202,6 +207,10 @@ body.touch .phone{bottom:auto;top:calc(262px + env(safe-area-inset-top,0px));rig
       <div class="netinfo" id="netLobby" hidden></div>
       <label class="row" for="bots"><input type="checkbox" id="bots" checked> Боти на вільні місця</label>
       <label class="row" for="touchCtl"><input type="checkbox" id="touchCtl"> Кнопки на екрані (мобільна версія)</label>
+      <label class="row" for="joyCtl"><input type="checkbox" id="joyCtl"> Плаваючий джойстик замість хрестовини</label>
+      <label class="field" for="camMode">Камера
+        <select id="camMode"><option value="first">Від першої особи</option><option value="third">Ззаду, над плечем (зручно на телефоні)</option><option value="top">Згори</option></select>
+      </label>
       <div class="btns">
         <button type="button" id="readyBtn">Я готовий</button>
         <button type="button" id="startBtn" class="primary">Почати матч</button>
@@ -213,7 +222,7 @@ body.touch .phone{bottom:auto;top:calc(262px + env(safe-area-inset-top,0px));rig
         <summary>Як грати</summary>
         <ul>
           <li>W/S: вперед і назад, A/D: убік, миша (клацни по екрану) або стрілки ←/→: поворот. Shift: біг ×1.5. Запасу вистачає на 8 клітинок, його можна витрачати частинами. Коли запас закінчиться, 10 с втоми.</li>
-          <li>На телефоні: хрестовина зліва для руху, веди пальцем по екрану, щоб оглядатися, кнопка «БІГ» праворуч.</li>
+          <li>На телефоні: хрестовина зліва для руху (або плаваючий джойстик, вмикається в лобі), веди пальцем по екрану, щоб оглядатися, кнопка «БІГ» праворуч. У лобі можна обрати камеру: від першої особи, ззаду чи згори; наближення — двома пальцями або колесом миші.</li>
           <li>На зебрі машини зупиняються. Поза нею можуть збити.</li>
           <li>Буси ТЦК (їх троє) помічають за 3 клітинки й відстають після 5. Працівники (їх четверо) помічають за 3 й відстають після 4.</li>
           <li>ТЦК ходить з тією ж швидкістю, що й ти, а коли ти ближче ніж за 2 клітинки, робить ривок (×1.4 на 4 клітинки), після якого 6 с втомлений і повільніший. Пересидь ривок бігом, і відірвешся.</li>
@@ -438,15 +447,15 @@ function tryGenMap(seed, force) {
       if (R() < 0.5) {
         const x = place(3); if (x < 0) continue;
         const len = ri(3, 5);
-        if (R() < 0.5) { fill(x + 1, top, 1, len, 'P'); fill(x, top + len, 3, 2, 'G'); if (R() < 0.5) trees.add((x + ri(0, 2)) + ',' + (top + len + 1)); }
-        else { fill(x + 1, bot - len + 1, 1, len, 'P'); fill(x, bot - len - 1, 3, 2, 'G'); if (R() < 0.5) decor.push(['bench', x, bot - len - 1]); }
+        if (R() < 0.5) { fill(x + 1, top, 1, len, 'P'); fill(x, top + len, 3, 2, 'G'); decor.push(['bench', x, top + len + 1], ['bush', x + 0.25, top + len + 0.3], ['bush', x + 2.75, top + len + 0.3]); }
+        else { fill(x + 1, bot - len + 1, 1, len, 'P'); fill(x, bot - len - 1, 3, 2, 'G'); decor.push(['bench', x, bot - len - 1], ['bush', x + 0.25, bot - len - 0.3], ['bush', x + 2.75, bot - len - 0.3]); }
       } else {
         const x = place(4); if (x < 0) continue;
         const depth = ri(3, 4), fromTop = R() < 0.5, y0 = fromTop ? top : bot - depth + 1;
         fill(x, y0, 4, depth, 'P');
         const cy = fromTop ? y0 + depth - 2 : y0;
         fill(x + 1, cy, 2, 2, 'G');
-        if (R() < 0.6) decor.push(['sand', x + 1, cy]);
+        decor.push(['bench3', x + 1, cy + (fromTop ? 1 : 0), 0], ['bush', x + 1.2, cy + 0.2], ['bush', x + 2.8, cy + 0.2], ['bush', x + 1.2, cy + 1.8], ['bush', x + 2.8, cy + 1.8]);
       }
     }
   }
@@ -465,6 +474,9 @@ function tryGenMap(seed, force) {
     addPropAny('fountain', fx, fy);
     for (const [dx, dy] of [[-3, 0], [3, 0], [-7, 0], [7, 0], [-11, 1], [11, 1]]) decor.push(['bench3', fx + dx, fy + dy, 0]);
     for (const [x, y] of [[DIST.square[0] + 1, top], [DIST.square[1] - 2, top], [DIST.square[0] + 1, bot], [DIST.square[1] - 2, bot]]) trees.add(x + ',' + y);
+    // кущі по краях площі й кільцем навколо фонтану
+    for (let x = DIST.square[0] + 3; x < DIST.square[1] - 3; x += 3) { if (x < DIST.hall[0] - 1 || x > DIST.hall[0] + DIST.hall[2]) decor.push(['bush', x + 0.5, top + 0.25]); decor.push(['bush', x + 0.5, bot + 0.75]); }
+    for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2 + 0.4; decor.push(['bush', fx + 0.5 + Math.cos(a) * 1.9, fy + 0.5 + Math.sin(a) * 1.3]); }
     // торговий центр: зовнішні стіни з входами з обох боків; уздовж північної стіни ряд магазинів,
     // у кожен можна зайти через двері у скляній вітрині; посередині й на південь — галерея
     const [m0, m1] = DIST.mall;
@@ -499,6 +511,7 @@ function tryGenMap(seed, force) {
   }
   const isG = (x, y) => x >= 0 && y >= 0 && x < W && y < H && g[y][x] === 'G';
   for (let k = 0; k < 24; k++) { const x = ri(0, W - 1), y = ri(0, 2); if (isG(x, y)) trees.add(x + ',' + y); }
+  for (let k = 0; k < 40; k++) { const x = ri(0, W - 1), y = ri(0, 2); if (isG(x, y) && !trees.has(x + ',' + y)) decor.push(['bush', x + 0.3 + R() * 0.4, y + 0.3 + R() * 0.4]); }
   const nearCafe = (x, y) => CAFES.some(c => x >= c[0] - 1 && x <= c[0] + c[2] && y >= c[1] - 1 && y <= c[1] + c[3]);
   const cafeTop = CAFES[0][1];
   for (let y = cafeTop; y <= cafeTop + 3; y++) for (let x = 0; x < W; x++) if (g[y][x] === 'G' && !CAFES.some(c => x >= c[0] - 1 && x <= c[0] + c[2])) g[y][x] = 'B';
@@ -1510,17 +1523,29 @@ function inputVec() {
   if (keys.has('KeyA')) s -= 1;
   if (keys.has('KeyD')) s += 1;
   if (dpadVec[0] || dpadVec[1]) { f = -dpadVec[1]; s = dpadVec[0]; }
+  if (JOY.id !== null && Math.hypot(JOY.dx, JOY.dy) > 0.12) { f = -JOY.dy; s = JOY.dx; }
   const L = Math.hypot(f, s); if (L > 1) { f /= L; s /= L; }
   const c = Math.cos(R3.yaw), n = Math.sin(R3.yaw);
   return [f * c - s * n, f * n + s * c];
 }
 function turnKeys(dt) {
   if (MG.active || R3.inVan) return;
-  if (keys.has('ArrowLeft') || keys.has('KeyQ')) R3.yaw -= 2.2 * dt;
-  if (keys.has('ArrowRight') || keys.has('KeyE')) R3.yaw += 2.2 * dt;
+  if (CAMSET.mode === 'top') return;
+  if (keys.has('ArrowLeft')) R3.yaw -= 2.2 * dt;
+  if (keys.has('ArrowRight')) R3.yaw += 2.2 * dt;
 }
-function look(dx, dy, k) { if (MG.active || R3.inVan) return; R3.yaw += dx * k; R3.pitch = clamp(R3.pitch - dy * k, -0.6, 0.35); }
+function look(dx, dy, k) { if (MG.active || R3.inVan || CAMSET.mode === 'top') return; R3.yaw += dx * k; R3.pitch = clamp(R3.pitch - dy * k, -0.6, 0.35); }
 let dragLook = false, touchLook = null;
+// налаштування керування: тип камери й плаваючий джойстик (вмикає сам гравець у лобі)
+const CAMSET = { mode: (() => { try { return localStorage.getItem('coffee-cam') || 'first'; } catch (e) { return 'first'; } })(), zoom: 0.35 };
+const camSel = document.getElementById('camMode'); camSel.value = CAMSET.mode;
+camSel.addEventListener('change', () => { CAMSET.mode = camSel.value; try { localStorage.setItem('coffee-cam', CAMSET.mode); } catch (e) {} });
+const joyEl = document.getElementById('joyCtl');
+const setJoy = on => { document.body.classList.toggle('joy', on); joyEl.checked = on; try { localStorage.setItem('coffee-joy', on ? '1' : '0'); } catch (e) {} };
+setJoy((() => { try { return localStorage.getItem('coffee-joy') === '1'; } catch (e) { return false; } })());
+joyEl.addEventListener('change', () => setJoy(joyEl.checked));
+const JOY = { id: null, ox: 0, oy: 0, dx: 0, dy: 0 }, PINCH = new Map(); let pinchD = 0;
+addEventListener('wheel', e => { if (S.mode === 'play' && CAMSET.mode !== 'first') CAMSET.zoom = clamp(CAMSET.zoom + Math.sign(e.deltaY) * 0.08, 0, 1); }, { passive: true });
 cvs.addEventListener('click', () => {
   if (S.mode !== 'play' || document.body.classList.contains('touch') || !cvs.requestPointerLock || document.pointerLockElement === cvs) return;
   try { const pr = cvs.requestPointerLock(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
@@ -1528,9 +1553,27 @@ cvs.addEventListener('click', () => {
 cvs.addEventListener('mousedown', e => { if (e.button === 0 && document.pointerLockElement !== cvs) dragLook = true; });
 addEventListener('mouseup', () => { dragLook = false; });
 addEventListener('mousemove', e => { if (document.pointerLockElement === cvs) look(e.movementX, e.movementY, 0.0024); else if (dragLook) look(e.movementX, e.movementY, 0.005); });
-cvs.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse') return; touchLook = { id: e.pointerId, x: e.clientX, y: e.clientY }; try { cvs.setPointerCapture(e.pointerId); } catch (err) {} });
-cvs.addEventListener('pointermove', e => { if (!touchLook || e.pointerId !== touchLook.id) return; look(e.clientX - touchLook.x, e.clientY - touchLook.y, 0.007); touchLook.x = e.clientX; touchLook.y = e.clientY; });
-const endTouchLook = e => { if (touchLook && e.pointerId === touchLook.id) touchLook = null; };
+cvs.addEventListener('pointerdown', e => {
+  if (e.pointerType === 'mouse') return;
+  try { cvs.setPointerCapture(e.pointerId); } catch (err) {}
+  if (document.body.classList.contains('joy') && JOY.id === null && e.clientX < innerWidth * 0.45) {
+    Object.assign(JOY, { id: e.pointerId, ox: e.clientX, oy: e.clientY, dx: 0, dy: 0 });
+    const b = $('joyBase'); b.style.left = e.clientX + 'px'; b.style.top = e.clientY + 'px'; $('joyKnob').style.transform = ''; b.hidden = false; return;
+  }
+  PINCH.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (PINCH.size === 2) { const [a, b] = [...PINCH.values()]; pinchD = Math.hypot(a.x - b.x, a.y - b.y); touchLook = null; return; }
+  touchLook = { id: e.pointerId, x: e.clientX, y: e.clientY };
+});
+cvs.addEventListener('pointermove', e => {
+  if (e.pointerId === JOY.id) {
+    let dx = e.clientX - JOY.ox, dy = e.clientY - JOY.oy; const L = Math.hypot(dx, dy), mx = 55;
+    if (L > mx) { dx = dx / L * mx; dy = dy / L * mx; }
+    JOY.dx = dx / mx; JOY.dy = dy / mx; $('joyKnob').style.transform = `translate(${dx}px,${dy}px)`; return;
+  }
+  if (PINCH.has(e.pointerId)) { PINCH.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (PINCH.size === 2) { const [a, b] = [...PINCH.values()], d = Math.hypot(a.x - b.x, a.y - b.y); if (CAMSET.mode !== 'first') CAMSET.zoom = clamp(CAMSET.zoom - (d - pinchD) / 300, 0, 1); pinchD = d; return; } }
+  if (!touchLook || e.pointerId !== touchLook.id) return; look(e.clientX - touchLook.x, e.clientY - touchLook.y, 0.007); touchLook.x = e.clientX; touchLook.y = e.clientY;
+});
+const endTouchLook = e => { PINCH.delete(e.pointerId); if (e.pointerId === JOY.id) { JOY.id = null; JOY.dx = JOY.dy = 0; $('joyBase').hidden = true; } if (touchLook && e.pointerId === touchLook.id) touchLook = null; };
 cvs.addEventListener('pointerup', endTouchLook); cvs.addEventListener('pointercancel', endTouchLook);
 document.getElementById('specNext').addEventListener('click', () => { SPEC.idx++; });
 document.getElementById('cafeWatch').addEventListener('click', () => { S.me.wantSpec = true; });
@@ -2109,17 +2152,27 @@ function canvasTex(w, h, draw, repeat) {
   return t;
 }
 function wallTextures(wall, seed) {
-  const r = rng(seed), lit = [];
-  for (let i = 0; i < 16; i++) lit.push(r() < 0.42);
+  const r = rng(seed), lit = [], cur = [], ac = [];
+  for (let i = 0; i < 16; i++) { lit.push(r() < 0.42); cur.push(['#C2508A', '#3E7BC4', '#E8B23A', '#3E9B5C'][Math.floor(r() * 4)]); ac.push(r() < 0.18); }
+  const noise = []; for (let i = 0; i < 420; i++) noise.push([r() * 256, r() * 256, r() < 0.5]);
   const draw = (emissive) => (g, w, h) => {
     g.fillStyle = emissive ? '#000' : wall; g.fillRect(0, 0, w, h);
-    if (!emissive) { g.fillStyle = 'rgba(0,0,0,.08)'; for (let k = 0; k < 4; k++) g.fillRect(0, k * 64 + 60, w, 4); }
+    if (!emissive) {
+      for (const [x, y, d] of noise) { g.fillStyle = d ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.06)'; g.fillRect(x, y, 2, 2); }
+      g.fillStyle = 'rgba(0,0,0,.035)'; for (let y = 0; y < h; y += 8) g.fillRect(0, y, w, 1);
+      g.fillStyle = 'rgba(0,0,0,.09)'; for (let k = 0; k < 4; k++) g.fillRect(0, k * 64 + 59, w, 5);
+      g.fillStyle = 'rgba(255,255,255,.12)'; for (let k = 0; k < 4; k++) g.fillRect(0, k * 64 + 58, w, 1);
+    }
     for (let j = 0; j < 4; j++) for (let i = 0; i < 4; i++) {
-      const on = lit[j * 4 + i], x = i * 64 + 18, y = j * 64 + 14;
+      const k = j * 4 + i, on = lit[k], x = i * 64 + 18, y = j * 64 + 12;
       if (emissive) { if (on) { g.fillStyle = '#FFC978'; g.fillRect(x, y, 28, 34); } continue; }
-      g.fillStyle = '#3B3446'; g.fillRect(x - 3, y - 3, 34, 40);
+      g.fillStyle = '#EDE6DA'; g.fillRect(x - 4, y - 4, 36, 42);
       g.fillStyle = on ? '#FFD58A' : '#4C5A78'; g.fillRect(x, y, 28, 34);
-      g.fillStyle = 'rgba(255,255,255,.18)'; g.fillRect(x, y, 28, 5);
+      if (on) { g.fillStyle = cur[k]; g.globalAlpha = 0.55; g.fillRect(x, y, 7, 34); g.fillRect(x + 21, y, 7, 34); g.globalAlpha = 1; }
+      g.fillStyle = 'rgba(255,255,255,.2)'; g.fillRect(x, y, 28, 4);
+      g.fillStyle = '#EDE6DA'; g.fillRect(x + 13, y, 2, 34);
+      g.fillStyle = '#D6CCBC'; g.fillRect(x - 6, y + 36, 40, 4);
+      if (ac[k]) { g.fillStyle = '#C9CCD2'; g.fillRect(x + 31, y + 22, 14, 10); g.fillStyle = '#9EA3AB'; g.fillRect(x + 33, y + 24, 10, 1); g.fillRect(x + 33, y + 27, 10, 1); }
     }
   };
   return { map: canvasTex(256, 256, draw(false), true), em: canvasTex(256, 256, draw(true), true) };
@@ -2171,6 +2224,13 @@ function init3d() {
   R3.scene.add(new THREE.HemisphereLight(0xFFE2C4, 0x3F4A66, 0.95));
   const sun = new THREE.DirectionalLight(0xFFB27A, 0.75); sun.position.set(-6, 5, 3); R3.scene.add(sun);
   initDynamic();
+  { const sky = new THREE.Group(); R3.skyG = sky; R3.scene.add(sky);
+    const sunTex = canvasTex(128, 128, (g) => { const gr = g.createRadialGradient(64, 64, 4, 64, 64, 64); gr.addColorStop(0, 'rgba(255,240,200,1)'); gr.addColorStop(0.25, 'rgba(255,200,130,.9)'); gr.addColorStop(1, 'rgba(255,170,110,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); });
+    const sun = new THREE.Sprite(new THREE.SpriteMaterial({ map: sunTex, fog: false, depthWrite: false, transparent: true })); sun.scale.set(10, 10, 1); sun.position.set(-36, 5, 10); sky.add(sun);
+    const cloudTex = canvasTex(256, 96, (g) => { g.fillStyle = 'rgba(255,224,214,.85)'; for (const [x, y, rr] of [[60, 60, 30], [100, 46, 38], [150, 55, 34], [190, 62, 26], [128, 68, 40]]) { g.beginPath(); g.arc(x, y, rr, 0, 7); g.fill(); } });
+    const R = rng(3);
+    for (let i = 0; i < 9; i++) { const c = new THREE.Sprite(new THREE.SpriteMaterial({ map: cloudTex, fog: false, depthWrite: false, transparent: true, opacity: 0.75 })); const a = R() * Math.PI * 2, d = 30 + R() * 8; c.position.set(Math.cos(a) * d, 12 + R() * 6, Math.sin(a) * d); c.scale.set(12 + R() * 8, 4 + R() * 2, 1); sky.add(c); }
+  }
   resize();
 }
 
@@ -2207,16 +2267,40 @@ const lambert = (color, extra) => new THREE.MeshLambertMaterial(Object.assign({ 
 const STRIPES = new Map();
 function stripeTex(a, b, rep) { const key = a + b + rep; if (STRIPES.has(key)) return STRIPES.get(key); const tx = canvasTex(64, 16, (g) => { for (let i = 0; i < 8; i++) { g.fillStyle = i % 2 ? b : a; g.fillRect(i * 8, 0, 8, 16); } }, true); if (rep) tx.repeat.set(rep, 1); STRIPES.set(key, tx); return tx; }
 // земля: сітка клітинок з кольорами вершин (легше за величезну текстуру), розмітка, зебри й бордюри
+// атлас землі 512×256: трава, плитка тротуару, бруківка, асфальт, плитка ТЦ, біле (для розмітки), під будинками
+function groundAtlas() {
+  const C = 128;
+  return canvasTex(512, 256, (g) => {
+    const R = rng(99), cell = (k, f) => { g.save(); g.translate((k % 4) * C, Math.floor(k / 4) * C); g.beginPath(); g.rect(0, 0, C, C); g.clip(); f(); g.restore(); };
+    const speck = (base, n, cols, sz) => { g.fillStyle = base; g.fillRect(0, 0, C, C); for (let i = 0; i < n; i++) { g.fillStyle = cols[i % cols.length]; const s = sz * (0.5 + R()); g.fillRect(R() * C, R() * C, s, s); } };
+    cell(0, () => { speck('#6F9B5A', 260, ['#79A664', '#638E50', '#82AE6C'], 3);
+      g.strokeStyle = '#5E8A4C'; g.lineWidth = 1.5; for (let i = 0; i < 40; i++) { const x = R() * C, y = R() * C; g.beginPath(); g.moveTo(x, y); g.lineTo(x + 2, y - 5); g.stroke(); }
+      for (let i = 0; i < 5; i++) { g.fillStyle = i % 2 ? '#F4F1EA' : '#F2C14E'; g.beginPath(); g.arc(R() * C, R() * C, 2, 0, 7); g.fill(); } });
+    cell(1, () => { g.fillStyle = '#C9BDAA'; g.fillRect(0, 0, C, C); g.strokeStyle = '#AE9F8A'; g.lineWidth = 2;
+      for (let r = 0; r < 4; r++) { g.beginPath(); g.moveTo(0, r * 32 + 1); g.lineTo(C, r * 32 + 1); g.stroke(); for (let c = 0; c < 3; c++) { const x = c * 64 + (r % 2) * 32; g.beginPath(); g.moveTo(x, r * 32); g.lineTo(x, r * 32 + 32); g.stroke(); } }
+      for (let i = 0; i < 60; i++) { g.fillStyle = 'rgba(0,0,0,.05)'; g.fillRect(R() * C, R() * C, 3, 3); } });
+    cell(2, () => { g.fillStyle = '#9C907E'; g.fillRect(0, 0, C, C);
+      for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) { const v = 0.9 + R() * 0.18; g.fillStyle = `rgb(${Math.round(186 * v)},${Math.round(174 * v)},${Math.round(155 * v)})`; g.beginPath(); g.ellipse(x * 16 + 8 + (y % 2) * 4 - 2, y * 16 + 8, 7, 6.5, 0, 0, 7); g.fill(); } });
+    cell(3, () => { speck('#3B3F4C', 500, ['#444957', '#353844', '#4C5160'], 2.5); g.strokeStyle = 'rgba(20,20,26,.35)'; g.lineWidth = 1.2; g.beginPath(); g.moveTo(10, 90); g.lineTo(34, 80); g.lineTo(52, 92); g.stroke(); });
+    cell(4, () => { g.fillStyle = '#E3DDD2'; g.fillRect(0, 0, C, C); g.strokeStyle = '#CFC7B9'; g.lineWidth = 2; for (let k = 0; k <= 2; k++) { g.beginPath(); g.moveTo(k * 64, 0); g.lineTo(k * 64, C); g.moveTo(0, k * 64); g.lineTo(C, k * 64); g.stroke(); } g.fillStyle = 'rgba(255,255,255,.35)'; g.fillRect(6, 6, 40, 10); });
+    cell(5, () => { g.fillStyle = '#FFFFFF'; g.fillRect(0, 0, C, C); });
+    cell(6, () => { speck('#77706A', 120, ['#6E6862', '#807973'], 3); });
+    cell(7, () => { speck('#8D8F95', 200, ['#878990', '#94969C'], 3); });
+  });
+}
 function groundMesh() {
-  const pos = [], col = [], c3 = new THREE.Color();
-  const quad = (x0, z0, x1, z1, y, hex, jit) => {
+  const pos = [], col = [], uv = [], c3 = new THREE.Color(), e = 0.01;
+  const quad = (x0, z0, x1, z1, y, hex, jit, cellIdx) => {
     c3.set(hex); if (jit) c3.multiplyScalar(jit);
     pos.push(x0, y, z0, x0, y, z1, x1, y, z1, x0, y, z0, x1, y, z1, x1, y, z0);
     for (let k = 0; k < 6; k++) col.push(c3.r, c3.g, c3.b);
+    const ci = cellIdx === undefined ? 5 : cellIdx, cx = ci % 4, cy = Math.floor(ci / 4);
+    const u0 = cx / 4 + e, u1 = (cx + 1) / 4 - e, v1 = 1 - cy / 2 - e, v0 = 1 - (cy + 1) / 2 + e;
+    uv.push(u0, v0, u0, v1, u1, v1, u0, v0, u1, v1, u1, v0);
   };
   const hj = (x, y) => 0.95 + (((x * 73856093) ^ (y * 19349663)) >>> 0) % 100 / 1000;
-  const TC = { G: '#6F9B5A', S: '#C9BDAA', P: '#B4A895', M: '#E3DDD2', R: '#3B3F4C', V: '#3B3F4C', X: '#3B3F4C', Y: '#3B3F4C', Z: '#3B3F4C' };
-  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const tt = tileAt(x, y); quad(x, y, x + 1, y + 1, 0, TC[tt] || '#77706A', tt === 'R' || tt === 'V' || tt === 'X' ? 1 : hj(x, y)); }
+  const CELL = { G: 0, S: 1, P: 2, M: 4, R: 3, V: 3, X: 3, Y: 3, Z: 3 };
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const tt = tileAt(x, y); quad(x, y, x + 1, y + 1, 0, '#FFFFFF', hj(x, y) + 0.04, CELL[tt] !== undefined ? CELL[tt] : (tt === 'L' || tt === 'T' ? 7 : 6)); }
   for (const r of RROWS) for (let x = 0; x < W; x++) if (tileAt(x, r) === 'R' && tileAt(x, r + 1) === 'R') quad(x + 0.25, r + 0.97, x + 0.75, r + 1.03, 0.004, '#F0E6D2');
   for (const L of M.loops) { const c = (L.down - 30) / T; for (let y = 0; y < H; y++) if (tileAt(c, y) === 'V') quad(c + 0.97, y + 0.25, c + 1.03, y + 0.75, 0.004, '#F0E6D2'); }
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
@@ -2225,15 +2309,17 @@ function groundMesh() {
     if (tt === 'Y') for (let k = 0; k < 4; k++) quad(x + 0.08 + k * 0.24, y + 0.13, x + 0.2 + k * 0.24, y + 0.87, 0.004, '#F0EBE2');
     if ('SPM'.includes(tt)) for (const [dx, dy] of NB) {
       if (!isRoad(tileAt(x + dx, y + dy))) continue;
-      if (dy > 0) quad(x, y + 0.94, x + 1, y + 1, 0.006, '#E2DBCF'); if (dy < 0) quad(x, y, x + 1, y + 0.06, 0.006, '#E2DBCF');
-      if (dx > 0) quad(x + 0.94, y, x + 1, y + 1, 0.006, '#E2DBCF'); if (dx < 0) quad(x, y, x + 0.06, y + 1, 0.006, '#E2DBCF');
+      if (dy > 0) quad(x, y + 0.92, x + 1, y + 1, 0.006, '#E2DBCF'); if (dy < 0) quad(x, y, x + 1, y + 0.08, 0.006, '#E2DBCF');
+      if (dx > 0) quad(x + 0.92, y, x + 1, y + 1, 0.006, '#E2DBCF'); if (dx < 0) quad(x, y, x + 0.08, y + 1, 0.006, '#E2DBCF');
     }
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
   geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
   geo.computeVertexNormals();
-  return new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true }));
+  const atlas = groundAtlas(); atlas.anisotropy = Math.min(8, R3.renderer.capabilities.getMaxAnisotropy());
+  return new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true, map: atlas }));
 }
 // райони: ринок, площа з мерією, торговий центр, поліція, заправка
 function buildDistricts(W3) {
@@ -2250,6 +2336,11 @@ function buildDistricts(W3) {
   stalls.slice(0, 4).forEach((s, k) => { const sg = labelSprite(STALL_KINDS[k], { bg: '#1D2132', fg: '#FDE68A', scale: 0.0048 }); sg.position.set(s.x, 1.45, s.z); W3.add(sg); });
   stalls.forEach((s, k) => { if (k % 2 === 0 || k < 4) R3.vendors.push({ x: s.x, z: s.z - s.f * 0.5, h: s.f > 0 ? Math.PI / 2 : -Math.PI / 2 }); });
   const ms = labelSprite('РИНОК', { bg: '#E4572E', fg: '#FFF4E6' }); ms.position.set((DIST.market[0] + DIST.market[1]) / 2, 2.4, RROWS[DIST.midBand] + 3.2); W3.add(ms);
+  // кущі: дві низькополігональні кулі, кілька відтінків зеленого
+  { const bush = M.decor.filter(d => d[0] === 'bush'), R = rng(21), list = [];
+    for (const [, x, y] of bush) { const s = 0.8 + R() * 0.4, c = ['#4E8A48', '#5E9A50', '#467F42', '#6FA858'][Math.floor(R() * 4)]; list.push({ x, z: y, s, col: c, o: 0 }); list.push({ x: x + 0.14, z: y - 0.08, s: s * 0.7, col: c, o: 1 }); }
+    inst(new THREE.IcosahedronGeometry(0.26, 0), lambert(0xFFFFFF), list, (d, b) => { d.position.set(b.x, 0.2 * b.s + (b.o ? 0.06 : 0), b.z); d.rotation.set(0, b.x * 3, 0); d.scale.set(b.s, b.s * 0.85, b.s); });
+  }
   // лавки (у двориках і на площі)
   const benches = M.decor.filter(d => d[0] === 'bench' || d[0] === 'bench3').map(d => ({ x: d[1] + (d[0] === 'bench' ? 1 : 0.5), z: d[2] + 0.5, r: d[3] ? Math.PI / 2 : 0 }));
   inst(new THREE.BoxGeometry(0.9, 0.06, 0.3), lambert(0x8C5A3C), benches, (d, b) => { d.position.set(b.x, 0.3, b.z); d.rotation.set(0, b.r, 0); });
@@ -2265,11 +2356,29 @@ function buildDistricts(W3) {
     const portico = new THREE.Mesh(new THREE.BoxGeometry(8.4, 0.15, 0.8), lambert(0xE9DCC0)); portico.position.set(cx, 2.55, front - 0.45); W3.add(portico);
     const steps = new THREE.Mesh(new THREE.BoxGeometry(8.6, 0.08, 0.95), lambert(0xCFC6B4)); steps.position.set(cx, 0.04, front - 0.48); W3.add(steps);
     const steps2 = new THREE.Mesh(new THREE.BoxGeometry(8.2, 0.08, 0.7), lambert(0xD9D2C6)); steps2.position.set(cx, 0.12, front - 0.6); W3.add(steps2);
-    const clock = labelSprite('12:00', { bg: '#F4EEDF', fg: '#2B2A33', scale: 0.006 }); clock.position.set(cx, 3.35, front - 0.2); W3.add(clock);
-    const flagPole = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.4, 4), lambert(0xCCCCCC)); flagPole.position.set(cx, 3.5, y + h / 2); W3.add(flagPole);
-    const fl1 = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.2), new THREE.MeshBasicMaterial({ color: 0x2E5AAC, side: THREE.DoubleSide })); fl1.position.set(cx + 0.31, 4.0, y + h / 2); W3.add(fl1);
-    const fl2 = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.2), new THREE.MeshBasicMaterial({ color: 0xF2C14E, side: THREE.DoubleSide })); fl2.position.set(cx + 0.31, 3.8, y + h / 2); W3.add(fl2);
-    const s = labelSprite('МЕРІЯ', { bg: '#2B2A33', fg: '#F4EEDF' }); s.position.set(cx, 4.4, y + h / 2); W3.add(s);
+    // вікна у два поверхи між колонами, двері, фриз з написом, вежа з годинником, флагштоки
+    const faceZ = y + h - 0.9 + 0.012;
+    for (let i = 0; i < 7; i++) for (const wy of [0.75, 1.8]) {
+      const wx = cx - 3 + i, fr = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.66), lambert(0xF4EEDF)); fr.position.set(wx, wy, faceZ); W3.add(fr);
+      if (i === 3 && wy < 1) continue;
+      const gl = new THREE.Mesh(new THREE.PlaneGeometry(0.36, 0.56), new THREE.MeshBasicMaterial({ color: (i + (wy > 1 ? 1 : 0)) % 3 ? 0xFFD58A : 0x5A6E8C })); gl.position.set(wx, wy, faceZ + 0.003); W3.add(gl);
+    }
+    const hdoor = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 1.05), lambert(0x6B4B3A)); hdoor.position.set(cx, 0.6, faceZ + 0.004); W3.add(hdoor);
+    for (const sx of [-1, 1]) { const side = new THREE.Mesh(new THREE.PlaneGeometry(0.4, 0.6), new THREE.MeshBasicMaterial({ color: 0xFFD58A })); side.position.set(cx + sx * (w / 2 - 0.09), 1.4, y + 1.0); side.rotation.y = sx * Math.PI / 2; W3.add(side); }
+    const frieze = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 0.4), lambert(0xFFFFFF, { map: canvasTex(256, 32, (g) => { g.fillStyle = '#E9DCC0'; g.fillRect(0, 0, 256, 32); g.fillStyle = '#5A4A3A'; g.font = '800 22px Manrope, sans-serif'; g.textAlign = 'center'; g.fillText('МІСЬКА РАДА', 128, 24); }) })); frieze.position.set(cx, 2.42, front - 0.06); W3.add(frieze);
+    const tower = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.3, 1.4), lambert(0xE9DCC0)); tower.position.set(cx, 3.3, y + 1.3); W3.add(tower);
+    const tcorn = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.12, 1.55), lambert(0x8C7B6A)); tcorn.position.set(cx, 3.98, y + 1.3); W3.add(tcorn);
+    const troof = new THREE.Mesh(new THREE.ConeGeometry(1.1, 1.0, 4), lambert(0x4E7A6A)); troof.rotation.y = Math.PI / 4; troof.scale.set(1, 1, 0.9); troof.position.set(cx, 4.55, y + 1.3); W3.add(troof);
+    const clockTex = canvasTex(128, 128, (g) => { g.fillStyle = '#F4EEDF'; g.beginPath(); g.arc(64, 64, 60, 0, 7); g.fill(); g.strokeStyle = '#2B2A33'; g.lineWidth = 6; g.stroke(); for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2; g.fillStyle = '#2B2A33'; g.fillRect(64 + Math.cos(a) * 48 - 3, 64 + Math.sin(a) * 48 - 3, 6, 6); } g.lineWidth = 6; g.beginPath(); g.moveTo(64, 64); g.lineTo(64, 26); g.moveTo(64, 64); g.lineTo(92, 74); g.stroke(); });
+    const clockM = new THREE.Mesh(new THREE.CircleGeometry(0.42, 20), new THREE.MeshBasicMaterial({ map: clockTex, transparent: true })); clockM.position.set(cx, 3.35, y + 2.01); W3.add(clockM);
+    for (const sx of [-1, 1]) {
+      const fp = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 1.4, 4), lambert(0xCCCCCC)); fp.position.set(cx + sx * 3.8, 3.4, front - 0.5); W3.add(fp);
+      const f1 = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.2), new THREE.MeshBasicMaterial({ color: 0x2E5AAC, side: THREE.DoubleSide })); f1.position.set(cx + sx * 3.8 + 0.31, 3.95, front - 0.5); W3.add(f1);
+      const f2 = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 0.2), new THREE.MeshBasicMaterial({ color: 0xF2C14E, side: THREE.DoubleSide })); f2.position.set(cx + sx * 3.8 + 0.31, 3.75, front - 0.5); W3.add(f2);
+      const lampP = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 1.2, 5), lambert(0x2B2A33)); lampP.position.set(cx + sx * 4.6, 0.6, front + 0.3); W3.add(lampP);
+      const lampB = new THREE.Mesh(new THREE.SphereGeometry(0.1, 8, 6), new THREE.MeshBasicMaterial({ color: 0xFFE3A3 })); lampB.position.set(cx + sx * 4.6, 1.25, front + 0.3); W3.add(lampB);
+    }
+    const s = labelSprite('МЕРІЯ', { bg: '#2B2A33', fg: '#F4EEDF' }); s.position.set(cx, 5.4, y + 1.3); W3.add(s);
   }
   // торговий центр: скляні стіни, дах, підлога, магазини всередині
   { const [m0, m1] = DIST.mall, top = RROWS[DIST.midBand] + 3, bot = RROWS[DIST.midBand + 1] - 2, HH = 2.8;
@@ -2279,9 +2388,10 @@ function buildDistricts(W3) {
     const band = []; for (const wv of walls) band.push([wv[0] - 0.02, wv[1] - 0.02, wv[2] + 0.02, wv[3] + 0.02, 1.9, 2.5]);
     W3.add(new THREE.Mesh(boxGeo(band), lambert(0x5E86A8, { emissive: 0x0A1A28 })));
     W3.add(new THREE.Mesh(boxGeo(walls, true), lambert(0x4E5468)));
-    const roof = new THREE.Mesh(new THREE.PlaneGeometry(m1 - m0 - 1, bot - top - 1), lambert(0xEDE6DA, { side: THREE.DoubleSide })); roof.rotation.x = -Math.PI / 2; roof.position.set((m0 + 1 + m1) / 2, HH, (top + 1 + bot) / 2); W3.add(roof);
+    const roof = new THREE.Mesh(new THREE.PlaneGeometry(m1 - m0 - 1, bot - top - 1), lambert(0xEDE6DA, { side: THREE.DoubleSide })); roof.rotation.x = -Math.PI / 2; roof.position.set((m0 + 1 + m1) / 2, HH, (top + 1 + bot) / 2); roof.userData.noMerge = true; W3.add(roof); R3.mallRoof = [roof];
     const lamps = []; for (let x = m0 + 3; x < m1 - 1; x += 4) for (const y of [top + 2.5, bot - 1.5]) lamps.push({ x, z: y });
     inst(new THREE.BoxGeometry(0.8, 0.04, 0.3), new THREE.MeshBasicMaterial({ color: 0xFFF4DD }), lamps, (d, l) => { d.position.set(l.x, HH - 0.03, l.z); d.rotation.set(0, 0, 0); });
+    R3.mallRoof.push(W3.children[W3.children.length - 1]);
     const s = labelSprite('ТЦ «КАШТАН»', { bg: '#1D2132', fg: '#BEE3F8' }); s.position.set((m0 + m1) / 2, HH + 0.7, top + 0.5); W3.add(s);
     // вітрини й перегородки магазинів нижчі за зовнішні стіни
     const inner = []; for (let y = top + 1; y <= top + 3; y++) for (let x = m0 + 1; x < m1; x++) if (tileAt(x, y) === 'K') inner.push([x + (y === top + 3 ? 0 : 0.42), y + (y === top + 3 ? 0.42 : 0), x + (y === top + 3 ? 1 : 0.58), y + (y === top + 3 ? 0.58 : 1), 0, 2.1]);
@@ -2363,7 +2473,7 @@ function mergeStatic(group) {
   group.updateMatrixWorld(true);
   const buckets = new Map(), drop = [];
   const meshes = [];
-  group.traverse(o => { if (!o.isMesh || o.isInstancedMesh) return; for (let p = o.parent; p; p = p.parent) if (p === R3.interior || (R3.hideRooms && (p === R3.hideRooms.hall || p === R3.hideRooms.wc))) return; meshes.push(o); });
+  group.traverse(o => { if (!o.isMesh || o.isInstancedMesh || o.userData.noMerge) return; for (let p = o.parent; p; p = p.parent) if (p === R3.interior || (R3.hideRooms && (p === R3.hideRooms.hall || p === R3.hideRooms.wc))) return; meshes.push(o); });
   for (const o of meshes) {
     const m = o.material, key = [m.type, m.color && m.color.getHex(), m.emissive && m.emissive.getHex(), m.map ? m.map.uuid : '', m.emissiveMap ? m.emissiveMap.uuid : '', m.side, m.transparent, m.opacity, !!m.vertexColors].join('|');
     if (m.vertexColors) continue;
@@ -2413,7 +2523,8 @@ function buildWorld(cafeIdx) {
     const tx = wallTextures(WALLS[i], 11 + i);
     W3.add(new THREE.Mesh(boxGeo(list), lambert(0xFFFFFF, { map: tx.map, emissiveMap: tx.em, emissive: 0xFFFFFF, emissiveIntensity: 0.9 })));
   });
-  W3.add(new THREE.Mesh(boxGeo(roofs, true), lambert(0x5B5468)));
+  const roofTex = canvasTex(128, 128, (g) => { const R = rng(5); g.fillStyle = '#5B5468'; g.fillRect(0, 0, 128, 128); for (let i = 0; i < 500; i++) { g.fillStyle = R() < 0.5 ? '#665F73' : '#524B5E'; g.fillRect(R() * 128, R() * 128, 2, 2); } g.strokeStyle = '#7A7388'; g.lineWidth = 4; g.strokeRect(2, 2, 124, 124); g.fillStyle = '#8A8F99'; g.fillRect(84, 22, 16, 12); g.fillRect(24, 84, 10, 10); });
+  W3.add(new THREE.Mesh(boxGeo(roofs, true), lambert(0xFFFFFF, { map: roofTex })));
   // під'їзд свого дому: двері, козирок і смуга кольору гравця, табличка з номером
   HOUSES.forEach(([c, r, w, h], i) => {
     const col = new THREE.Color(PC[i]), cx = c + w / 2, fz = r + h - 0.02, hgt = 2.4 + (i % 2) * 0.8;
@@ -2503,11 +2614,12 @@ function buildWorld(cafeIdx) {
   // дерева (конуси), ліхтарі, кіоски, фонтани — інстансами, щоб не навантажувати пристрій
   const dm = new THREE.Object3D();
   const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.07, 0.09, 0.6, 5), lambert(0x6B4B3A), M.trees.length);
-  const crowns = new THREE.InstancedMesh(new THREE.ConeGeometry(0.5, 1.3, 7), lambert(0x4E8A48), M.trees.length);
+  const crowns = new THREE.InstancedMesh(new THREE.ConeGeometry(0.5, 1.3, 7), lambert(0xFFFFFF), M.trees.length);
   M.trees.forEach(([x, y], i) => {
     const s = 0.85 + rnd() * 0.4;
     dm.position.set(x + 0.5, 0.3, y + 0.5); dm.scale.set(1, 1, 1); dm.updateMatrix(); trunks.setMatrixAt(i, dm.matrix);
     dm.position.set(x + 0.5, 0.6 + 0.65 * s, y + 0.5); dm.scale.set(s, s, s); dm.updateMatrix(); crowns.setMatrixAt(i, dm.matrix);
+    crowns.setColorAt(i, new THREE.Color(['#4E8A48', '#5A9650', '#447C40', '#6A9A4C'][i % 4]));
   });
   W3.add(trunks, crowns);
   const poles = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.03, 0.04, 1.6, 5), lambert(0x3E4250), M.lamps.length);
@@ -2538,9 +2650,23 @@ function buildWorld(cafeIdx) {
   W3.add(poles, bulbs);
   for (const [k, x, y] of (M.props || [])) {
     if (k === 'fountain') {
-      const basin = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.5, 0.3, 12), lambert(0xA7ADB8)); basin.position.set(x + 0.5, 0.15, y + 0.5); W3.add(basin);
-      const water = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.4, 0.02, 12), lambert(0x6FB7E0, { emissive: 0x10304A })); water.position.set(x + 0.5, 0.29, y + 0.5); W3.add(water);
-      const col = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.1, 0.7, 6), lambert(0xA7ADB8)); col.position.set(x + 0.5, 0.5, y + 0.5); W3.add(col);
+      // фонтан: восьмикутна чаша з бортиком, вода, колона з двома чашками й струменями
+      const onSquare = y > RROWS[DIST.midBand] && y < RROWS[DIST.midBand + 1], sc = onSquare ? 1.35 : 1, g = new THREE.Group(); g.position.set(x + 0.5, 0, y + 0.5); g.scale.set(sc, sc, sc);
+      const stone = lambert(0xB9B3A8), stone2 = lambert(0xCFC9BD), waterM = lambert(0x7CC4E8, { emissive: 0x1A4A66 }), spray = new THREE.MeshLambertMaterial({ color: 0xDDF2FF, emissive: 0x335A70, transparent: true, opacity: 0.55 });
+      const add = (geo, mat, px, py, pz) => { const m = new THREE.Mesh(geo, mat); m.position.set(px, py, pz); g.add(m); return m; };
+      add(new THREE.CylinderGeometry(0.56, 0.6, 0.26, 8), stone, 0, 0.13, 0);
+      add(new THREE.CylinderGeometry(0.6, 0.6, 0.05, 8), stone2, 0, 0.28, 0);
+      add(new THREE.CylinderGeometry(0.5, 0.5, 0.02, 8), waterM, 0, 0.27, 0);
+      add(new THREE.CylinderGeometry(0.07, 0.11, 0.55, 8), stone2, 0, 0.5, 0);
+      add(new THREE.CylinderGeometry(0.3, 0.12, 0.09, 10), stone, 0, 0.66, 0);
+      add(new THREE.CylinderGeometry(0.26, 0.26, 0.02, 10), waterM, 0, 0.7, 0);
+      add(new THREE.CylinderGeometry(0.04, 0.06, 0.18, 6), stone2, 0, 0.79, 0);
+      add(new THREE.CylinderGeometry(0.15, 0.06, 0.06, 10), stone, 0, 0.88, 0);
+      add(new THREE.SphereGeometry(0.045, 6, 4), stone2, 0, 0.95, 0);
+      add(new THREE.CylinderGeometry(0.015, 0.03, 0.22, 5), spray, 0, 1.06, 0);
+      add(new THREE.CylinderGeometry(0.29, 0.34, 0.38, 10, 1, true), spray, 0, 0.47, 0);
+      add(new THREE.CylinderGeometry(0.15, 0.2, 0.15, 10, 1, true), spray, 0, 0.79, 0);
+      W3.add(g);
     } else if (k === 'kiosk') {
       // кіоск: корпус, віконце з продавцем, прилавок, смугаста маркіза, вивіска
       const pr = M.props.find(q => q[1] === x && q[2] === y), fdx = pr && pr.length > 3 ? pr[3] : 0, fdy = pr && pr.length > 3 ? pr[4] : (y < H / 2 ? 1 : -1);
@@ -2893,6 +3019,7 @@ function render(dt, t) {
     beginDyn(); endDyn();
     const cx = W / 2, cz = H / 2;
     camr.up.set(0, 1, 0); camr.position.set(cx + Math.cos(R3.lobbyT) * 12, 9, cz + Math.sin(R3.lobbyT) * 12); camr.lookAt(cx, 0, cz);
+    if (R3.skyG) R3.skyG.position.set(camr.position.x, 0, camr.position.z);
     R3.renderer.render(R3.scene, camr);
     return;
   }
@@ -2931,14 +3058,14 @@ function render(dt, t) {
   }
   for (const p of view.players) {
     const mine = p.slot === S.mySlot, a = animOf('P' + p.slot, p.x, p.y);
-    if (mine && !focus.spec && p.st !== 3) continue;
+    if (mine && !focus.spec && p.st !== 3 && !R3.thirdOn) continue;
     const hb = S.isHost && S.sim ? (S.sim.players[p.slot] ? ((S.sim.players[p.slot].hid ? 1 : 0) | (S.sim.players[p.slot].sit ? 2 : 0)) : 0) : num(((S.snap || {}).hb || [])[p.slot], 0);
     if (hb & 1 && !mine) continue;
     let h = (hb & 2) ? Math.PI / 2 : a.h, sit = !!(hb & 2) && p.st === 0, px3 = p.x * U, pz3 = p.y * U;
     if (p.st === 3) { if (!inCafe) continue; const seat = interiorSeat(p.slot); px3 = seat[0]; pz3 = seat[1]; h = seat[2]; sit = true; }
     if (mine && p.st === 3 && !focus.spec) continue;
     person(px3, pz3, h, a.ph, p.st === 1 || sit ? 0 : a.mv, { body: p.of ? JACKETS[p.of % 8] : PC[p.slot], hat: PCD[p.slot], skin: SKINS[p.slot % 4], sit, pom: PC[p.slot] });
-    sprite((p.slot + 1) + ' · ' + p.nick + (p.st === 1 ? ' ✶' : '') + (p.br ? ' · бронь' : ''), px3, 1.2, pz3, { fg: PC[p.slot] });
+    if (!mine) sprite((p.slot + 1) + ' · ' + p.nick + (p.st === 1 ? ' ✶' : '') + (p.br ? ' · бронь' : ''), px3, 1.2, pz3, { fg: PC[p.slot] });
   }
   for (const c of view.cars) car(c);
   { const D = R3.dyn; D.coin.count = Math.min(8, view.coins.length);
@@ -2953,9 +3080,11 @@ function render(dt, t) {
   endDyn();
   // камера: від першої особи; після кави чи в спостерігачі — ззаду над гравцем
   const sprinting = S.me.sprinting && st === 0;
-  const fov = sprinting ? 80 : 72; R3.fov += (fov - R3.fov) * Math.min(1, dt * 6);
+  const asp = innerWidth / innerHeight, baseFov = asp < 1 ? Math.min(105, 2 * Math.atan(Math.tan(42 * Math.PI / 180) / asp) * 180 / Math.PI) : 72;
+  const fov = baseFov + (sprinting ? 8 : 0); R3.fov += (fov - R3.fov) * Math.min(1, dt * 6);
   if (Math.abs(camr.fov - R3.fov) > 0.05) { camr.fov = R3.fov; camr.updateProjectionMatrix(); }
   if (focus.spec) {
+    if (R3.mallRoof) for (const r of R3.mallRoof) r.visible = true;
     animCup(false, t); $('busFrame').hidden = true;
     const a = ANIM.get('P' + focus.slot) || { h: 0 };
     const tx3 = focus.x * U, tz3 = focus.y * U, bx3 = tx3 - Math.cos(a.h) * 2.4, bz3 = tz3 - Math.sin(a.h) * 2.4;
@@ -2983,14 +3112,36 @@ function render(dt, t) {
     if (stunned) roll = Math.sin(t / 120) * 0.08;
     const a = ANIM.get('P' + S.mySlot);
     const bob = 0; // без похитування камери під час ходьби
+    const freeWalk = !hideKind && !inVan && st !== 3 && !(st === 2 && cst === 2 && false);
+    R3.thirdOn = CAMSET.mode !== 'first' && freeWalk && !S.me.sitB;
+    if (R3.thirdOn) {
+      const a2 = ANIM.get('P' + S.mySlot);
+      if (CAMSET.mode === 'top') { R3.yaw = -Math.PI / 2; }
+      else if (a2 && a2.mv > 0.5 && !touchLook && !dragLook && document.pointerLockElement !== cvs) { let d = a2.h - R3.yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); if (Math.abs(d) < 2.6) R3.yaw += d * Math.min(1, dt * 1.6); }
+      const top = CAMSET.mode === 'top', z = CAMSET.zoom;
+      let back = top ? 0.6 + z * 2 : 2.0 + z * 5, hgt = top ? 7 + z * 14 : 1.4 + z * 7;
+      const px = S.me.x, py = S.me.y, fx = Math.cos(R3.yaw), fz = Math.sin(R3.yaw);
+      // камера не залазить у будинки: якщо між гравцем і камерою стіна, підтягуємо її ближче
+      if (!top) for (let k = 0; k < 12; k++) { if (sees({ x: px, y: py }, { x: px - fx * back * T, y: py - fz * back * T })) break; back *= 0.8; hgt = Math.max(1.1, hgt * 0.85); }
+      const want = new THREE.Vector3(px * U - fx * back, hgt, py * U - fz * back);
+      if (!R3.thirdPrev) camr.position.copy(want); else camr.position.lerp(want, Math.min(1, dt * 8));
+      R3.thirdPrev = true;
+      animCup(false, t); animHeld(t); animKnife(false); animPepper(false);
+      camr.up.set(0, 1, 0); camr.lookAt(px * U + fx * (top ? 0.3 : 1.2), top ? 0 : 0.7, py * U + fz * (top ? 0.3 : 1.2));
+      if (roll) camr.rotateZ(roll * 0.5);
+    } else { R3.thirdPrev = false; }
+    if (R3.mallRoof) for (const r of R3.mallRoof) r.visible = !R3.thirdOn;
+    if (!R3.thirdOn) {
     camr.position.set(cx3, eye + bob, cz3);
     animCup(st === 3, t); animHeld(t); animKnife(st === 0 && (myStatus()[13] || 0) > 0 && !R3.held); animPepper(st === 0 && (myStatus()[18] || 0) > 0 && !R3.held);
     const cp = Math.cos(R3.pitch);
     camr.up.set(0, 1, 0);
     camr.lookAt(camr.position.x + Math.cos(R3.yaw) * cp, camr.position.y + Math.sin(R3.pitch), camr.position.z + Math.sin(R3.yaw) * cp);
     if (roll) camr.rotateZ(roll);
+    }
   }
   { const [st2, , , cst2, , , eu2] = myStatus(); if (st2 === 2 && cst2 === 2 && !eu2 && !S.me.escTried && S.me.placedAt) { const left = Math.max(0, Math.ceil((ESC_WINDOW - (now - S.me.placedAt)) / 1000)); sprite('Тріщина «А» · ' + left + ' с', CRACK_IN.x * U - 0.3, 1.0, CRACK_IN.y * U, { bg: '#FDE68A', fg: '#1D2132' }); endDyn(); } }
+  if (R3.skyG) R3.skyG.position.set(camr.position.x, 0, camr.position.z);
   R3.renderer.render(R3.scene, camr);
   updateCompass(view, focus);
   updateHud(view, dt);
