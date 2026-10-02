@@ -1765,19 +1765,28 @@ function buildWorld(cafeIdx) {
     const b = [c + 0.06, r + 0.06, c + w - 0.06, r + h - 0.06, 0, hgt];
     groups[i].push(b); roofs.push(b);
   }
+  // будинки гравців — такі ж багатоповерхівки, як і решта міста
+  HOUSES.forEach(([c, r, w, h], i) => { const b = [c + 0.06, r + 0.04, c + w - 0.06, r + h - 0.02, 0, 2.4 + (i % 2) * 0.8]; groups[i % 3].push(b); roofs.push(b); });
   groups.forEach((list, i) => {
     if (!list.length) return;
     const tx = wallTextures(WALLS[i], 11 + i);
     W3.add(new THREE.Mesh(boxGeo(list), lambert(0xFFFFFF, { map: tx.map, emissiveMap: tx.em, emissive: 0xFFFFFF, emissiveIntensity: 0.9 })));
   });
   W3.add(new THREE.Mesh(boxGeo(roofs, true), lambert(0x5B5468)));
-  // будинки гравців: стіни, двосхилий дах кольору гравця, вивіска
+  // під'їзд свого дому: двері, козирок і смуга кольору гравця, табличка з номером
   HOUSES.forEach(([c, r, w, h], i) => {
-    const body = new THREE.Mesh(new THREE.BoxGeometry(w - 0.3, 1.3, h - 0.4), lambert(0xF1E6D2)); body.position.set(c + w / 2, 0.65, r + h / 2); W3.add(body);
-    const roof = new THREE.Mesh(new THREE.ConeGeometry(Math.hypot(w, h) / 2, 0.9, 4), lambert(new THREE.Color(PC[i])));
-    roof.rotation.y = Math.PI / 4; roof.scale.set(1, 1, (h - 0.2) / (w - 0.1)); roof.position.set(c + w / 2, 1.75, r + h / 2); W3.add(roof);
-    const door = new THREE.Mesh(new THREE.PlaneGeometry(0.35, 0.6), lambert(0x6B4B3A)); door.position.set(c + w / 2, 0.3, r + h - 0.19); W3.add(door);
-    const s = labelSprite('Дім ' + (i + 1), { bg: PC[i], fg: '#1D2132' }); s.position.set(c + w / 2, 2.6, r + h / 2); W3.add(s);
+    const col = new THREE.Color(PC[i]), cx = c + w / 2, fz = r + h - 0.02, hgt = 2.4 + (i % 2) * 0.8;
+    const band = new THREE.Mesh(new THREE.BoxGeometry(w - 0.1, 0.16, h - 0.04), lambert(col)); band.position.set(cx, hgt + 0.08, r + h / 2 + 0.01); W3.add(band);
+    const plinth = new THREE.Mesh(new THREE.BoxGeometry(w - 0.1, 0.22, 0.04), lambert(col.clone().multiplyScalar(0.75))); plinth.position.set(cx, 0.11, fz + 0.02); W3.add(plinth);
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.92, 0.05), lambert(0xE6DED0)); frame.position.set(cx, 0.46, fz + 0.025); W3.add(frame);
+    const door = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.8, 0.06), lambert(col.clone().multiplyScalar(0.85))); door.position.set(cx, 0.4, fz + 0.04); W3.add(door);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.03, 6, 4), lambert(0xFDE68A)); knob.position.set(cx + 0.15, 0.4, fz + 0.08); W3.add(knob);
+    const canopy = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.06, 0.42), lambert(col)); canopy.position.set(cx, 0.98, fz + 0.21); W3.add(canopy);
+    const lampD = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.08, 0.06), new THREE.MeshBasicMaterial({ color: 0xFFE3A3 })); lampD.position.set(cx, 1.06, fz + 0.05); W3.add(lampD);
+    const step = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.06, 0.3), lambert(0xBDB2A2)); step.position.set(cx, 0.03, fz + 0.15); W3.add(step);
+    const plate = labelSprite('Дім ' + (i + 1), { bg: PC[i], fg: '#1D2132', scale: 0.0052 }); plate.position.set(cx, 1.3, fz + 0.1); W3.add(plate);
+    const top = labelSprite('Дім ' + (i + 1), { bg: PC[i], fg: '#1D2132' }); top.position.set(cx, hgt + 0.6, r + h / 2); W3.add(top);
+    for (const sd of [-1, 1]) { const bush = new THREE.Mesh(new THREE.SphereGeometry(0.2, 7, 5), lambert(0x4E8A48)); bush.position.set(cx + sd * 0.75, 0.16, fz + 0.18); W3.add(bush); }
   });
   // територія ТЦК: бетонний паркан з колючим дротом, ворота, всередині одна будівля
   {
